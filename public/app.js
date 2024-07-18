@@ -27,10 +27,12 @@ app.get('/authenticated.html', (req, res) => {
 
 // Route to serve 42_auth.html
 app.get('/auth/42', (req, res) => {
-  res.sendFile(path.join(__dirname, '42_auth.html'));
+  res.sendFile(path.join(__dirname, 'login.html'));
 });
 
 // Start the server
 app.listen(8000, () => {
   console.log('Server is running on http://localhost:8000');
 });
+
+
