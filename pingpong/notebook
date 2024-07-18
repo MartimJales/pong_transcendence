@@ -1,0 +1,74 @@
+DATA:
+ 
+email e senha ja vem com id, 
+
+
+Oauth 2.0 - DIFFERENT ENTER IN DATA BASE?
+Your website redirects the user to the resource server's login page.
+User enters credentials and grants permission to your application.
+Resource server sends an access token back to your website.
+Your website stores the access token in the database and identifies the user based on it (or a combination of it and a user ID from your system).
+Your website uses the access token to access the user's data on the resource server (if necessary) based on the granted permissions.
+
+project/
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── Dockerfile
+├── backend/
+│   ├── src/
+│   ├── requirements.txt
+│   └── Dockerfile
+├── docker-compose.yml
+└── .env
+
+
+products = Product.objects.all(): This line uses the Product model to access the database and retrieve all product objects. Product.objects.all() is a query that fetches all records from the Product table.
+**how many tables?does select all at once? whole shit?
+
+Django's Object-Relational Mapper (ORM)
+
+. QuerySet Object:
+
+Django's ORM doesn't directly return raw database rows. Instead, it creates a QuerySet object, which is a container that holds the retrieved data.
+****** PERGUNTAR QuerySet object para ver como o banco de dados retorna
+
+myproject/
+├── myproject/
+│   └── urls.py   - para urls  - path('api/users/', user_list, name='user_list')
+└── users/
+    ├── views.py - This contains the logic for handling requests and returning responses, urls.py directs it to the appropriate view function.
+    └── models.py - This defines your database structure. - It contains Python classes that Django translates into database tables.
+
+flow:
+
+A request comes in (e.g., frontend asking for data).
+urls.py directs it to the appropriate view function.
+The view function in views.py processes the request.
+If needed, the view interacts with models to fetch or manipulate data.
+The view prepares and sends a response back to the frontend.
+
+
+
+Example of a RESTful API structure:
+
+GET /api/v1/users - List all users
+GET /api/v1/users/123 - Get user with ID 123
+POST /api/v1/users - Create a new user
+PUT /api/v1/users/123 - Update user 123
+DELETE /api/v1/users/123 - Delete user 123
+GET /api/v1/users/123/posts - List posts by user 123
+
+in urls.py:
+path('api/v1/posts/<int:id>/comments/', views.post_comments)
+-This tells Django: "When a request comes to this URL, call the post_comments function with the 'id' parameter."
+
+
+in viws.py:
+def post_comments(request, id):
+    # Here you'd query your database
+    # For example: Comment.objects.filter(post_id=id)
+    # Then return the results
+
+
+The view function uses the 'id' to query the database and return the relevant comments.
