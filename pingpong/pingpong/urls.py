@@ -15,11 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path 
+from django.urls import include
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('login/', auth_views.LoginView.as_view(), name='login'),
-    #path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    #path('home/', include('authentication.urls')),
+    path('', include('authentication.urls'))
+
 ]
+
+# mama_eu/randomshit/here -> this shit is to map the rest of urls, se passa só mamara eu manda o resto 
+# path('mama_eu/', include('authentication.urls')), referencia da outra app
