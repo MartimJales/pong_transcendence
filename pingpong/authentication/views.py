@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
+
+from . forms import UserCreateForm
 
 
 
@@ -9,8 +11,19 @@ from django.shortcuts import redirect
 def mama_eu(request):
     return render(request, 'try.html', {'name' : 'armando pinto'})
 
-def viadinho(request):
-    return render(request, 'viadin.html')
+def signup(request):
+
+    form = UserCreateForm()
+
+    if request.method == 'POST':
+
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('landing')
+
+    context = {'registerform':form}
+    return render(request, 'signup.html', context=context)
 
 def homerender(request):
     return render(request, 'index.html')
