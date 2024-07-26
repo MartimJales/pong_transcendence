@@ -7,9 +7,6 @@ var DIRECTION = {
     RIGHT: 4
 };
 
-var rounds = [5, 5, 3, 3, 2];
-var colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6'];
-
 // The ball object (The cube that bounces back and forth)
 var Ball = {
     new: function (incrementedSpeed) {
@@ -93,33 +90,33 @@ var Game = {
         );
     },
 
-    endGameMenu: function (text) {
-        // Change the canvas font size and color
-        Pong.context.font = '45px Courier New';
-        Pong.context.fillStyle = this.bgColor;
+	endGameMenu: function (text) {
+		// Change the canvas font size and color
+		Pong.context.font = '45px Courier New';
+		Pong.context.fillStyle = this.bgColor;
 
-        // Draw the rectangle behind the 'Press any key to begin' text.
-        Pong.context.fillRect(
-            Pong.canvas.width / 2 - 350,
-            Pong.canvas.height / 2 - 48,
-            700,
-            100
-        );
+		// Draw the rectangle behind the 'Press any key to begin' text.
+		Pong.context.fillRect(
+			Pong.canvas.width / 2 - 350,
+			Pong.canvas.height / 2 - 48,
+			700,
+			100
+		);
 
-        // Change the canvas color;
-        Pong.context.fillStyle = '#ffffff';
+		// Change the canvas color;
+		Pong.context.fillStyle = '#ffffff';
 
-        // Draw the end game menu text ('Game Over' and 'Winner')
-        Pong.context.fillText(text,
-            Pong.canvas.width / 2,
-            Pong.canvas.height / 2 + 15
-        );
+		// Draw the end game menu text ('Game Over' and 'Winner')
+		Pong.context.fillText(text,
+			Pong.canvas.width / 2,
+			Pong.canvas.height / 2 + 15
+		);
 
-        setTimeout(function () {
-            Pong = Object.assign({}, Game);
-            Pong.initialize();
-        }, 3000);
-    },
+		setTimeout(function () {
+			window.location.href = 'game.html'; // redirecionar para a página inicial ou a página anterior
+		}, 3000);
+	},
+
 
     // Update all objects (move the player, ai, ball, increment the score, etc.)
     update: function () {
@@ -188,25 +185,25 @@ var Game = {
 
         // Handle the end of round transition
         // Check to see if the player won the round.
-        if (this.player.score === rounds[this.round]) {
+        if (this.player.score === 5) {
             // Check to see if there are any more rounds/levels left and display the victory screen if
             // there are not.
-            if (!rounds[this.round + 1]) {
-                this.over = true;
-                setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
-            } else {
-                // If there is another round, reset all the values and increment the round number.
-                this.color = this._generateRoundColor();
-                this.player.score = this.ai.score = 0;
-                this.player.speed += 0.5;
-                this.ai.speed += 1;
-                this.ball.speed += 1;
-                this.round += 1;
-
+            // if (!rounds[this.round + 1]) {
+            this.over = true;
+            setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
             }
-        }
+			// else {
+            //     // If there is another round, reset all the values and increment the round number.
+            //     this.color = this._generateRoundColor();
+            //     this.player.score = this.ai.score = 0;
+            //     this.player.speed += 0.5;
+            //     this.ai.speed += 1;
+            //     this.ball.speed += 1;
+            //     this.round += 1;
+
+            // }
         // Check to see if the ai/AI has won the round.
-        else if (this.ai.score === rounds[this.round]) {
+    	if (this.ai.score === 5) {
             this.over = true;
             setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
         }
@@ -305,11 +302,11 @@ var Game = {
         this.context.font = '40px Courier';
 
         // Draw the current round number
-        this.context.fillText(
-            rounds[Pong.round] ? rounds[Pong.round] : rounds[Pong.round - 1],
-            (this.canvas.width / 2),
-            100
-        );
+        // this.context.fillText(
+        //     rounds[Pong.round] ? rounds[Pong.round] : rounds[Pong.round - 1],
+        //     (this.canvas.width / 2),
+        //     100
+        // );
     },
 
     loop: function () {
