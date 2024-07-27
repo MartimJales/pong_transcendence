@@ -24,17 +24,17 @@ var Ball = {
 
 // The paddle object (The lines that move up and down)
 var Paddle = {
-    new: function (side) {
-        return {
-            width: 18,
-            height: 180,
-            x: side === 'left' ? 150 : this.canvas.width - 150,
-            y: (this.canvas.height / 2) - 35,
-            score: 0,
-            move: DIRECTION.IDLE,
-            speed: 8
-        };
-    }
+	new: function (side) {
+		return {
+			width: 18,
+			height: 180,
+			x: side === 'left' ? 150 : this.canvas.width - 150,
+			y: (this.canvas.height / 2) - 35,
+			score: 0,
+			move: DIRECTION.IDLE,
+			speed: 8
+		};
+	}
 };
 
 var Game = {
@@ -48,22 +48,22 @@ var Game = {
 		this.canvas.style.width = (this.canvas.width / 2) + 'px';
 		this.canvas.style.height = (this.canvas.height / 2) + 'px';
 
-        this.player = Paddle.new.call(this, 'left');
-        this.ai = (players == 1) ? Paddle.new.call(this, 'right') : null;
-        this.player2 = (players == 2) ? Paddle.new.call(this, 'right') : null;
-        this.ball = Ball.new.call(this);
+		this.player = Paddle.new.call(this, 'left');
+		this.ai = (players == 1) ? Paddle.new.call(this, 'right') : null;
+		this.player2 = (players == 2) ? Paddle.new.call(this, 'right') : null;
+		this.ball = Ball.new.call(this);
 
-        if (this.ai) this.ai.speed = 5;
-        this.running = this.over = false;
-        this.turn = this.ai || this.player2;
-        this.timer = this.round = 0;
-        this.bgColor = bgColor;
-        this.ballColor = ballColor;
-        this.paddleColor = paddleColor;
+		if (this.ai) this.ai.speed = 5;
+		this.running = this.over = false;
+		this.turn = this.ai || this.player2;
+		this.timer = this.round = 0;
+		this.bgColor = bgColor;
+		this.ballColor = ballColor;
+		this.paddleColor = paddleColor;
 
-        Pong.menu();
-        Pong.listen(players);
-    },
+		Pong.menu();
+		Pong.listen(players);
+	},
 
 	menu: function () {
 		// Draw all the Pong objects in their current state
@@ -91,48 +91,58 @@ var Game = {
 		);
 	},
 
-    endGameMenu: function (text) {
-        // Change the canvas font size and color
-        Pong.context.font = '45px Courier New';
-        Pong.context.fillStyle = this.bgColor;
+	endGameMenu: function (text) {
+		// Change the canvas font size and color
+		Pong.context.font = '45px Courier New';
+		Pong.context.fillStyle = this.bgColor;
 
-        // Draw the rectangle behind the 'Press any key to begin' text.
-        Pong.context.fillRect(
-            Pong.canvas.width / 2 - 350,
-            Pong.canvas.height / 2 - 48,
-            700,
-            100
-        );
+		// Draw the rectangle behind the 'Press any key to begin' text.
+		Pong.context.fillRect(
+			Pong.canvas.width / 2 - 350,
+			Pong.canvas.height / 2 - 48,
+			700,
+			100
+		);
 
-        // Change the canvas color;
-        Pong.context.fillStyle = '#ffffff';
+		// Change the canvas color;
+		Pong.context.fillStyle = '#ffffff';
 
-        // Draw the end game menu text ('Game Over' and 'Winner')
-        Pong.context.fillText(text,
-            Pong.canvas.width / 2,
-            Pong.canvas.height / 2 + 15
-        );
+		// Draw the end game menu text ('Game Over' and 'Winner')
+		Pong.context.fillText(text,
+			Pong.canvas.width / 2,
+			Pong.canvas.height / 2 + 15
+		);
 
-        setTimeout(function () {
-            window.location.href = 'game.html'; // redirecionar para a página inicial ou a página anterior
-        }, 3000);
-    },
+		setTimeout(function () {
+			window.location.href = 'game.html'; // redirecionar para a página inicial ou a página anterior
+		}, 3000);
+	},
 
-    // Update all objects (move the player, ai, ball, increment the score, etc.)
-    update: function () {
-        if (!this.over) {
-            // If the ball collides with the bound limits - correct the x and y coords.
-            if (this.ball.x <= 0) Pong._resetTurn.call(this, this.ai || this.player2, this.player);
-            if (this.ball.x >= this.canvas.width - this.ball.width) Pong._resetTurn.call(this, this.player, this.ai || this.player2);
-            if (this.ball.y <= 0) this.ball.moveY = DIRECTION.DOWN;
-            if (this.ball.y >= this.canvas.height - this.ball.height) this.ball.moveY = DIRECTION.UP;
+	// Update all objects (move the player, ai, ball, increment the score, etc.)
+	update: function () {
+		if (!this.over) {
+			// Calculate future intersections
+			var targetPosition;
 
-            // Move player if their move value was updated by a keyboard event
-            if (this.player.move === DIRECTION.UP) this.player.y -= this.player.speed;
-            else if (this.player.move === DIRECTION.DOWN) this.player.y += this.player.speed;
+			if (this.ai) {
+				futureIntersections = this.calculateFutureIntersections();
+				if (futureIntersections.length > 0) {
+					// Set the first future intersection as the target position for the AI
+					targetPosition = futureIntersections[0].y;
+				}
+			}
+			// If the ball collides with the bound limits - correct the x and y coords.
+			if (this.ball.x <= 0) Pong._resetTurn.call(this, this.ai || this.player2, this.player);
+			if (this.ball.x >= this.canvas.width - this.ball.width) Pong._resetTurn.call(this, this.player, this.ai || this.player2);
+			if (this.ball.y <= 0) this.ball.moveY = DIRECTION.DOWN;
+			if (this.ball.y >= this.canvas.height - this.ball.height) this.ball.moveY = DIRECTION.UP;
 
-            if (this.player2 && this.player2.move === DIRECTION.UP) this.player2.y -= this.player2.speed;
-            else if (this.player2 && this.player2.move === DIRECTION.DOWN) this.player2.y += this.player2.speed;
+			// Move player if their move value was updated by a keyboard event
+			if (this.player.move === DIRECTION.UP) this.player.y -= this.player.speed;
+			else if (this.player.move === DIRECTION.DOWN) this.player.y += this.player.speed;
+
+			if (this.player2 && this.player2.move === DIRECTION.UP) this.player2.y -= this.player2.speed;
+			else if (this.player2 && this.player2.move === DIRECTION.DOWN) this.player2.y += this.player2.speed;
 
 			// On new serve (start of each turn) move the ball to the correct side
 			// and randomize the direction to add some challenge.
@@ -143,12 +153,12 @@ var Game = {
 				this.turn = null;
 			}
 
-            // If the player collides with the bound limits, update the x and y coords.
-            if (this.player.y <= 0) this.player.y = 0;
-            else if (this.player.y >= (this.canvas.height - this.player.height)) this.player.y = (this.canvas.height - this.player.height);
+			// If the player collides with the bound limits, update the x and y coords.
+			if (this.player.y <= 0) this.player.y = 0;
+			else if (this.player.y >= (this.canvas.height - this.player.height)) this.player.y = (this.canvas.height - this.player.height);
 
-            if (this.player2 && this.player2.y <= 0) this.player2.y = 0;
-            else if (this.player2 && this.player2.y >= (this.canvas.height - this.player2.height)) this.player2.y = (this.canvas.height - this.player2.height);
+			if (this.player2 && this.player2.y <= 0) this.player2.y = 0;
+			else if (this.player2 && this.player2.y >= (this.canvas.height - this.player2.height)) this.player2.y = (this.canvas.height - this.player2.height);
 
 			// Move ball in intended direction based on moveY and moveX values
 			if (this.ball.moveY === DIRECTION.UP) this.ball.y -= (this.ball.speed);
@@ -157,63 +167,65 @@ var Game = {
 			else if (this.ball.moveX === DIRECTION.RIGHT) this.ball.x += this.ball.speed;
 
 			// Handle ai (AI) UP and DOWN movement based on future intersection
-			if (targetPosition !== null) {
-				const aiCenter = this.ai.y + this.ai.height / 2;
+			if (this.ai) {
+				if (targetPosition !== null) {
+					const aiCenter = this.ai.y + this.ai.height / 2;
 
-				if (aiCenter > targetPosition) {
-					this.ai.y -= this.ai.speed;
-					if (this.ai.y + this.ai.height / 2 <= targetPosition) {
-						this.ai.y = targetPosition - this.ai.height / 2;
+					if (aiCenter > targetPosition) {
+						this.ai.y -= this.ai.speed;
+						if (this.ai.y + this.ai.height / 2 <= targetPosition) {
+							this.ai.y = targetPosition - this.ai.height / 2;
+						}
+					} else if (aiCenter < targetPosition) {
+						this.ai.y += this.ai.speed;
+						if (this.ai.y + this.ai.height / 2 >= targetPosition) {
+							this.ai.y = targetPosition - this.ai.height / 2;
+						}
 					}
-				} else if (aiCenter < targetPosition) {
-					this.ai.y += this.ai.speed;
-					if (this.ai.y + this.ai.height / 2 >= targetPosition) {
-						this.ai.y = targetPosition - this.ai.height / 2;
-					}
+				}
+
+				// Handle ai (AI) wall collision
+				if (this.ai.y >= this.canvas.height - this.ai.height) this.ai.y = this.canvas.height - this.ai.height;
+				else if (this.ai.y <= 0) this.ai.y = 0;
+			}
+
+			// Handle Player-Ball collisions
+			if (this.ball.x - this.ball.width <= this.player.x && this.ball.x >= this.player.x - this.player.width) {
+				if (this.ball.y <= this.player.y + this.player.height && this.ball.y + this.ball.height >= this.player.y) {
+					this.ball.x = (this.player.x + this.ball.width);
+					this.ball.moveX = DIRECTION.RIGHT;
 				}
 			}
 
-			// Handle ai (AI) wall collision
-			if (this.ai.y >= this.canvas.height - this.ai.height) this.ai.y = this.canvas.height - this.ai.height;
-			else if (this.ai.y <= 0) this.ai.y = 0;
+			if (this.player2 && this.ball.x - this.ball.width <= this.player2.x && this.ball.x >= this.player2.x - this.player2.width) {
+				if (this.ball.y <= this.player2.y + this.player2.height && this.ball.y + this.ball.height >= this.player2.y) {
+					this.ball.x = (this.player2.x - this.ball.width);
+					this.ball.moveX = DIRECTION.LEFT;
+				}
+			}
 
-            // Handle Player-Ball collisions
-            if (this.ball.x - this.ball.width <= this.player.x && this.ball.x >= this.player.x - this.player.width) {
-                if (this.ball.y <= this.player.y + this.player.height && this.ball.y + this.ball.height >= this.player.y) {
-                    this.ball.x = (this.player.x + this.ball.width);
-                    this.ball.moveX = DIRECTION.RIGHT;
-                }
-            }
+			// Handle ai-ball collision
+			if (this.ai && this.ball.x - this.ball.width <= this.ai.x && this.ball.x >= this.ai.x - this.ai.width) {
+				if (this.ball.y <= this.ai.y + this.ai.height && this.ball.y + this.ball.height >= this.ai.y) {
+					this.ball.x = (this.ai.x - this.ball.width);
+					this.ball.moveX = DIRECTION.LEFT;
+				}
+			}
+		}
 
-            if (this.player2 && this.ball.x - this.ball.width <= this.player2.x && this.ball.x >= this.player2.x - this.player2.width) {
-                if (this.ball.y <= this.player2.y + this.player2.height && this.ball.y + this.ball.height >= this.player2.y) {
-                    this.ball.x = (this.player2.x - this.ball.width);
-                    this.ball.moveX = DIRECTION.LEFT;
-                }
-            }
+		// Handle the end of round transition
+		// Check to see if the player won the round.
+		if (this.player.score === 5) {
+			this.over = true;
+			setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
+		}
 
-            // Handle ai-ball collision
-            if (this.ai && this.ball.x - this.ball.width <= this.ai.x && this.ball.x >= this.ai.x - this.ai.width) {
-                if (this.ball.y <= this.ai.y + this.ai.height && this.ball.y + this.ball.height >= this.ai.y) {
-                    this.ball.x = (this.ai.x - this.ball.width);
-                    this.ball.moveX = DIRECTION.LEFT;
-                }
-            }
-        }
-
-        // Handle the end of round transition
-        // Check to see if the player won the round.
-        if (this.player.score === 5) {
-            this.over = true;
-            setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
-        }
-
-        // Check to see if the ai/AI or player2 has won the round.
-        if ((this.ai && this.ai.score === 5) || (this.player2 && this.player2.score === 5)) {
-            this.over = true;
-            setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
-        }
-    },
+		// Check to see if the ai/AI or player2 has won the round.
+		if ((this.ai && this.ai.score === 5) || (this.player2 && this.player2.score === 5)) {
+			this.over = true;
+			setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
+		}
+	},
 
 	// Draw the objects to the canvas element
 	draw: function () {
@@ -236,8 +248,8 @@ var Game = {
 			this.canvas.height
 		);
 
-        // Set the fill style for the paddles
-        this.context.fillStyle = this.paddleColor;
+		// Set the fill style for the paddles
+		this.context.fillStyle = this.paddleColor;
 
 		// Draw the Player
 		this.context.fillRect(
@@ -247,23 +259,23 @@ var Game = {
 			this.player.height
 		);
 
-        if (this.player2) {
-            // Draw the Player 2
-            this.context.fillRect(
-                this.player2.x,
-                this.player2.y,
-                this.player2.width,
-                this.player2.height
-            );
-        } else if (this.ai) {
-            // Draw the Ai
-            this.context.fillRect(
-                this.ai.x,
-                this.ai.y,
-                this.ai.width,
-                this.ai.height
-            );
-        }
+		if (this.player2) {
+			// Draw the Player 2
+			this.context.fillRect(
+				this.player2.x,
+				this.player2.y,
+				this.player2.width,
+				this.player2.height
+			);
+		} else if (this.ai) {
+			// Draw the Ai
+			this.context.fillRect(
+				this.ai.x,
+				this.ai.y,
+				this.ai.width,
+				this.ai.height
+			);
+		}
 
 		// Draw the Ball
 		this.context.fillStyle = this.ballColor;
@@ -297,20 +309,20 @@ var Game = {
 			200
 		);
 
-        // Draw the paddles score (right)
-        if (this.player2) {
-            this.context.fillText(
-                this.player2.score.toString(),
-                (this.canvas.width / 2) + 300,
-                200
-            );
-        } else if (this.ai) {
-            this.context.fillText(
-                this.ai.score.toString(),
-                (this.canvas.width / 2) + 300,
-                200
-            );
-        }
+		// Draw the paddles score (right)
+		if (this.player2) {
+			this.context.fillText(
+				this.player2.score.toString(),
+				(this.canvas.width / 2) + 300,
+				200
+			);
+		} else if (this.ai) {
+			this.context.fillText(
+				this.ai.score.toString(),
+				(this.canvas.width / 2) + 300,
+				200
+			);
+		}
 
 		// Change the font size for the center score text
 		this.context.font = '30px Courier New';
@@ -331,7 +343,8 @@ var Game = {
 		//     (this.canvas.width / 2),
 		//     100
 		// );
-		this.drawFutureTrajectory();
+		if (this.ai)
+			this.drawFutureTrajectory();
 	},
 
 	drawFutureTrajectory: function () {
@@ -380,30 +393,30 @@ var Game = {
 		if (!Pong.over) requestAnimationFrame(Pong.loop);
 	},
 
-    listen: function (players) {
-        document.addEventListener('keydown', function (key) {
-            // Handle the 'Press any key to begin' function and start the game.
-            if (Pong.running === false) {
-                console.log('running');
-                Pong.running = true;
-                window.requestAnimationFrame(Pong.loop);
-            }
+	listen: function (players) {
+		document.addEventListener('keydown', function (key) {
+			// Handle the 'Press any key to begin' function and start the game.
+			if (Pong.running === false) {
+				console.log('running');
+				Pong.running = true;
+				window.requestAnimationFrame(Pong.loop);
+			}
 
-            // Handle up arrow and w key events
-            if (key.keyCode === 87) Pong.player.move = DIRECTION.UP;
-            if (key.keyCode === 38 && players == 2) Pong.player2.move = DIRECTION.UP;
+			// Handle up arrow and w key events
+			if (key.keyCode === 87) Pong.player.move = DIRECTION.UP;
+			if (key.keyCode === 38 && players == 2) Pong.player2.move = DIRECTION.UP;
 
-            // Handle down arrow and s key events
-            if (key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
-            if (key.keyCode === 40 && players == 2) Pong.player2.move = DIRECTION.DOWN;
-        });
+			// Handle down arrow and s key events
+			if (key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
+			if (key.keyCode === 40 && players == 2) Pong.player2.move = DIRECTION.DOWN;
+		});
 
-        // Stop the player from moving when there are no keys being pressed.
-        document.addEventListener('keyup', function (key) {
-            if (key.keyCode === 87 || key.keyCode === 83) Pong.player.move = DIRECTION.IDLE;
-            if ((key.keyCode === 40 || key.keyCode === 38) && players == 2) Pong.player2.move = DIRECTION.IDLE;
-        });
-    },
+		// Stop the player from moving when there are no keys being pressed.
+		document.addEventListener('keyup', function (key) {
+			if (key.keyCode === 87 || key.keyCode === 83) Pong.player.move = DIRECTION.IDLE;
+			if ((key.keyCode === 40 || key.keyCode === 38) && players == 2) Pong.player2.move = DIRECTION.IDLE;
+		});
+	},
 
 	// Reset the ball location, the player turns and set a delay before the next round begins.
 	_resetTurn: function(victor, loser) {
@@ -417,19 +430,7 @@ var Game = {
 	// Wait for a delay to have passed after each turn.
 	_turnDelayIsOver: function() {
 		return ((new Date()).getTime() - this.timer >= 1000);
-	},
-
-	// Select a random color as the background of each level/round.
-	_generateRoundColor: function () {
-		var newColor = colors[Math.floor(Math.random() * colors.length)];
-		if (newColor === this.color) return Pong._generateRoundColor();
-		return newColor;
-	},
-
-	end: function () {
-		this.running = false;
-		this.over = true;
-	},
+	}
 };
 
 var Pong = null;
@@ -456,11 +457,11 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	console.log('Background Color:', bgColor);
 	console.log('Paddle Color:', paddleColor);
 
-    // Limpar o conteúdo da div container e mostrar apenas o canvas
-    const container = document.querySelector('.container');
-    container.innerHTML = '<canvas id="gameCanvas" class="centered-div"></canvas>';
-    const canvas = document.getElementById('gameCanvas');
-    canvas.style.display = 'block';
+	// Limpar o conteúdo da div container e mostrar apenas o canvas
+	const container = document.querySelector('.container');
+	container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
+	const canvas = document.getElementById('gameCanvas');
+	canvas.style.display = 'block';
 
 	// Iniciar o jogo com as configurações selecionadas
 	startGame(selectedPlayers, ballColor, bgColor, paddleColor);
