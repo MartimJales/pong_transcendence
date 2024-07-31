@@ -22,18 +22,30 @@ var Ball = {
 	}
 };
 
-// The paddle object (The lines that move up and down)
+// The paddle object (The lines that move up and down or left and right)
 var Paddle = {
 	new: function (side) {
-		return {
-			width: 18,
-			height: 180,
-			x: side === 'left' ? 150 : this.canvas.width - 150,
-			y: (this.canvas.height / 2) - 35,
-			score: 0,
-			move: DIRECTION.IDLE,
-			speed: 8
-		};
+		if (side === 'left' || side === 'right') {
+			return {
+				width: 18,
+				height: 180,
+				x: side === 'left' ? 150 : this.canvas.width - 150,
+				y: (this.canvas.height / 2) - 35,
+				score: 0,
+				move: DIRECTION.IDLE,
+				speed: 8
+			};
+		} else if (side === 'top' || side === 'bottom') {
+			return {
+				width: 180,
+				height: 18,
+				x: (this.canvas.width / 2) - 90,
+				y: side === 'top' ? 150 : this.canvas.height - 150,
+				score: 0,
+				move: DIRECTION.IDLE,
+				speed: 8
+			};
+		}
 	}
 };
 
@@ -50,7 +62,14 @@ var Game = {
 
 		this.player = Paddle.new.call(this, 'left');
 		this.ai = (players == 1) ? Paddle.new.call(this, 'right') : null;
-		this.player2 = (players == 2) ? Paddle.new.call(this, 'right') : null;
+		this.player2 = (players == 2 || players == 4) ? Paddle.new.call(this, 'right') : null;
+		
+		if (players == 4) {
+			this.playerTop = Paddle.new.call(this, 'top');
+			this.playerBottom = Paddle.new.call(this, 'bottom');
+			this.players = 4;
+		}
+		
 		this.ball = Ball.new.call(this);
 
 		if (this.ai) this.ai.speed = 5;
@@ -131,12 +150,17 @@ var Game = {
 					targetPosition = futureIntersections[0].y;
 				}
 			}
+			if (this.players != 4) {		
+				if (this.ball.y <= 0) this.ball.moveY = DIRECTION.DOWN;
+				if (this.ball.y >= this.canvas.height - this.ball.height) this.ball.moveY = DIRECTION.UP;
+			}
 			// If the ball collides with the bound limits - correct the x and y coords.
 			if (this.ball.x <= 0) Pong._resetTurn.call(this, this.ai || this.player2, this.player);
 			if (this.ball.x >= this.canvas.width - this.ball.width) Pong._resetTurn.call(this, this.player, this.ai || this.player2);
-			if (this.ball.y <= 0) this.ball.moveY = DIRECTION.DOWN;
-			if (this.ball.y >= this.canvas.height - this.ball.height) this.ball.moveY = DIRECTION.UP;
-
+			if (this.players === 4) {
+				if (this.ball.y <= 0) Pong._resetTurn.call(this, this.playerBottom, this.playerTop);
+				if (this.ball.y >= this.canvas.height - this.ball.height) Pong._resetTurn.call(this, this.playerTop, this.playerBottom);
+			}
 			// Move player if their move value was updated by a keyboard event
 			if (this.player.move === DIRECTION.UP) this.player.y -= this.player.speed;
 			else if (this.player.move === DIRECTION.DOWN) this.player.y += this.player.speed;
@@ -144,12 +168,24 @@ var Game = {
 			if (this.player2 && this.player2.move === DIRECTION.UP) this.player2.y -= this.player2.speed;
 			else if (this.player2 && this.player2.move === DIRECTION.DOWN) this.player2.y += this.player2.speed;
 
+			// Movimentos das pás superiores e inferiores no modo de 4 jogadores
+			if (this.playerTop && this.playerTop.move === DIRECTION.LEFT) this.playerTop.x -= this.playerTop.speed;
+			else if (this.playerTop && this.playerTop.move === DIRECTION.RIGHT) this.playerTop.x += this.playerTop.speed;
+
+			if (this.playerBottom && this.playerBottom.move === DIRECTION.LEFT) this.playerBottom.x -= this.playerBottom.speed;
+			else if (this.playerBottom && this.playerBottom.move === DIRECTION.RIGHT) this.playerBottom.x += this.playerBottom.speed;
+
+			// Restringir o movimento do playerBottom dentro dos limites do canvas
+			if (this.playerBottom){
+				if (this.playerBottom.x <= 0) this.playerBottom.x = 0;
+				else if (this.playerBottom.x + this.playerBottom.width >= this.canvas.width) this.playerBottom.x = this.canvas.width - this.playerBottom.width;
+			}
 			// On new serve (start of each turn) move the ball to the correct side
 			// and randomize the direction to add some challenge.
 			if (Pong._turnDelayIsOver.call(this) && this.turn) {
 				this.ball.moveX = this.turn === this.player ? DIRECTION.LEFT : DIRECTION.RIGHT;
 				this.ball.moveY = [DIRECTION.UP, DIRECTION.DOWN][Math.round(Math.random())];
-				this.ball.y = Math.floor(Math.random() * this.canvas.height - 200) + 200;
+				this.ball.y = this.canvas.height/2;
 				this.turn = null;
 			}
 
@@ -159,6 +195,13 @@ var Game = {
 
 			if (this.player2 && this.player2.y <= 0) this.player2.y = 0;
 			else if (this.player2 && this.player2.y >= (this.canvas.height - this.player2.height)) this.player2.y = (this.canvas.height - this.player2.height);
+
+			// Limites de movimento das pás superior e inferior
+			if (this.playerTop && this.playerTop.x <= 0) this.playerTop.x = 0;
+			else if (this.playerTop && this.playerTop.x >= (this.canvas.width - this.playerTop.width)) this.playerTop.x = (this.canvas.width - this.playerTop.width);
+
+			if (this.playerBottom && this.playerBottom.y <= 0) this.playerBottom.y = 0;
+			else if (this.playerBottom && this.playerBottom.y >= (this.canvas.height - this.playerBottom.height)) this.playerBottom.y = (this.canvas.height - this.playerBottom.height);
 
 			// Move ball in intended direction based on moveY and moveX values
 			if (this.ball.moveY === DIRECTION.UP) this.ball.y -= (this.ball.speed);
@@ -204,6 +247,21 @@ var Game = {
 				}
 			}
 
+			// Handle collisions with the new paddles in 4-player mode
+			if (this.playerTop && this.ball.y - this.ball.height <= this.playerTop.y && this.ball.y >= this.playerTop.y - this.playerTop.height) {
+				if (this.ball.x <= this.playerTop.x + this.playerTop.width && this.ball.x + this.ball.width >= this.playerTop.x) {
+					this.ball.y = this.playerTop.y + this.ball.height;
+					this.ball.moveY = DIRECTION.DOWN;
+				}
+			}
+
+			if (this.playerBottom && this.ball.y + this.ball.height >= this.playerBottom.y && this.ball.y <= this.playerBottom.y + this.playerBottom.height) {
+				if (this.ball.x <= this.playerBottom.x + this.playerBottom.width && this.ball.x + this.ball.width >= this.playerBottom.x) {
+					this.ball.y = this.playerBottom.y - this.ball.height;
+					this.ball.moveY = DIRECTION.UP;
+				}
+			}
+
 			// Handle ai-ball collision
 			if (this.ai && this.ball.x - this.ball.width <= this.ai.x && this.ball.x >= this.ai.x - this.ai.width) {
 				if (this.ball.y <= this.ai.y + this.ai.height && this.ball.y + this.ball.height >= this.ai.y) {
@@ -215,7 +273,7 @@ var Game = {
 
 		// Handle the end of round transition
 		// Check to see if the player won the round.
-		if (this.player.score === 5) {
+		if (this.player.score === 5 || (this.players === 4 && (this.playerTop.score === 5 || this.playerBottom.score === 5))) {
 			this.over = true;
 			setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
 		}
@@ -277,6 +335,26 @@ var Game = {
 			);
 		}
 
+		if (this.playerTop) {
+			// Draw the Top Player
+			this.context.fillRect(
+				this.playerTop.x,
+				this.playerTop.y,
+				this.playerTop.width,
+				this.playerTop.height
+			);
+		}
+
+		if (this.playerBottom) {
+			// Draw the Bottom Player
+			this.context.fillRect(
+				this.playerBottom.x,
+				this.playerBottom.y,
+				this.playerBottom.width,
+				this.playerBottom.height
+			);
+		}
+
 		// Draw the Ball
 		this.context.fillStyle = this.ballColor;
 
@@ -321,6 +399,22 @@ var Game = {
 				this.ai.score.toString(),
 				(this.canvas.width / 2) + 300,
 				200
+			);
+		}
+
+		// Draw the top and bottom players score
+		if (this.playerTop) {
+			this.context.fillText(
+				this.playerTop.score.toString(),
+				(this.canvas.width / 2),
+				100
+			);
+		}
+		if (this.playerBottom) {
+			this.context.fillText(
+				this.playerBottom.score.toString(),
+				(this.canvas.width / 2),
+				this.canvas.height - 50
 			);
 		}
 
@@ -404,17 +498,28 @@ var Game = {
 
 			// Handle up arrow and w key events
 			if (key.keyCode === 87) Pong.player.move = DIRECTION.UP;
-			if (key.keyCode === 38 && players == 2) Pong.player2.move = DIRECTION.UP;
-
-			// Handle down arrow and s key events
 			if (key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
-			if (key.keyCode === 40 && players == 2) Pong.player2.move = DIRECTION.DOWN;
+
+			// Handle right player with up and down arrows
+			if (key.keyCode === 38) Pong.player2.move = DIRECTION.UP;
+			if (key.keyCode === 40) Pong.player2.move = DIRECTION.DOWN;
+
+			// Handle left and right arrow and a, d key events for 4 player mode
+			if (key.keyCode === 65 && players == 4) Pong.playerTop.move = DIRECTION.LEFT; // A
+			if (key.keyCode === 68 && players == 4) Pong.playerTop.move = DIRECTION.RIGHT; // D
+			if (key.keyCode === 37 && players == 4) Pong.playerBottom.move = DIRECTION.LEFT; // Left arrow
+			if (key.keyCode === 39 && players == 4) Pong.playerBottom.move = DIRECTION.RIGHT; // Right arrow
 		});
 
 		// Stop the player from moving when there are no keys being pressed.
 		document.addEventListener('keyup', function (key) {
 			if (key.keyCode === 87 || key.keyCode === 83) Pong.player.move = DIRECTION.IDLE;
-			if ((key.keyCode === 40 || key.keyCode === 38) && players == 2) Pong.player2.move = DIRECTION.IDLE;
+			if (key.keyCode === 38 || key.keyCode === 40) Pong.player2.move = DIRECTION.IDLE;
+
+			if (players == 4) {
+				if (key.keyCode === 65 || key.keyCode === 68) Pong.playerTop.move = DIRECTION.IDLE;
+				if (key.keyCode === 37 || key.keyCode === 39) Pong.playerBottom.move = DIRECTION.IDLE;
+			}
 		});
 	},
 
