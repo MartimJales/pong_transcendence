@@ -18,13 +18,16 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'landing' %}">Home</a>
+          <a class="nav-link" href="{% url 'landing' %}">Home</a> 
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
+          <a class="nav-link" href="{% url 'login' %}" >Login</a> <!--  -->
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'signup' %}" tabindex="-1" aria-disabled="true">Signup</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'wordcounter' %}" tabindex="-1" aria-disabled="true">word shit-counter</a>
         </li>
       </ul>
       <form class="form-inline mt-2 mt-md-0">

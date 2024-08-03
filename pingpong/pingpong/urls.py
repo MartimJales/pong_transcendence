@@ -23,7 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #path('home/', include('authentication.urls')),
     path('', include('authentication.urls'))
-
 ]
 
 # mama_eu/randomshit/here -> this shit is to map the rest of urls, se passa só mamara eu manda o resto 
