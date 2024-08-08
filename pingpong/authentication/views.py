@@ -33,7 +33,7 @@ def signup(request):
 def result(request):
     wordis = request.POST['wordis']
     wordslen = len(wordis.split())
-    return render(request, 'resultcounter.html', {'resultado': wordslen})
+    return render(request, 'resultcounter.html', {'resultado': wordslen, 'teste': "hello"})
 
 def wordcounter(request):
     return render(request, 'wordcounter.html')
