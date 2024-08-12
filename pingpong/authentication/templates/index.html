@@ -21,24 +21,36 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'landing' %}">Home</a>
         </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'game' %}" tabindex="-1" aria-disabled="true">Game</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        {% else %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'login' %}">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'game' %}" tabindex="-1" aria-disabled="true">Game</a>
-        </li>
+        {% endif %}
+      
       </ul>
     </div>
   </nav>
 
   <!-- 42 authentication -->
+ 
   <div class="container">
     <div class="text-center mt-5">
+      {% if user.is_authenticated %}
+      <h1>Welcome, {{user.username}} </h1>
+      {% else %}
       <h1>Login with 42</h1>
-	  <a href="/auth/42" class="btn btn-primary">Login with 42</a>
+	    <a href="/auth/42" class="btn btn-primary">Login with 42</a>
+      {% endif %}
     </div>
 </div>
 <div class="centered-div">

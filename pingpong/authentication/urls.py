@@ -10,4 +10,5 @@ urlpatterns = [
     path('wordcounter/', views.wordcounter, name='wordcounter'),
     path('result/', views.result, name='result'),
     path('game/', views.game, name='game'),
+    path('logout/', views.logout, name='logout')
 ]

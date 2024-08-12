@@ -25,16 +25,22 @@
 			<li class="nav-item">
 			  <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
 			</li>
-			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'game' %}" tabindex="-1" aria-disabled="true">Game</a>
-			</li>
 		  </ul>
 		</div>
 	  </nav>
 	<div class="container">
 		<div class="text-center mt-5">
 		<h1>Login with 42</h1>
-		<form action="/auth/42/callback" method="get">
+		<style>
+			h3{
+				color: red;
+			}
+		</style>
+		{% for message in messages %}
+		<h3>{{messege}} </h3>
+		{% endfor %}
+		<form action="{% url 'login' %}" method="POST">
+			{% csrf_token %}
 			<div class="form-group">
 			<label for="username">Username</label>
 			<input type="text" class="form-control" id="username" name="username" required>

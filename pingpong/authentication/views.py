@@ -37,7 +37,7 @@ def result(request):
 
 def game(request):
     return render(request, 'game.html')
-    
+
 def wordcounter(request):
     return render(request, 'wordcounter.html')
 
@@ -45,5 +45,22 @@ def homerender(request):
     return render(request, 'index.html')
 
 def loginrender(request):
-    return render(request, 'login.html')
+    if request.method == 'POST':
+        username = request.POST['username'] 
+        password = request.POST['password']
 
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('/')
+        else:
+            messages.info(request, 'Wrong password meu parceiro, try again')
+            return redirect ('login')
+    else:
+        return render(request, 'login.html')
+
+
+def logout(request):
+    auth.logout(request)
+    return render(request, 'index.html')
