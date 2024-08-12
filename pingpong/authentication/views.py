@@ -35,6 +35,9 @@ def result(request):
     wordslen = len(wordis.split())
     return render(request, 'resultcounter.html', {'resultado': wordslen, 'teste': "hello"})
 
+def game(request):
+    return render(request, 'game.html')
+    
 def wordcounter(request):
     return render(request, 'wordcounter.html')
 
