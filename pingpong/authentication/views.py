@@ -55,7 +55,7 @@ def loginrender(request):
             auth.login(request, user)
             return redirect('/')
         else:
-            messages.info(request, 'Wrong password meu parceiro, try again')
+            messages.info(request, 'Wrong user or password meu parceiro, try again')
             return redirect ('login')
     else:
         return render(request, 'login.html')

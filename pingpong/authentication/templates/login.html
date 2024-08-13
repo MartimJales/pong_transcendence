@@ -30,7 +30,9 @@
 	  </nav>
 	<div class="container">
 		<div class="text-center mt-5">
+
 		<h1>Login with 42</h1>
+		<!-- Navigation bar
 		<style>
 			h3{
 				color: red;
@@ -38,7 +40,7 @@
 		</style>
 		{% for message in messages %}
 		<h3>{{messege}} </h3>
-		{% endfor %}
+		{% endfor %}  -->
 		<form action="{% url 'login' %}" method="POST">
 			{% csrf_token %}
 			<div class="form-group">
@@ -50,10 +52,15 @@
 			<input type="password" class="form-control" id="password" name="password" required>
 			</div>
 			<button type="submit" class="btn btn-primary">Sign In</button>
-		</form>
+		</form>		
 		</div>
-
-
+		{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
 	</div>
 </body>
 </html>

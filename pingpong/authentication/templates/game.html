@@ -37,10 +37,10 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+              <a class="nav-link" href="{% url 'game' %}" tabindex="-1" aria-disabled="true">Game</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'game' %}" tabindex="-1" aria-disabled="true">Game</a>
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
             </li>
             {% else %}
             <li class="nav-item">
@@ -48,7 +48,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
-            </li>
+            </li>  
             {% endif %}
           
           </ul>
