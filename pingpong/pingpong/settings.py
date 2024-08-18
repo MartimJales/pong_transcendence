@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'authentication',
+    #'authentication',
+    'authentication.apps.AuthenticationConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,10 +82,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
         #'ENGINE': 'django.db.backends.postgresql',
-        #'NAME': 'test1',
-        #'USER': 'lele',
-        #'PASSWORD': 'lele123',
-        #'HOST': 'localhost',
+        #'NAME': os.environ.get('DB_NAME', 'test1'),
+        #'USER': os.environ.get('DB_USER', 'lele'),
+        #'PASSWORD': os.environ.get('DB_PASSWORD', 'lele123'),
+        #'HOST': 'db',
         #'PORT': '5432',
     }
 }

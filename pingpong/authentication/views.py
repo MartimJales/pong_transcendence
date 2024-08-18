@@ -25,7 +25,8 @@ def signup(request):
         form = UserCreateForm(request.POST) #post for login, gets everything from the form
         if form.is_valid(): # check everything is ok for register
             form.save() # dale in database
-            return redirect('landing') 
+            return redirect ('login')
+            #return render(request, 'index.html') #redirect to login page
 
     context = {'registerform':form} # to be able to use in .html
     return render(request, 'signup.html', context=context)
