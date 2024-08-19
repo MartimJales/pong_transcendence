@@ -46,8 +46,8 @@
     <div class="text-center mt-5">
       {% if user.is_authenticated %}
       <h1>Welcome, {{user.username}} </h1>
-      <h2>Winnings : {{profile.wins}} </h2> 
-      <h2>losses : {{profile.losses}} </h2>
+        <h2>losses : {{profile.losses}} </h2>
+        <h2>Winnings : {{profile.wins}} </h2>
       {% else %}
       <h1>Login with 42</h1>
 	    <a href="/auth/42" class="btn btn-primary">Login with 42</a>
