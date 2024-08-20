@@ -35,22 +35,35 @@
           <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
         </li>
         {% endif %}
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475
       </ul>
     </div>
   </nav>
 
   <!-- 42 authentication -->
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475
   <div class="container">
     <div class="text-center mt-5">
       {% if user.is_authenticated %}
       <h1>Welcome, {{user.username}} </h1>
+<<<<<<< HEAD
         <br>
         <h2>Nick : {{ nick }} </h2>
         <h2>losses : {{ losses }} </h2>
         <h2>Winnings : {{ wins }} </h2>
         <h2>Total Points : {{ total_points }} </h2>
+=======
+        <h2>losses : {{profile.losses}} </h2>
+        <h2>Winnings : {{profile.wins}} </h2>
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475
       {% else %}
       <h1>Login with 42</h1>
 	    <a href="/auth/42" class="btn btn-primary">Login with 42</a>
@@ -60,5 +73,16 @@
 <div class="centered-div">
 	<canvas></canvas>
 </div>
+<<<<<<< HEAD
 </body>
 </html>
+=======
+  <!-- Javascript Files needed to use -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../script.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function() {startGame(1);});</script>
+</body>
+</html>
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475

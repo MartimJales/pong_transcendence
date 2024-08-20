@@ -5,12 +5,20 @@ services:
     image: postgres:13
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+<<<<<<< HEAD
+=======
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Monta o script de inicialização
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
+<<<<<<< HEAD
       - "5433:5432"
+=======
+      - "5433:5432"  # Expor PostgreSQL na porta 5433 no host
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475
 
   web:
     build: .

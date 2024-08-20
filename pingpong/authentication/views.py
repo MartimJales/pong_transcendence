@@ -54,7 +54,11 @@ def loginrender(request):
 
         if user is not None:
             auth.login(request, user)
+<<<<<<< HEAD
             return redirect('user_profile', user_id=user.pk)
+=======
+            return redirect('user_profile', user_id=user.pk) #redirc to user profile, tentar com user_id=user.pk
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475
         else:
             messages.info(request, 'Wrong user or password meu parceiro, try again')
             return redirect ('login')
@@ -67,6 +71,7 @@ def logout(request):
     return render(request, 'index.html')
 
 def profile_view(request, user_id):
+<<<<<<< HEAD
     user = get_object_or_404(User, id=user_id)
     #profile = user.playerprofile - objeto inteiro, we in .hmlt as profile.nick this way
     #context = {
@@ -80,3 +85,8 @@ def profile_view(request, user_id):
         'losses': profile.losses,
     }
     return render(request, 'profile.html', context)
+=======
+    user = get_object_or_404(User, pk=user_id)
+    profile = user.playerprofile_set.first() #pega o primeiro porque é one to one PORAAAAA
+    return render(request, 'profile.html', {'profile': profile})
+>>>>>>> c52369a12608c41eec1e2401682863e91f44b475
