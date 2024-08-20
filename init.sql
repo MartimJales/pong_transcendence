@@ -1,0 +1,7 @@
+CREATE DATABASE pong;
+
+CREATE USER postgres WITH ENCRYPTED PASSWORD 'admin';
+
+GRANT ALL PRIVILEGES ON DATABASE pong TO postgres;
+
+\connect pong;
