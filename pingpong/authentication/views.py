@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
@@ -54,7 +54,7 @@ def loginrender(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('/')
+            return redirect('user_profile', user_id=user.pk)
         else:
             messages.info(request, 'Wrong user or password meu parceiro, try again')
             return redirect ('login')
@@ -65,3 +65,18 @@ def loginrender(request):
 def logout(request):
     auth.logout(request)
     return render(request, 'index.html')
+
+def profile_view(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    #profile = user.playerprofile - objeto inteiro, we in .hmlt as profile.nick this way
+    #context = {
+        #'profile': profile,
+    #}
+    profile = user.playerprofile
+    context = {
+        'nick': profile.nick,
+        'total_points': profile.total_points,
+        'wins': profile.wins,
+        'losses': profile.losses,
+    }
+    return render(request, 'profile.html', context)
