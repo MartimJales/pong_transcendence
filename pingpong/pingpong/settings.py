@@ -74,7 +74,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pingpong.wsgi.application'
 
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -83,17 +82,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
 
-<<<<<<< HEAD
-=======
-        #'ENGINE': 'django.db.backends.postgresql',
-        #'NAME': os.environ.get('DB_NAME', 'pong'),
-        #'USER': os.environ.get('DB_USER', 'postgres'),
-        #'PASSWORD': os.environ.get('DB_PASSWORD', 'admin'),
-        #'HOST': os.environ.get('DB_HOST', 'db'),
-        #'PORT': os.environ.get('DB_PORT', '5433'),
-
-
->>>>>>> c52369a12608c41eec1e2401682863e91f44b475
 
         #'ENGINE': 'django.db.backends.postgresql',
         #'NAME': os.environ.get('DB_NAME', 'pong'),
