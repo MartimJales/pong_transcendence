@@ -33,7 +33,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'landing' %}">Home</a>
+              <a class="nav-link" href="{% url 'user_profile' user.pk %}">Home</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
@@ -97,5 +97,9 @@
         </div>
     </div>
     <script src="{% static 'js/script.js' %}"></script>
+    <br>    
+    <br>
+    <br>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </body>
 </html>
