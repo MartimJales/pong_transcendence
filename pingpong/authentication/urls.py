@@ -11,5 +11,6 @@ urlpatterns = [
     path('result/', views.result, name='result'),
     path('game/', views.game, name='game'),
     path('logout/', views.logout, name='logout'),
-    path('profile/<int:user_id>/', views.profile_view, name='user_profile')
+    path('profile/<int:user_id>/', views.profile_view, name='user_profile'), 
+    path('profile/<int:user_id>/edit/', views.edit_profile, name='edit_profile'),
 ] 

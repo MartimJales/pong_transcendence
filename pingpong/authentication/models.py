@@ -5,8 +5,8 @@ from datetime import datetime
 # Create your models here.
 
 class PlayerProfile(models.Model):
-    nick = models.CharField(max_length=50)
-    #?image = models.ImageField(upload_to='profile_pics', default='default.jpg')
+    nick = models.CharField(max_length=50, default="Please choose a nick")
+    userpic = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.jpg')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     total_points = models.PositiveIntegerField(default=0)
     wins = models.PositiveIntegerField(default=0)

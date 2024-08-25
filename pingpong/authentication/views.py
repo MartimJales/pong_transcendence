@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from . forms import UserCreateForm
@@ -78,5 +79,26 @@ def profile_view(request, user_id):
         'total_points': profile.total_points,
         'wins': profile.wins,
         'losses': profile.losses,
+        #'image_url': profile.userpic.url #if profile.userpic else None,
     }
     return render(request, 'profile.html', context)
+
+@login_required
+def edit_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    profile = user.playerprofile
+
+    if request.method == 'POST':
+        new_nick = request.POST.get('nick')
+        if new_nick:
+            profile.nick = new_nick
+            profile.save()
+            messages.success(request, 'Your nickname has been updated successfully.')
+        else:
+            messages.error(request, 'Please provide a valid nickname.')
+        return redirect('user_profile', user_id=user.id)
+
+    context = {
+        'nick': profile.nick,
+    }
+    return render(request, 'edit_profile.html', context)
