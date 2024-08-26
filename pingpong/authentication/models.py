@@ -16,10 +16,10 @@ class PlayerProfile(models.Model):
 class Match(models.Model):
     player = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player')
     player2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player2', null=True, blank=True) #deixa defaul a nao que seja onlie dai pega id
-    earned_points = models.PositiveIntegerField(default=0) 
-    mode = models.CharField(max_length=100, default="local") # se nao locar ttrocar string - fodase
+    earned_points = models.PositiveIntegerField(default=0) #ai counts 15? 
+    mode = models.CharField(max_length=100, default="local") # change if comes from online/tour url request 
     opponent = models.CharField(max_length=100) # ai p1, local challanger
-    result = models.BooleanField()
+    result = models.BooleanField()  
     match_date = models.DateTimeField(default=datetime.now, blank=True) # auto_now_Add=True 
 
 

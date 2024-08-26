@@ -102,3 +102,7 @@ def edit_profile(request, user_id):
         'nick': profile.nick,
     }
     return render(request, 'edit_profile.html', context)
+
+def game_option(request):
+    user = request.user
+    return render(request, 'game_option.html', {'user': user})

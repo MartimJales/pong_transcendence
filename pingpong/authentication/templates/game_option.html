@@ -22,7 +22,7 @@
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'game_option' %}" tabindex="-1" aria-disabled="true">Game</a>
+          <a class="nav-link" href="{% url 'game' %}" tabindex="-1" aria-disabled="true">Game</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -40,24 +40,20 @@
     </div>
   </nav>
 
-  <!-- 42 authentication -->
-
   <div class="container">
     <div class="text-center mt-5">
         {% if user.is_authenticated %}
-            <h1>Welcome, {{user.username}} </h1>
+            <h1>Choose your option, {{user.playerprofile.nick}} </h1>
             <br>
-            {% if image_url %}  <!-- recebe url, tem merda aqui mais nao renderiza whyyyyy niggaaa -->
-            <img src="{{ image_url }}" alt="Profile Image">
-            {% else %} <!-- gambiarra para resolver por enquanto -->
-            <img src="/media/profile_pics/default.jpg" alt="Default Profile Image" style="border-radius: 50%;">
-            {% endif %} 
             <br>
-            <h2>Nick : {{ nick }} </h2>
-            <h2>Losses : {{ losses }} </h2>
-            <h2>Winnings : {{ wins }} </h2>
-            <h2>Total Points : {{ total_points }} </h2>
-            <a href="{% url 'edit_profile' user_id=user.id %}" class="btn btn-secondary">Edit Nickname</a>
+            
+            <a href="{% url 'game' %}" class="btn btn-secondary">Local Game</a>
+            <br>
+            <br>
+            <a href="#" class="btn btn-secondary">online 1v1 Game</a>
+            <br>
+            <br>
+            <a href="#" class="btn btn-secondary">Tournament</a>
             
             {% if messages %}
                 <div class="messages">
@@ -72,8 +68,3 @@
         {% endif %}
     </div>
 </div>
-<div class="centered-div">
-	<canvas></canvas>
-</div>
-</body>
-</html>
