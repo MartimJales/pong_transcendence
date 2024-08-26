@@ -1,23 +1,30 @@
-all: pull_image gen_image run
+# Makefile para gestão de contêineres, imagens e volumes Docker
 
-pull_image:
-	docker pull python:3.9-slim
+# Alvo principal
+all: gen_image
 
+# Alvo para construir e iniciar o serviço
 gen_image:
-	docker build -t trans .
+	docker-compose up --build
 
-run:
-	docker run -p 8080:8000 --name p1 trans
-
+# Alvo para parar todos os contêineres em execução
 stop_container:
-	docker stop p1
+	docker stop $$(docker ps -aq)
 
+# Alvo para remover todos os contêineres parados
 clean_container: stop_container
-	docker rm p1
+	docker rm $$(docker ps -aq)
 
+# Alvo para remover todas as imagens
 clean_image:
-	docker rmi trans
+	docker rmi $$(docker images -q)
 
-fclean: clean_container clean_image
+# Alvo para remover todos os volumes
+clean_volumes:
+	docker volume rm $$(docker volume ls -q)
 
+# Alvo para limpar tudo: contêineres, imagens e volumes
+fclean: clean_container clean_image clean_volumes
+
+# Alvo para reconstruir tudo
 re: fclean all

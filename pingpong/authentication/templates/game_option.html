@@ -22,7 +22,7 @@
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'game' %}" tabindex="-1" aria-disabled="true">Game</a>
+          <a class="nav-link" href="{% url 'game' user.pk %}" tabindex="-1" aria-disabled="true">Game</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -47,7 +47,7 @@
             <br>
             <br>
             
-            <a href="{% url 'game' %}" class="btn btn-secondary">Local Game</a>
+            <a href="{% url 'game' user.pk %}" class="btn btn-secondary">Local Game</a>
             <br>
             <br>
             <a href="#" class="btn btn-secondary">online 1v1 Game</a>

@@ -7,6 +7,9 @@ var DIRECTION = {
 	RIGHT: 4
 };
 
+var userId;
+var gameMode;
+
 // The ball object (The cube that bounces back and forth)
 var Ball = {
 	new: function (incrementedSpeed) {
@@ -111,30 +114,64 @@ var Game = {
 	},
 
 	endGameMenu: function (text) {
-		// Change the canvas font size and color
+		// Preparar os dados do jogo para enviar
+		const gameData = {
+			player_id: userId,  // TO-DO: Substitui pelo ID do jogador atual
+			player2_id: this.player2 ? 2 : null,  // TO-DO: Substitui pelo ID do segundo jogador, se existir
+			earned_points: this.ai ? 15 : 0,  // Podes ajustar esta lógica conforme necessário
+			mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
+			opponent: this.ai ? 'AI' : 'Local Challenger',  // Define o oponente
+			result: text === 'Winner!',  // True se o jogador ganhou, False se perdeu
+			match_date: new Date().toISOString()  // Data e hora atual em formato ISO
+		};
+
+		console.log(gameData);
+	
+		// Enviar os dados para o backend
+		fetch('http://localhost:8000/game/game/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(gameData)
+		})
+		.then(response => response.text())  // Usa .text() para capturar a resposta como texto bruto
+		.then(data => {
+			console.log('Response text:', data);  // Verifica o conteúdo bruto da resposta
+			try {
+				const jsonData = JSON.parse(data);
+				console.log('Parsed JSON:', jsonData);
+			} catch (e) {
+				console.error('Failed to parse JSON:', e);
+			}
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+		
+		
+	
+		// Resto do código de exibição do menu de fim de jogo
 		Pong.context.font = '45px Courier New';
 		Pong.context.fillStyle = this.bgColor;
-
-		// Draw the rectangle behind the 'Press any key to begin' text.
+	
 		Pong.context.fillRect(
 			Pong.canvas.width / 2 - 350,
 			Pong.canvas.height / 2 - 48,
 			700,
 			100
 		);
-
-		// Change the canvas color;
+	
 		Pong.context.fillStyle = '#ffffff';
-
-		// Draw the end game menu text ('Game Over' and 'Winner')
+	
 		Pong.context.fillText(text,
 			Pong.canvas.width / 2,
 			Pong.canvas.height / 2 + 15
 		);
-
+	
 		setTimeout(function () {
-			window.location.href = 'game.html'; // redirecionar para a página inicial ou a página anterior
-		}, 3000);
+			window.location.href = 'game';
+		}, 1000);
 	},
 
 	// Update all objects (move the player, ai, ball, increment the score, etc.)
@@ -279,7 +316,7 @@ var Game = {
 		}
 
 		// Check to see if the ai/AI or player2 has won the round.
-		if ((this.ai && this.ai.score === 5) || (this.player2 && this.player2.score === 5)) {
+		if ((this.ai && this.ai.score === 1) || (this.player2 && this.player2.score === 1)) {
 			this.over = true;
 			setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
 		}
@@ -555,6 +592,9 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	const ballColor = document.getElementById('ballColor').value;
 	const bgColor = document.getElementById('bgColor').value;
 	const paddleColor = document.getElementById('paddleColor').value;
+	userId = document.getElementById('userId').value;
+	gameMode = document.getElementById('gameMode').value;
+
 
 	console.log('Starting game with the following settings:');
 	console.log('Players:', selectedPlayers);

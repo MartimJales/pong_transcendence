@@ -5,6 +5,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from . forms import UserCreateForm
+from django.views.decorators.csrf import csrf_exempt
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from .models import Match
+from django.contrib.auth.models import User
+import json
+from datetime import datetime
 
 
 # Create your views here.
@@ -37,8 +46,9 @@ def result(request):
     wordslen = len(wordis.split())
     return render(request, 'resultcounter.html', {'resultado': wordslen, 'teste': "hello"})
 
-def game(request):
-    return render(request, 'game.html')
+def game(request, user_id):
+    user = request.user 
+    return render(request, 'game.html', {'user': user})
 
 def wordcounter(request):
     return render(request, 'wordcounter.html')
@@ -103,6 +113,39 @@ def edit_profile(request, user_id):
     }
     return render(request, 'edit_profile.html', context)
 
-def game_option(request):
+def game_option(request, user_id):
     user = request.user
     return render(request, 'game_option.html', {'user': user})
+
+@csrf_exempt  # Desabilita a verificação CSRF (apenas para desenvolvimento)
+# @login_required  # Descomenta se quiseres exigir login para acessar esta view
+def game_end(request, user_id):
+    print("Request method:", request.method)
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print("Received data:", data)
+
+            player = User.objects.get(id=data['player_id'])
+            player2 = User.objects.get(id=data['player2_id']) if data['player2_id'] else None
+
+            match = Match.objects.create(
+                player=player,
+                player2=player2,
+                earned_points=data['earned_points'],
+                mode=data['mode'],
+                opponent=data['opponent'],
+                result=data['result'],
+                match_date=datetime.fromisoformat(data['match_date'].replace('Z', '+00:00'))
+            )
+            
+            # Redireciona para o perfil do utilizador após criar o match
+            return redirect('user_profile', user_id=player.id)
+        
+        except Exception as e:
+            # Renderiza novamente a página com a mensagem de erro
+            return render(request, 'game.html', {'error': str(e), 'user_id': user_id})
+
+    # Se for um GET ou outro método, renderiza a página padrão
+    return render(request, 'profile.html', {'user_id': user_id})
