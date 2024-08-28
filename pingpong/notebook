@@ -1,74 +1,85 @@
-DATA:
- 
-email e senha ja vem com id, 
+BLOCKCHAIN SHIT: SO MANDA UMA INSTACIA DESSE CARALHO POHA QUAL DIFICULDADE VIADO 
 
 
-Oauth 2.0 - DIFFERENT ENTER IN DATA BASE?
-Your website redirects the user to the resource server's login page.
-User enters credentials and grants permission to your application.
-Resource server sends an access token back to your website.
-Your website stores the access token in the database and identifies the user based on it (or a combination of it and a user ID from your system).
-Your website uses the access token to access the user's data on the resource server (if necessary) based on the granted permissions.
+from web3 import Web3
 
-project/
-├── frontend/
-│   ├── src/
-│   ├── package.json
-│   └── Dockerfile
-├── backend/
-│   ├── src/
-│   ├── requirements.txt
-│   └── Dockerfile
-├── docker-compose.yml
-└── .env
+def store_match_result_on_blockchain(match_result):
+    # ... (code to connect to the blockchain and get the contract)
 
+    # Connect to Sepolia using Infura (replace 'YOUR_INFURA_PROJECT_ID' with your actual Infura project ID)
+    infura_url = "https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID"
+    w3 = Web3(Web3.HTTPProvider(infura_url))
 
-products = Product.objects.all(): This line uses the Product model to access the database and retrieve all product objects. Product.objects.all() is a query that fetches all records from the Product table.
-**how many tables?does select all at once? whole shit?
+    # Get the contract's ABI (Application Binary Interface) and address
+    abi = [
+        # ... (paste your contract's ABI here)
+    ]
+    contract_address = "0xYOUR_CONTRACT_ADDRESS"
 
-Django's Object-Relational Mapper (ORM)
+    # Create a contract instance, para deixar interagir neesse carai
+    contract = w3.eth.contract(address=contract_address, abi=abi) abi é pa user funcionalidade, contrac_adrres nois cata aqui, Visit the Infura website: Go to https://www.infura.io/
 
-. QuerySet Object:
+    # Convert match result data to a format suitable for the smart contract
+    match_data = {
+        "player1": match_result.player1,
+        "player2": match_result.player2,    
+        # ... other fields
+    }
 
-Django's ORM doesn't directly return raw database rows. Instead, it creates a QuerySet object, which is a container that holds the retrieved data.
-****** PERGUNTAR QuerySet object para ver como o banco de dados retorna
+    # Call the smart contract function to store the data
+    tx_hash = contract.functions.storeMatchResult(match_data).call()
 
-myproject/
-├── myproject/
-│   └── urls.py   - para urls  - path('api/users/', user_list, name='user_list')
-└── users/
-    ├── views.py - This contains the logic for handling requests and returning responses, urls.py directs it to the appropriate view function.
-    └── models.py - This defines your database structure. - It contains Python classes that Django translates into database tables.
+    # ... (code to handle transaction success or failure)
+    \
+    The two lines of code serve different purposes:
 
-flow:
+contract = w3.eth.contract(address=contract_address, abi=abi)
 
-A request comes in (e.g., frontend asking for data).
-urls.py directs it to the appropriate view function.
-The view function in views.py processes the request.
-If needed, the view interacts with models to fetch or manipulate data.
-The view prepares and sends a response back to the frontend.
+Purpose: Creates an instance of the smart contract on the blockchain.
+Explanation:
+w3.eth.contract: This part creates a contract object that allows you to interact with the smart contract.
+address: This is the unique address of your deployed smart contract on the blockchain.
+abi: This is the Application Binary Interface (ABI) of your smart contract, which defines the functions, events, and data structures.
+In essence: This line connects your code to the specific smart contract on the blockchain, providing a way to interact with its functions.
+tx_hash = contract.functions.storeMatchResult(match_data).call()
 
-
-
-Example of a RESTful API structure:
-
-GET /api/v1/users - List all users
-GET /api/v1/users/123 - Get user with ID 123
-POST /api/v1/users - Create a new user
-PUT /api/v1/users/123 - Update user 123
-DELETE /api/v1/users/123 - Delete user 123
-GET /api/v1/users/123/posts - List posts by user 123
-
-in urls.py:
-path('api/v1/posts/<int:id>/comments/', views.post_comments)
--This tells Django: "When a request comes to this URL, call the post_comments function with the 'id' parameter."
+Purpose: Calls a function in the smart contract and stores the transaction hash.
+Explanation:
+contract.functions.storeMatchResult: This part accesses the storeMatchResult function defined in your smart contract.
+match_data: This is the data you want to pass to the function.
+.call(): This part executes the function and returns the transaction hash.
+In essence: This line sends the match_data to the storeMatchResult function in your smart contract, initiating a transaction on the blockchain. The transaction hash is returned as a result.
 
 
-in viws.py:
-def post_comments(request, id):
-    # Here you'd query your database
-    # For example: Comment.objects.filter(post_id=id)
-    # Then return the results
+agora vaiiiiiii
 
+Python
+import web3
 
-The view function uses the 'id' to query the database and return the relevant comments.
+# ... (other imports)
+
+def store_match_result(request):
+    # Replace with your actual contract address and ABI
+    contract_address = "0xYOUR_CONTRACT_ADDRESS"
+    abi = [
+        # ... (paste your contract's ABI here)
+    ]
+
+    # Create a Web3 instance and connect to Sepolia
+    w3 = web3.Web3(web3.HTTPProvider("https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID"))
+
+    # Create a contract instance
+    contract = w3.eth.contract(address=contract_address, abi=abi)
+
+    # ... (get match result data from request)
+
+    # Call the smart contract function
+    tx_hash = contract.functions.storeMatchResult(match_data).call()
+
+    # Handle the transaction result
+    if tx_hash:
+        # Transaction was successful
+        return HttpResponse("Match result stored successfully!")
+    else:
+        # Handle transaction failure
+        return HttpResponse("Error storing match result.")

@@ -9,6 +9,7 @@ var DIRECTION = {
 
 var userId;
 var gameMode;
+var match_result;
 
 // The ball object (The cube that bounces back and forth)
 var Ball = {
@@ -121,28 +122,28 @@ var Game = {
 			earned_points: this.ai ? 15 : 0,  // Podes ajustar esta lógica conforme necessário
 			mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
 			opponent: this.ai ? 'AI' : 'Local Challenger',  // Define o oponente
-			result: text === 'Winner!',  // True se o jogador ganhou, False se perdeu
+			result: match_result,  // True se o jogador ganhou, False se perdeu
 			match_date: new Date().toISOString()  // Data e hora atual em formato ISO
 		};
 
 		console.log(gameData);
 	
 		// Enviar os dados para o backend
-		fetch('http://localhost:8000/game/game/', {
+		fetch('http://127.0.0.1:8000/api/game_local/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(gameData)
 		})
-		.then(response => response.text())  // Usa .text() para capturar a resposta como texto bruto
+		.then(response => response.json())  // Change this to .json()
 		.then(data => {
-			console.log('Response text:', data);  // Verifica o conteúdo bruto da resposta
-			try {
-				const jsonData = JSON.parse(data);
-				console.log('Parsed JSON:', jsonData);
-			} catch (e) {
-				console.error('Failed to parse JSON:', e);
+			console.log('Response data:', data);  // Log the entire response
+			if (data.status === 'success') {
+				console.log('Match data saved successfully');
+				window.location.href = `/profile/${userId}/`;
+			} else {
+				console.error('Error saving match data:', data.message);
 			}
 		})
 		.catch((error) => {
@@ -169,9 +170,9 @@ var Game = {
 			Pong.canvas.height / 2 + 15
 		);
 	
-		setTimeout(function () {
-			window.location.href = 'game';
-		}, 1000);
+		//setTimeout(function () {
+		//	window.location.href = 'game';
+		//}, 1000);
 	},
 
 	// Update all objects (move the player, ai, ball, increment the score, etc.)
@@ -312,12 +313,14 @@ var Game = {
 		// Check to see if the player won the round.
 		if (this.player.score === 5 || (this.players === 4 && (this.playerTop.score === 5 || this.playerBottom.score === 5))) {
 			this.over = true;
+			match_result = true;
 			setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
 		}
 
 		// Check to see if the ai/AI or player2 has won the round.
 		if ((this.ai && this.ai.score === 1) || (this.player2 && this.player2.score === 1)) {
 			this.over = true;
+			match_result = false;
 			setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
 		}
 	},

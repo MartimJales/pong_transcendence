@@ -14,7 +14,9 @@ from .models import Match
 from django.contrib.auth.models import User
 import json
 from datetime import datetime
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 # Create your views here.
 
@@ -118,34 +120,57 @@ def game_option(request, user_id):
     return render(request, 'game_option.html', {'user': user})
 
 @csrf_exempt  # Desabilita a verificação CSRF (apenas para desenvolvimento)
-# @login_required  # Descomenta se quiseres exigir login para acessar esta view
-def game_end(request, user_id):
-    print("Request method:", request.method)
-    
+# @login_required  # Descomenta essa merde se exigir autenticação   
+def game_end(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             print("Received data:", data)
 
             player = User.objects.get(id=data['player_id'])
-            player2 = User.objects.get(id=data['player2_id']) if data['player2_id'] else None
+            player2 = User.objects.get(id=data['player2_id']) if data.get('player2_id') else None
 
-            match = Match.objects.create(
-                player=player,
-                player2=player2,
+            match = Match.objects.create( 
+                player=player, #recebendo o pk mandando de lonjao
+                player2=player2, # se pa que chama de outra url aqui
                 earned_points=data['earned_points'],
                 mode=data['mode'],
                 opponent=data['opponent'],
                 result=data['result'],
                 match_date=datetime.fromisoformat(data['match_date'].replace('Z', '+00:00'))
             )
-            
-            # Redireciona para o perfil do utilizador após criar o match
-            return redirect('user_profile', user_id=player.id)
-        
-        except Exception as e:
-            # Renderiza novamente a página com a mensagem de erro
-            return render(request, 'game.html', {'error': str(e), 'user_id': user_id})
 
-    # Se for um GET ou outro método, renderiza a página padrão
-    return render(request, 'profile.html', {'user_id': user_id})
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Match created successfully',
+                'match_id': match.id
+            })
+        except json.JSONDecodeError as e:
+            print("JSON Decode Error:", str(e))
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid JSON data'
+            }, status=400)
+        except KeyError as e:
+            print("KeyError:", str(e))
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Missing required field: {str(e)}'
+            }, status=400)
+        except User.DoesNotExist:
+            print("User DoesNotExist Error")
+            return JsonResponse({
+                'status': 'error',
+                'message': 'User not found'
+            }, status=404)
+        except Exception as e:
+            print("Unexpected Error:", str(e))
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=500)
+
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Only POST requests are allowed'
+    }, status=405)
