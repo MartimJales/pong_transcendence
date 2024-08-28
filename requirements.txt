@@ -7,3 +7,5 @@ pillow>=8.2,<9.0
 django-cleanup
 django-allauth
 django-htmx
+shortuuid
+channels

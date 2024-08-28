@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path 
+from django.urls import path
 from django.urls import include
 from django.contrib.auth import views as auth_views
 from django.conf import settings
@@ -25,6 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #path('home/', include('authentication.urls')),
     path('', include('authentication.urls')),
+	path('chat/', include('chat.a_rtchat.urls')),  # Inclui as URLs do a_rtchat
+
 ]
 
 if settings.DEBUG:
@@ -33,5 +35,5 @@ if settings.DEBUG:
 
 #urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# mama_eu/randomshit/here -> this shit is to map the rest of urls, se passa só mamara eu manda o resto 
+# mama_eu/randomshit/here -> this shit is to map the rest of urls, se passa só mamara eu manda o resto
 # path('mama_eu/', include('authentication.urls')), referencia da outra app
