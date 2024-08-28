@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'authentication',
     'authentication.apps.AuthenticationConfig',
-	'chat',
+	'chat.a_rtchat',
 ]
 
 MIDDLEWARE = [
