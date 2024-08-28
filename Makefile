@@ -1,11 +1,15 @@
-# Makefile para gestão de contêineres, imagens e volumes Docker
+# Detecta o sistema operativo
+OS := $(shell uname -s)
+
+# Variável para o comando docker-compose
+DOCKER_COMPOSE_CMD := $(shell if [ "$(OS)" = "Darwin" ]; then echo "docker compose"; else echo "docker-compose"; fi)
 
 # Alvo principal
 all: gen_image
 
 # Alvo para construir e iniciar o serviço
 gen_image:
-	docker-compose up --build
+	$(DOCKER_COMPOSE_CMD) up --build
 
 # Alvo para parar todos os contêineres em execução
 stop_container:
