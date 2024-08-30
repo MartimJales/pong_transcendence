@@ -15,5 +15,6 @@ urlpatterns = [
     path('profile/<int:user_id>/edit/', views.edit_profile, name='edit_profile'),
     path('game_option/<int:user_id>/', views.game_option, name='game_option'),
     path('api/game_local/', views.game_end, name='game_local_api'),
-    path('game/<int:user_id>/game/', views.game_end, name='game_end'),
+    #path('game/<int:user_id>/game/', views.game_end, name='game_end'),
+    path('history/<int:user_id>/', views.user_history, name='user_history'),
 ] 

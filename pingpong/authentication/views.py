@@ -174,3 +174,13 @@ def game_end(request):
         'status': 'error',
         'message': 'Only POST requests are allowed'
     }, status=405)
+
+def user_history(request, user_id):
+    
+    user = request.user
+    #user = get_object_or_404(User, id=user_id) 
+    user_matches = user.matches_as_player.all() # da para puxar no nome do model suave papai, yesssss só usar o related_name
+
+    context = {'user': user, 'matches': user_matches}
+
+    return render(request, 'profile_history.html', context)

@@ -1,0 +1,10 @@
+.match-history {
+    list-style: none; /* Remove default bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+  }
+  
+  .match-history li {
+    border-bottom: 1px solid #ddd; /* Add a subtle border between list items */
+    padding: 10px 0; /* Add some padding for better readability */
+  }
