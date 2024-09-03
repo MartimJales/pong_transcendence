@@ -60,7 +60,7 @@
             <br>
             {% block content %}  
             <ul class="match-history">
-                {% for match in matches %}
+                {% for match in matches|dictsortreversed:"match_date" %}
                   <li>
                     Opponent: {{ match.opponent }}
                     <br>
