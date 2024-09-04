@@ -172,7 +172,7 @@ def game_end(request):
 
     return JsonResponse({
         'status': 'error',
-        'message': 'Only POST requests are allowed'
+        'message': 'Only POST requests are allowed SEU ARROMBADO'
     }, status=405)
 
 def user_history(request, user_id):
