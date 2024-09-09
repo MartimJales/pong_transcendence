@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #path('home/', include('authentication.urls')),
     path('', include('authentication.urls')),
-	path('chat/', include('chat.a_rtchat.urls')),  # Inclui as URLs do a_rtchat
+	path('chat/', include('a_rtchat.urls')),  # Inclui as URLs do a_rtchat
 ]
 
 if settings.DEBUG:
