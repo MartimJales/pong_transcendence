@@ -77,6 +77,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pingpong.wsgi.application'
 
+ASGI_APPLICATION = 'pingpong.asgi.application' #esse add depoius
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

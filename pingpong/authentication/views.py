@@ -184,7 +184,3 @@ def user_history(request, user_id):
     context = {'user': user, 'matches': user_matches}
 
     return render(request, 'profile_history.html', context)
-
-def chat(request):
-
-    return render(request, 'chat.html')
