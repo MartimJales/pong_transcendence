@@ -17,4 +17,5 @@ urlpatterns = [
     path('api/game_local/', views.game_end, name='game_local_api'),
     #path('game/<int:user_id>/game/', views.game_end, name='game_end'),
     path('history/<int:user_id>/', views.user_history, name='user_history'),
+    path('chat/', views.chat, name='chat'),
 ] 

@@ -19,14 +19,17 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'user_profile' user.pk %}">Home</a>
+          <a class="nav-link" href="{% url 'landing' %}">Home</a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'game_option' user.pk %}" tabindex="-1" aria-disabled="true">Game</a>
+          <a class="nav-link" href="{% url 'game' user.pk %}" tabindex="-1" aria-disabled="true">Game</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'chat' user.pk %}">chat</a>
         </li>
         {% else %}
         <li class="nav-item">
@@ -36,7 +39,7 @@
           <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
         </li>
         {% endif %}
-
+      
       </ul>
     </div>
   </nav>

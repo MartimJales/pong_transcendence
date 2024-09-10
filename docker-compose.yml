@@ -25,7 +25,8 @@ services:
     command: >
       sh -c "
         python -m pip install Pillow &&
-        pip install django-cors-headers &&    
+        pip install django-cors-headers && 
+        pip install channels &&  
         python manage.py makemigrations &&
         python manage.py migrate &&
         python manage.py createsuperuser --no-input &&
