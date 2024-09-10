@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My SPA</title>
+</head>
+<body>
+    <div id="app">
+        <h1>My Single Page Application</h1>
+        <div id="content"></div>
+        <button onclick="loadData()">Load Data</button>
+    </div>
+
+    <script>
+    // Vanilla JavaScript
+    function loadData() {
+        fetch('/api/data/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('content').innerHTML = data.message;
+            });
+    }
+    </script>
+</body>
+</html>

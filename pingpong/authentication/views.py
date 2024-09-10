@@ -184,3 +184,11 @@ def user_history(request, user_id):
     context = {'user': user, 'matches': user_matches}
 
     return render(request, 'profile_history.html', context)
+
+def index1(request):
+    return render(request, 'index1.html')
+
+def get_data(request):
+    # This is where you'd typically fetch data from your database
+    data = {'message': 'Hello from Django!'}
+    return JsonResponse(data)

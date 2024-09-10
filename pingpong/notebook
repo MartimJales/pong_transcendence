@@ -83,3 +83,67 @@ def store_match_result(request):
     else:
         # Handle transaction failure
         return HttpResponse("Error storing match result.")
+
+
+
+
+
+SPA SHIT :
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My SPA</title>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <nav>
+                <a href="{% url 'index' %}" onclick="navigateTo('{% url 'index' %}')">Home</a>
+                <a href="{% url 'page1' %}" onclick="navigateTo('{% url 'page1' %}')">Page 1</a>
+                <a href="{% url 'page2' %}" onclick="navigateTo('{% url 'page2' %}')">Page 2</a>
+                <a href="{% url 'try' %}" onclick="navigateTo('{% url 'try' %}')">Try Page</a>
+            </nav>
+        </header>
+
+        <main id="content">
+            <!-- Dynamic content will be rendered here -->
+        </main>
+    </div>
+
+    <script>
+        function navigateTo(path) {
+            event.preventDefault();
+            fetch(path)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('content').innerHTML = data;
+                });
+            // Update the URL in the browser's address bar
+            window.history.pushState({}, '', path);  // A MAGIA TA AQUI NESSA MERDA
+        }
+    </script>
+</body>
+</html>
+
+MAS DEPOIS PRECISA FAZER: window.addEventListener('popstate', function(event) {
+    // The URL has changed because of a back/forward action
+    // Load the appropriate content based on the new URL
+    const path = window.location.pathname;
+    fetchAndUpdateContent(path);
+});
+
+function fetchAndUpdateContent(path) {
+    fetch(path)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('content').innerHTML = data;
+        });
+}
+
+function navigateTo(path) {
+    event.preventDefault();
+    fetchAndUpdateContent(path);
+    window.history.pushState({}, '', path);
+}
