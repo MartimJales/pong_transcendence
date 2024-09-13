@@ -99,7 +99,7 @@
       const friendsList = document.getElementById('friendsList');
       const addFriendBtn = document.getElementById('addFriendBtn');
 
-      // Function to add a friend (placeholder)
+      // getzinho na page
       function addFriend() {
         const friendName = prompt("Enter friend's username:");
         if (friendName) {
@@ -109,11 +109,10 @@
           friendItem.textContent = friendName;
           friendsList.appendChild(friendItem);
         }
+        console.log(friendName)
       }
-
-      // Event listener for add friend button
       addFriendBtn.addEventListener('click', addFriend);
-
+      
       // fetchzinho aqui
     });
   </script>

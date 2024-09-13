@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from .models import Match, PlayerProfile
 from django.db import transaction
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 
 @receiver(post_save, sender=User) # post_save is a signal, triggered after a model’s save() method is called.
 def create_player_profile(sender, instance, created, **kwargs):
@@ -13,7 +14,7 @@ def create_player_profile(sender, instance, created, **kwargs):
 def save_player_profile(sender, instance, **kwargs):
     instance.playerprofile.save() #save table instance
 
-@receiver(post_save, sender=Match)
+@receiver(post_save, sender=Match) # update no player profile table depois de salvar um match instance
 def update_player_profile(sender, instance, created, **kwargs):
     if created:  # so quando cria esse carai
         with transaction.atomic(): #database shit, 
@@ -25,7 +26,7 @@ def update_player_profile(sender, instance, created, **kwargs):
                 player_profile.losses += 1
             player_profile.save()
 
-            # Update opponent's profile if it's not a computer opponent
+            # Update opponent's profile if it's not a computer opponent, pode dar merda aqui
             if instance.player2:
                 opponent_profile = PlayerProfile.objects.get(user=instance.player2)
                 if not instance.result:
@@ -33,3 +34,11 @@ def update_player_profile(sender, instance, created, **kwargs):
                 else:
                     opponent_profile.losses += 1
                 opponent_profile.save()
+
+@receiver(user_logged_in) #django shit
+def user_logged_in_handler(sender, request, user, **kwargs):
+    PlayerProfile.objects.filter(user=user).update(is_online=True)
+
+@receiver(user_logged_out)
+def user_logged_out_handler(sender, request, user, **kwargs):
+    PlayerProfile.objects.filter(user=user).update(is_online=False)
