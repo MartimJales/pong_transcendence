@@ -11,10 +11,12 @@ class PlayerProfile(models.Model):
     total_points = models.PositiveIntegerField(default=0)
     wins = models.PositiveIntegerField(default=0)
     losses = models.PositiveIntegerField(default=0)
+    friends = models.ManyToManyField('self', through='Friendship', symmetrical=False)
+    is_online = models.BooleanField(default=False)
     
 
 class Match(models.Model):
-    player = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player')
+    player = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player') # releted name é para puxar nas views.py
     player2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player2', null=True, blank=True) #deixa defaul a nao que seja onlie dai pega id
     earned_points = models.PositiveIntegerField(default=0) #ai counts 15? 
     mode = models.CharField(max_length=100, default="local") # change if comes from online/tour url request 
@@ -22,8 +24,11 @@ class Match(models.Model):
     result = models.BooleanField()  
     match_date = models.DateTimeField(default=datetime.now, blank=True) # auto_now_Add=True 
 
+class Friendship(models.Model):
+    from_playerprofile_id = models.ForeignKey(User, related_name='friendships', on_delete=models.CASCADE) #relacaosinha aqui
+    to_playerprofile_id = models.ForeignKey(User, related_name='friend_requests', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-# instacia match nesse carai toda vez que jogar tipo um Match.objects.create?
 
 #class Post(models.Model):
   #  author = models.ForeignKey(User, on_delete=models.CASCADE)

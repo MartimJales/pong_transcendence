@@ -192,3 +192,14 @@ def get_data(request):
     # This is where you'd typically fetch data from your database
     data = {'message': 'Hello from Django!'}
     return JsonResponse(data)
+
+
+    #def friend_list(request):
+    #user_profile = request.user.playerprofile
+    #friends = user_profile.friends.all()
+    #online_friends = friends.filter(is_online=True)
+    #
+    #return render(request, 'friend_list.html', {
+    #    'friends': friends,
+    #    'online_friends': online_friends,
+    #})
