@@ -35,7 +35,7 @@ def update_player_profile(sender, instance, created, **kwargs):
                     opponent_profile.losses += 1
                 opponent_profile.save()
 
-@receiver(user_logged_in) #django shit
+@receiver(user_logged_in) #django shit o do user_logged_in
 def user_logged_in_handler(sender, request, user, **kwargs):
     PlayerProfile.objects.filter(user=user).update(is_online=True)
 

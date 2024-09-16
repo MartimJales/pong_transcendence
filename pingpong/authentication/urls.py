@@ -19,4 +19,6 @@ urlpatterns = [
     path('history/<int:user_id>/', views.user_history, name='user_history'),
     path('api/data/', views.get_data, name='get_data'),
     path('index1/', views.index1, name='index'),
+    path('get_friends_list/', views.get_friends_list, name='get_friends_list'),
+    path('add_friend/', views.add_friend, name='add_friend'),
 ] 

@@ -11,7 +11,7 @@ class PlayerProfile(models.Model):
     total_points = models.PositiveIntegerField(default=0)
     wins = models.PositiveIntegerField(default=0)
     losses = models.PositiveIntegerField(default=0)
-    friends = models.ManyToManyField('self', through='Friendship', symmetrical=False)
+    friends = models.ManyToManyField('PlayerProfile', through='Friendship', symmetrical=False) # friends = profile.friends.all()
     is_online = models.BooleanField(default=False)
     
 
@@ -25,8 +25,8 @@ class Match(models.Model):
     match_date = models.DateTimeField(default=datetime.now, blank=True) # auto_now_Add=True 
 
 class Friendship(models.Model):
-    from_playerprofile_id = models.ForeignKey(User, related_name='friendships', on_delete=models.CASCADE) #relacaosinha aqui
-    to_playerprofile_id = models.ForeignKey(User, related_name='friend_requests', on_delete=models.CASCADE)
+    from_playerprofile_id = models.ForeignKey(PlayerProfile, related_name='friendships', on_delete=models.CASCADE) #relacaosinha aqui
+    to_playerprofile_id = models.ForeignKey(PlayerProfile, related_name='friend_requests', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
