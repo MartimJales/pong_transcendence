@@ -14,7 +14,7 @@ services:
       - "5433:5432"
 
   web:
-    build: .
+    build: ./django/
     container_name: django_container
     #command: >
      # sh -c "
