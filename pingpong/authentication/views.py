@@ -229,4 +229,8 @@ def add_friend(request):
     #return render(request, 'friend_list.html', {
     #    'friends': friends,
     #    'online_friends': online_friends,
-    #})
+    #}).
+
+
+def index(request):
+    return render(request, 'indexinho.html')

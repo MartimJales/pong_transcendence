@@ -1,9 +1,7 @@
 // Import your view components
-import Home from './views/Home.js';
-import Game from './views/Game.js';
-import Login from './views/Login.js';
-import Signup from './views/Signup.js';
-import Profile from './views/Profile.js';
+//import Home from './views/Home.js';
+import Game from './views/meuovo.js';
+
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -22,10 +20,12 @@ const navigateTo = url => {
 
 const router = async () => {
     const routes = [
-        { path: "/", view: Home },
-        { path: "/tounament/:id", view: Game },
+        //{ path: "/", view: Home },
+        { path: "/tounament/", view: Game },
     ];
 
+    console.log("Router function called");
+    console.log("Current path:", location.pathname);
     // Test each route for potential match
     const potentialMatches = routes.map(route => {
         return {
@@ -42,8 +42,11 @@ const router = async () => {
             result: [location.pathname]
         };
     }
-
+    console.log("Matched route:", match.route.path);
     const view = new match.route.view(getParams(match));
+    console.log("View instance created:", view);
+
+    
 
     document.querySelector("#app").innerHTML = await view.getHtml();
 

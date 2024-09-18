@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 #URL COFIG for the app
-urlpatterns = [   
+urlpatterns = [
+    re_path(r'^.*$', views.index, name='index'),   
     path('agora/', views.mama_eu), 
     path('', views.homerender, name='landing'),
     path('login/', views.loginrender, name='login'), 
@@ -21,4 +22,5 @@ urlpatterns = [
     path('index1/', views.index1, name='index'),
     path('get_friends_list/', views.get_friends_list, name='get_friends_list'),
     path('add_friend/', views.add_friend, name='add_friend'),
+    
 ] 
