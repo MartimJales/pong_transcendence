@@ -4,6 +4,10 @@
 
 - consertar imagem do user  
 
+
+- blockchain
+- consertar error console? 
+
 - user module -> Users can add others as friends and view their online status. , da para fazer aparecer o profile, ou so deixar bolinha verde c/ nome
 
 - cybersecurity
