@@ -1,6 +1,7 @@
 // Import your view components
-//import Home from './views/Home.js';
+import Home from './views/Home.js';
 import Game from './views/meuovo.js';
+import Meuovoerror from './views/404.js';
 
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -20,8 +21,9 @@ const navigateTo = url => {
 
 const router = async () => {
     const routes = [
-        //{ path: "/", view: Home },
-        { path: "/tounament/", view: Game },
+        { path: "/", view: Home },
+        { path: "/home", view: Game },
+        { path: "/:page", view: Meuovoerror }    
     ];
 
     console.log("Router function called");
@@ -41,8 +43,10 @@ const router = async () => {
             route: routes[0],
             result: [location.pathname]
         };
+        // navigateTo(routes[0].path);
     }
     console.log("Matched route:", match.route.path);
+    console.log(getParams.toString)
     const view = new match.route.view(getParams(match));
     console.log("View instance created:", view);
 
@@ -63,11 +67,16 @@ document.addEventListener("DOMContentLoaded", () => {
             navigateTo(e.target.href);
         }
     });
-
     router();
 });
 
 // Handle browser back/forward buttons
-window.addEventListener("popstate", router);
+window.addEventListener("popstate", (e) => {
+    if (e.state) {
+        router();
+    } else {
+        navigateTo(location.pathname);
+    }
+});
 
 export { navigateTo };
