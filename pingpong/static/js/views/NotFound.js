@@ -1,4 +1,4 @@
-export default class meuovoerror {
+export default class NotFound {
     constructor(params) {
         this.params = params;
 }
