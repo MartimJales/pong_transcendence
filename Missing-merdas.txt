@@ -1,13 +1,15 @@
 - fazer SPA da poha toda
-- Fazer a gninx para https
-- torneio
 
 - consertar imagem do user  
+- user module -> Users can add others as friends and view their online status. , da para fazer aparecer o profile, ou so deixar bolinha verde c/ nome
+
 
 
 - blockchain
-- consertar error console? 
+- torneio
 
-- user module -> Users can add others as friends and view their online status. , da para fazer aparecer o profile, ou so deixar bolinha verde c/ nome
+- consertar error console, ver scrfztirtoken 
+
 
 - cybersecurity
+- Fazer a gninx para https

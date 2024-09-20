@@ -74,6 +74,17 @@ def loginrender(request):
     else:
         return render(request, 'login.html')
 
+#def api_login(request):
+#    if request.method == 'POST':
+#        data = json.loads(request.body)
+#        username = data.get('username')
+#        password = data.get('password')
+#        user = authenticate(username=username, password=password)
+#        if user:
+#            login(request, user)
+#            return JsonResponse({'success': True, 'userId': user.id})
+#    return JsonResponse({'success': False, 'message': 'Invalid credentials'})
+
 
 def logout(request):
     auth.logout(request)
