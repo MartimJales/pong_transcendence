@@ -1,8 +1,9 @@
 // Import your view components
 import Home from './views/Home.js';
-import Game from './views/meuovo.js';
-import Meuovoerror from './views/404.js';
-
+import Game from './views/Game.js';
+import NotFound from './views/NotFound.js';
+import Login from './views/Login.js';
+import Signup from './views/Signup.js';
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -22,8 +23,11 @@ const navigateTo = url => {
 const router = async () => {
     const routes = [
         { path: "/", view: Home },
-        { path: "/home", view: Game },
-        { path: "/:page", view: Meuovoerror }    
+        { path: "/home", view: Home },
+        { path: "/game", view: Game },
+        { path: "/login", view: Login },
+        { path: "/signup", view: Signup },
+        { path: "/:page", view: NotFound }    
     ];
 
     console.log("Router function called");
