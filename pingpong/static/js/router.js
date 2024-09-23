@@ -2,6 +2,7 @@
 import Home from './views/Home.js';
 import Game from './views/meuovo.js';
 import Meuovoerror from './views/404.js';
+import Tournament from './views/Tournament.js';
 
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -22,7 +23,8 @@ const navigateTo = url => {
 const router = async () => {
     const routes = [
         { path: "/", view: Home },
-        { path: "/home", view: Game },
+        { path: "/home", view: Home },
+        { path: "/tournament", view: Tournament },
         { path: "/:page", view: Meuovoerror }    
     ];
 

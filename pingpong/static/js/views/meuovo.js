@@ -44,7 +44,6 @@ export default class Game {
                     </div>
                     <canvas id="gameCanvas"></canvas>
                     <div id="cu"> 
-                        sefuderrrrr
                     </div>
                 </div>
             </div>
