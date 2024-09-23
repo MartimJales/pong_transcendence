@@ -18,6 +18,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 # Create your views here.
 
 def mama_eu(request):
@@ -58,21 +60,44 @@ def wordcounter(request):
 def homerender(request):
     return render(request, 'index.html')
 
+#@ensure_csrf_cookie
 def loginrender(request):
     if request.method == 'POST':
-        username = request.POST['username'] 
-        password = request.POST['password']
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
 
-        user = auth.authenticate(username=username, password=password)
-
+        user = authenticate(request, username=username, password=password)
         if user is not None:
-            auth.login(request, user)
-            return redirect('user_profile', user_id=user.pk)
+            login(request, user)
+            return JsonResponse({
+                'success': True,
+                'message': 'Successfully logged in',
+                'user_id': user.id
+            })
         else:
-            messages.info(request, 'Wrong user or password meu parceiro, try again')
-            return redirect ('login')
-    else:
-        return render(request, 'login.html')
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid credentials'
+            }, status=400)
+
+@login_required
+def get_profile_data(request):
+    user = request.user
+    profile = user.playerprofile  # Assuming you have a PlayerProfile model linked to User
+    return JsonResponse({
+        'username': user.username,
+        'nick': profile.nick,
+        'losses': profile.losses,
+        'wins': profile.wins,
+        'total_points': profile.total_points,
+        'image_url': profile.userpic.url if profile.userpic else '/media/profile_pics/default.jpg',
+        'friends': [
+            {'username': friend.user.username, 'is_online': friend.is_online}
+            for friend in profile.friends.all()
+        ]
+    })
+
 
 #def api_login(request):
 #    if request.method == 'POST':

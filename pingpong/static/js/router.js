@@ -3,7 +3,43 @@ import Home from './views/Home.js';
 import Game from './views/meuovo.js';
 import Meuovoerror from './views/404.js';
 import Tournament from './views/Tournament.js';
+import Login from './views/Login.js';
+import Profile from './views/Profile.js';
 
+// Add a utility function to get cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Add a function to set up CSRF token for AJAX requests
+function setupCSRF() {
+    const csrftoken = getCookie('csrftoken');
+    if (csrftoken) {
+        // Set up AJAX requests to include CSRF token
+        const oldXHR = window.XMLHttpRequest;
+        function newXHR() {
+            const realXHR = new oldXHR();
+            realXHR.addEventListener("readystatechange", function() {
+                if(realXHR.readyState === 1) {
+                    realXHR.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }, false);
+            return realXHR;
+        }
+        window.XMLHttpRequest = newXHR;
+    }
+}
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -24,6 +60,8 @@ const router = async () => {
     const routes = [
         { path: "/", view: Home },
         { path: "/home", view: Home },
+        { path: "/login", view: Login },
+        { path: "/profile", view: Profile },
         { path: "/tournament", view: Tournament },
         { path: "/:page", view: Meuovoerror }    
     ];
@@ -45,14 +83,11 @@ const router = async () => {
             route: routes[0],
             result: [location.pathname]
         };
-        // navigateTo(routes[0].path);
     }
     console.log("Matched route:", match.route.path);
     console.log(getParams.toString)
     const view = new match.route.view(getParams(match));
     console.log("View instance created:", view);
-
-    
 
     document.querySelector("#app").innerHTML = await view.getHtml();
 
@@ -63,6 +98,7 @@ const router = async () => {
 
 // Handle navigation
 document.addEventListener("DOMContentLoaded", () => {
+    setupCSRF(); // Set up CSRF token handling
     document.body.addEventListener("click", e => {
         if (e.target.matches("[data-link]")) {
             e.preventDefault();
@@ -81,4 +117,4 @@ window.addEventListener("popstate", (e) => {
     }
 });
 
-export { navigateTo };
+export { navigateTo, getCookie }; // Export getCookie for use in other modules
