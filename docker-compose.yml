@@ -12,6 +12,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5433:5432"
+    networks:
+      - webnet
 
   web:
     build: ./django/
@@ -32,8 +34,10 @@ services:
         python manage.py runserver 0.0.0.0:8000" 
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
+    networks:
+      - webnet
     depends_on:
       - db
     environment:
@@ -46,7 +50,20 @@ services:
       - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
       - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
 
-      
+  nginx:
+    build: ./nginx/
+    container_name: nginx_container
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+    networks:
+      - webnet
 
 volumes:
   postgres_data:
+
+networks:
+  webnet:
