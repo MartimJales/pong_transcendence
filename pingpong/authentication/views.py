@@ -17,8 +17,8 @@ from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 
@@ -60,7 +60,8 @@ def wordcounter(request):
 def homerender(request):
     return render(request, 'index.html')
 
-#@ensure_csrf_cookie
+#@csrf_exempt
+@ensure_csrf_cookie
 def loginrender(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -80,6 +81,7 @@ def loginrender(request):
                 'success': False,
                 'message': 'Invalid credentials'
             }, status=400)
+    return JsonResponse({'message': 'Invalid request method'}, status=405)
 
 @login_required
 def get_profile_data(request):
@@ -267,6 +269,6 @@ def add_friend(request):
     #    'online_friends': online_friends,
     #}).
 
-
+@ensure_csrf_cookie
 def index(request):
     return render(request, 'indexinho.html')

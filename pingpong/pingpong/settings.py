@@ -41,10 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders', 
     #'authentication',
     'authentication.apps.AuthenticationConfig',
     #'chat',
-    'corsheaders', 
+    
 ]
 
 MIDDLEWARE = [
@@ -124,6 +125,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#para funcionar mandar o crf token
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

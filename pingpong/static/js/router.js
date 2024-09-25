@@ -6,7 +6,7 @@ import Tournament from './views/Tournament.js';
 import Login from './views/Login.js';
 import Profile from './views/Profile.js';
 
-// Add a utility function to get cookies
+// pegar os cookieszinhos
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
