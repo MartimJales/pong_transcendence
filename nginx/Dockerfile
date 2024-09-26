@@ -1,4 +1,6 @@
-FROM nginx:latest
+FROM owasp/modsecurity-crs:nginx
+
+USER root
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY Certificates/ft_transcendence.key /etc/ssl/private/
@@ -11,4 +13,4 @@ COPY Certificates/ft_transcendence.crt /etc/ssl/certs/
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
