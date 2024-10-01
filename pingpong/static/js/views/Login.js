@@ -113,55 +113,41 @@ export default class Login {
     }
 
     async afterRender() {
-        const form = document.getElementById('loginForm');
-        const message = document.getElementById('message');
-
-        console.log('CSRF Token:', getCookie('csrftoken')); // verificar token
-
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
+    
             try {
-
-                const csrftoken = getCookie('csrftoken'); // debugar sa poha
-                console.log('CSRF Token before fetch:', csrftoken)
-
+                const csrftoken = getCookie('csrftoken');
+                console.log('CSRF Token before fetch:', csrftoken);
+    
                 const response = await fetch('http://127.0.0.1:8000/api/login/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken') // hanlde automatico?
+                        'X-CSRFToken': csrftoken
                     },
                     body: JSON.stringify({ username, password }),
                     credentials: 'include'
                 });
-
+    
                 console.log('Response status:', response.status);
                 console.log('Response headers:', response.headers);
                 const responseText = await response.text();
                 console.log('Response text:', responseText);
-
-               // const data = await response.json();
-
-               let data;
-               try {
-                   data = JSON.parse(responseText);
-               } catch (error) {
-                   console.error('Failed to parse JSON:', error);
-                   throw new Error('Server returned invalid JSON');
-               }
-   
-
-                if (response.ok) { //response.ok
+    
+                // Log the first 500 characters of the response to see what's being returned
+                console.log('Response preview:', responseText.substring(0, 500));
+    
+                if (response.ok) {
+                    const data = JSON.parse(responseText);
                     localStorage.setItem('user_id', data.user_id);
                     message.textContent = 'Login successful!';
                     message.style.color = 'green';
-                    // Redirect to user profile or dashboard
                     window.location.href = '/profile';
                 } else {
-                    message.textContent = data.message || 'Login failed. Please try again.';
+                    message.textContent = 'Login failed. Please try again.';
                     message.style.color = 'red';
                 }
             } catch (error) {

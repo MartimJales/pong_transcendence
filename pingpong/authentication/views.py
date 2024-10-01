@@ -64,23 +64,29 @@ def homerender(request):
 @ensure_csrf_cookie
 def loginrender(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        username = data.get('username')
-        password = data.get('password')
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({
-                'success': True,
-                'message': 'Successfully logged in',
-                'user_id': user.id
-            })
-        else:
-            return JsonResponse({
-                'success': False,
-                'message': 'Invalid credentials'
-            }, status=400)
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Successfully logged in',
+                    'user_id': user.id
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invalid credentials'
+                }, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            print(f"Unexpected error: {str(e)}")
+            return JsonResponse({'message': 'Server error'}, status=500)
     return JsonResponse({'message': 'Invalid request method'}, status=405)
 
 @login_required
