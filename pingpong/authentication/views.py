@@ -19,6 +19,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import authenticate, login
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 
@@ -60,15 +61,15 @@ def wordcounter(request):
 def homerender(request):
     return render(request, 'index.html')
 
-#@csrf_exempt
 @ensure_csrf_cookie
+@require_http_methods(["GET", "POST"])
 def loginrender(request):
+    print("bateu nesse pohasdasdasdasdasdasdasdasdasdaasdasdsda")   
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             username = data.get('username')
             password = data.get('password')
-
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -83,11 +84,16 @@ def loginrender(request):
                     'message': 'Invalid credentials'
                 }, status=400)
         except json.JSONDecodeError:
+            print("bateu nesse poha")
             return JsonResponse({'message': 'Invalid JSON'}, status=400)
         except Exception as e:
             print(f"Unexpected error: {str(e)}")
             return JsonResponse({'message': 'Server error'}, status=500)
-    return JsonResponse({'message': 'Invalid request method'}, status=405)
+    elif request.method == 'GET':
+        # This handles the initial GET request to load the login page
+        return JsonResponse({'message': 'Please submit the login form'})
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
 
 @login_required
 def get_profile_data(request):

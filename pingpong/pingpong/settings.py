@@ -125,11 +125,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#para funcionar mandar o crf token
+#para funcionar mandar o crf token *********************************
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SAMESITE = 'None'  # Allow cross-site usage
+CSRF_COOKIE_SECURE = True  # Require HTTPS
+CSRF_COOKIE_HTTPONLY = False 
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True  # Require HTTPS
+
+# CORS settings
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+
+CSRF_COOKIE_HTTPONLY = False  # False allows JavaScript to access the cookie
+SESSION_COOKIE_HTTPONLY = True
+#CSRF_COOKIE_SAMESITE = 'Lax'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
