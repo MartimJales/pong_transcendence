@@ -57,6 +57,16 @@ services:
     networks:
       - webnet
 
+  vault:
+    build: ./vault/
+    container_name: vault_container
+    depends_on:
+      - nginx
+    networks:
+      - webnet
+    expose:
+      - "8200"
+
 volumes:
   postgres_data:
 
