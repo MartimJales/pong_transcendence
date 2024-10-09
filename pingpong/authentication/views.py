@@ -23,15 +23,6 @@ from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 
-def mama_eu(request):
-    #name = 'isadora pinto
-    merdas = {
-        'name': 'armando pinto',
-        'age': 20,
-        'email': 'armando@pinto.com'
-    }
-    return render(request, 'try.html', {'name' : 'armando pinto'}) #{'name' : name} #to pass struct => return render(request, 'try.html', merdas) 
-
 def signup(request):
 
     form = UserCreateForm() #get form from forms.py
@@ -46,23 +37,7 @@ def signup(request):
     context = {'registerform':form} # to be able to use in .html
     return render(request, 'signup.html', context=context)
 
-def result(request):
-    wordis = request.POST['wordis']
-    wordslen = len(wordis.split())
-    return render(request, 'resultcounter.html', {'resultado': wordslen, 'teste': "hello"})
-
-def game(request, user_id):
-    user = request.user 
-    return render(request, 'game.html', {'user': user})
-
-def wordcounter(request):
-    return render(request, 'wordcounter.html')
-
-def homerender(request):
-    return render(request, 'index.html')
-
-#@ensure_csrf_cookie
-#@require_http_methods(["GET", "POST"])
+@csrf_exempt 
 def loginrender(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -83,33 +58,22 @@ def loginrender(request):
 
 @login_required
 def get_profile_data(request):
-    user = request.user
-    profile = user.playerprofile  # Assuming you have a PlayerProfile model linked to User
-    return JsonResponse({
-        'username': user.username,
-        'nick': profile.nick,
-        'losses': profile.losses,
-        'wins': profile.wins,
-        'total_points': profile.total_points,
-        'image_url': profile.userpic.url if profile.userpic else '/media/profile_pics/default.jpg',
-        'friends': [
-            {'username': friend.user.username, 'is_online': friend.is_online}
-            for friend in profile.friends.all()
-        ]
-    })
-
-
-#def api_login(request):
-#    if request.method == 'POST':
-#        data = json.loads(request.body)
-#        username = data.get('username')
-#        password = data.get('password')
-#        user = authenticate(username=username, password=password)
-#        if user:
-#            login(request, user)
-#            return JsonResponse({'success': True, 'userId': user.id})
-#    return JsonResponse({'success': False, 'message': 'Invalid credentials'})
-
+    if request.method == 'POST':
+        user = request.user
+        profile = user.playerprofile  # Assuming you have a PlayerProfile model linked to User
+        return JsonResponse({
+            'username': user.username,
+            'nick': profile.nick,
+            'losses': profile.losses,
+            'wins': profile.wins,
+            'total_points': profile.total_points,
+            'image_url': profile.userpic.url if profile.userpic else '/media/profile_pics/default.jpg',
+            'friends': [
+                {'username': friend.user.username, 'is_online': friend.is_online}
+                for friend in profile.friends.all()
+            ]
+        })
+    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
 def logout(request):
     auth.logout(request)
@@ -223,14 +187,6 @@ def user_history(request, user_id):
 
     return render(request, 'profile_history.html', context)
 
-def index1(request):
-    return render(request, 'index1.html')
-
-def get_data(request):
-    # This is where you'd typically fetch data from your database
-    data = {'message': 'Hello from Django!'}
-    return JsonResponse(data)
-
 @login_required
 def get_friends_list(request):
     user = request.user
@@ -269,4 +225,4 @@ def add_friend(request):
 
 @ensure_csrf_cookie
 def index(request):
-    return render(request, 'indexinho.html')
+    return render(request, 'index.html')
