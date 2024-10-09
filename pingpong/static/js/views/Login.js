@@ -6,7 +6,6 @@ export default class Login {
     }
 
     async getHtml() {
-        await this.fetchCsrfToken();
         return `
         <style>
             .ping-pong-container {
@@ -112,70 +111,44 @@ export default class Login {
         </div>
         `;
     }
-    async fetchCsrfToken() {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/api/login/', {
-                method: 'GET',
-                credentials: 'include',
-            });
-            if (response.ok) {
-                const data = await response.json();
-                console.log('CSRF token fetched');
-            } else {
-                console.error('Failed to fetch CSRF token');
-            }
-        } catch (error) {
-            console.error('Error fetching CSRF token:', error);
-        }
-    }
-
+    
     async afterRender() {
-        this.form = document.getElementById('loginForm');
-        this.form.addEventListener('submit', this.handleSubmit.bind(this));
-    }
+        const loginForm = document.getElementById('loginForm');
+        const messageElement = document.getElementById('message');
 
-    async handleSubmit(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        try {
-            const csrftoken = getCookie('csrftoken');
-            console.log('CSRF Token before fetch:', csrftoken);
-            
-            if (!csrftoken) {
-                console.error('CSRF token not found. Fetching new token...');
-                await this.fetchCsrfToken();
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch('http://127.0.0.1:8000/api/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ username, password }),
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('user_id', data.user_id);
+                    messageElement.textContent = 'Login successful!';
+                    messageElement.style.color = 'green';
+                    navigateTo('/profile');
+                } else {
+                    const errorData = await response.json();
+                    messageElement.textContent = errorData.error || 'Login failed. Please try again.';
+                    messageElement.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                messageElement.textContent = 'An error occurred. Please try again later.';
+                messageElement.style.color = 'red';
             }
-            
-            const response = await fetch('http://127.0.0.1:8000/api/login/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ username, password }),
-                credentials: 'include'
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-            
-            const responseText = await response.text();
-            console.log('Response text:', responseText);
-
-            if (response.ok) {
-                const data = JSON.parse(responseText);
-                localStorage.setItem('user_id', data.user_id);
-                console.log('Login successful. Redirecting...');
-                window.location.href = '/profile';
-            } else {
-                console.log('Login failed:', responseText);
-                document.getElementById('message').textContent = 'Login failed. Please try again.';
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            document.getElementById('message').textContent = 'An error occurred. Please try again later.';
-        }
+        });
     }
 }

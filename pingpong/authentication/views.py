@@ -61,39 +61,25 @@ def wordcounter(request):
 def homerender(request):
     return render(request, 'index.html')
 
-@ensure_csrf_cookie
-@require_http_methods(["GET", "POST"])
+#@ensure_csrf_cookie
+#@require_http_methods(["GET", "POST"])
 def loginrender(request):
-    print("bateu nesse pohasdasdasdasdasdasdasdasdasdaasdasdsda")   
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Successfully logged in',
-                    'user_id': user.id
-                })
-            else:
-                return JsonResponse({
-                    'success': False,
-                    'message': 'Invalid credentials'
-                }, status=400)
-        except json.JSONDecodeError:
-            print("bateu nesse poha")
-            return JsonResponse({'message': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            print(f"Unexpected error: {str(e)}")
-            return JsonResponse({'message': 'Server error'}, status=500)
-    elif request.method == 'GET':
-        # This handles the initial GET request to load the login page
-        return JsonResponse({'message': 'Please submit the login form'})
-    else:
-        return JsonResponse({'message': 'Invalid request method'}, status=405)
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+
+        if username is None or password is None:
+            return JsonResponse({'error': 'Please provide username and password'}, status=400)
+
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+
+        login(request, user)
+        return JsonResponse({'success': 'User logged in successfully'})
+    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
 @login_required
 def get_profile_data(request):
