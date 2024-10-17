@@ -1,3 +1,5 @@
 FROM hashicorp/vault:latest
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+EXPOSE 8200
+
+ENTRYPOINT ["vault", "server", "-dev", "-dev-root-token-id=root"]

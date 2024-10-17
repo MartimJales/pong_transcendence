@@ -60,12 +60,15 @@ services:
   vault:
     build: ./vault/
     container_name: vault_container
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+      - VAULT_DEV_ROOT_TOKEN_ID=root
     depends_on:
       - nginx
     networks:
       - webnet
-    expose:
-      - "8200"
 
 volumes:
   postgres_data:
