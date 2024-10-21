@@ -159,3 +159,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Additional configuration for managing credentials through Vault
+
+
+import hvac
+
+client = hvac.Client(url='http://vault_container:8200', token='root')

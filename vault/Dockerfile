@@ -2,4 +2,6 @@ FROM hashicorp/vault:latest
 
 EXPOSE 8200
 
-ENTRYPOINT ["vault", "server", "-dev", "-dev-root-token-id=root"]
+COPY ./setup_vault.sh /tmp/
+
+ENTRYPOINT ["/bin/sh", "-c", "vault server -dev -dev-root-token-id=root & sleep 3 && /tmp/setup_vault.sh && wait"]
