@@ -90,16 +90,20 @@ CHANNEL_LAYERS = {
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# Tweaked in order to fetch dynamic credentials from Vault
+
+import hvac
+
+client = hvac.Client(url='http://vault_container:8200', token='root')
+
+db_creds = client.secrets.database.generate_credentials(name='django_role')
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'pong'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'admin'),
+        'NAME': db_creds['data']['username'],
+        'USER': db_creds['data']['username'],
+        'PASSWORD': db_creds['data']['username'],
         'HOST': os.environ.get('DB_HOST', 'db'),
         'PORT': os.environ.get('DB_PORT', '5433'),
     }
@@ -159,10 +163,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
-
-# Additional configuration for managing credentials through Vault
-
-
-import hvac
-
-client = hvac.Client(url='http://vault_container:8200', token='root')

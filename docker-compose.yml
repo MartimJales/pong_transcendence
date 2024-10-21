@@ -15,6 +15,20 @@ services:
     networks:
       - webnet
 
+  vault:
+    build: ./vault/
+    container_name: vault_container
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_DEV_ROOT_TOKEN_ID}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - webnet
+
   web:
     build: ./django/
     container_name: django_container
@@ -28,21 +42,19 @@ services:
         python manage.py runserver 0.0.0.0:8000" 
     volumes:
       - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
     expose:
       - "8000"
     networks:
       - webnet
     depends_on:
       - db
-    environment:
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
-      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
-      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+      - vault
 
   nginx:
     build: ./nginx/
@@ -54,22 +66,6 @@ services:
       - .:/app
     depends_on:
       - web
-    networks:
-      - webnet
-
-  vault:
-    build: ./vault/
-    container_name: vault_container
-    ports:
-      - "8200:8200"
-    environment:
-      - VAULT_ADDR=${VAULT_ADDR}
-      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_DEV_ROOT_TOKEN_ID}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-    depends_on:
-      - nginx
     networks:
       - webnet
 

@@ -4,4 +4,4 @@ EXPOSE 8200
 
 COPY ./setup_vault.sh /tmp/
 
-ENTRYPOINT ["/bin/sh", "-c", "vault server -dev -dev-root-token-id=root & sleep 3 && /tmp/setup_vault.sh && wait"]
+ENTRYPOINT ["/bin/sh", "-c", "vault server -dev -dev-root-token-id=root && sleep 3 && /tmp/setup_vault.sh && wait"]

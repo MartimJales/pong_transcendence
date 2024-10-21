@@ -1,8 +1,5 @@
 #!/bin/ash
 
-# Extra check to ensure Vault knows where to connect
-export VAULT_ADDR='http://127.0.0.1:8200'
-
 # Loging in as root
 vault login ${VAULT_DEV_ROOT_TOKEN_ID}
 
