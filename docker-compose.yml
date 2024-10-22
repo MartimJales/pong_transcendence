@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
   db:
@@ -28,6 +28,9 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
     networks:
       - webnet
+    depends_on:
+      - db
+    restart: always
 
   web:
     build: ./django/
@@ -55,6 +58,7 @@ services:
     depends_on:
       - db
       - vault
+    restart: always
 
   nginx:
     build: ./nginx/
@@ -64,10 +68,10 @@ services:
       - "443:443"
     volumes:
       - .:/app
-    depends_on:
-      - web
     networks:
       - webnet
+    depends_on:
+      - web
 
 volumes:
   postgres_data:

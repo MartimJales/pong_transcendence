@@ -94,7 +94,10 @@ CHANNEL_LAYERS = {
 
 import hvac
 
-client = hvac.Client(url='http://vault_container:8200', token='root')
+VAULT_URL = os.environ.get('VAULT_ADDR', 'http://vault_container:8200')
+VAULT_TOKEN = os.environ.get('VAULT_DEV_ROOT_TOKEN_ID', 'root')
+
+client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
 
 db_creds = client.secrets.database.generate_credentials(name='django_role')
 
