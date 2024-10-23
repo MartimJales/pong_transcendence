@@ -20,8 +20,6 @@ services:
     depends_on:
       - db
     container_name: vault_container
-    expose:
-      - "8200"
     ports:
       - "8200:8200"
     environment:

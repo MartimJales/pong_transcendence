@@ -7,7 +7,8 @@ vault login ${VAULT_DEV_ROOT_TOKEN_ID}
 # and create dynamically generated secrets
 vault secrets enable database
 
-echo "Secrets should be enabled by now"
+# Delay to guarantee that PostgreSQL initializes properly
+sleep 5
 
 # Configuring connection to PostgreSQL Database
 vault write database/config/my-postgres \
