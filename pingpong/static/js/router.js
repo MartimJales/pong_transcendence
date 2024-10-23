@@ -32,7 +32,9 @@ function setPage(name)
 {
     console.log("setPage: ", name)
     data.page?.remove();
-    const page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default"));
+    console.log(data.pages.values());
+    const page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default") == "");
+    console.log(page);
 
     if (page)
     {
@@ -48,7 +50,10 @@ function setPage(name)
     newPage.append(newScript);
     data.page = newPage;
     }
-}
+    
+
+    
+};
 
 window.addEventListener("popstate", (e) => {
     const name = window.location.href.split("#/")[1];
@@ -62,15 +67,14 @@ function getPageNameFromURL() {
 
 document.addEventListener('DOMContentLoaded', () => {
     //window.pros = pegar info do user para qeue 
-    // Your initialization code here
+    
     const elements = Array.from(document.querySelectorAll("page-element"));
     for (const element of elements) {
       data.pages.set(element.getAttribute("name"), element);
       document.body.removeChild(element);
     }
     console.log(data.pages);
-  
-    // Set initial page
+    
     const name = getPageNameFromURL();
     setPage(name);
   });
