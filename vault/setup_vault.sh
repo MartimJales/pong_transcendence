@@ -1,7 +1,13 @@
 #!/bin/ash
 
-# Loging in as root
+# Logging in as root
 vault login ${VAULT_DEV_ROOT_TOKEN_ID}
+
+# Enabling the database secrets engine, which will allow us to store
+# and create dynamically generated secrets
+vault secrets enable database
+
+echo "Secrets should be enabled by now"
 
 # Configuring connection to PostgreSQL Database
 vault write database/config/my-postgres \

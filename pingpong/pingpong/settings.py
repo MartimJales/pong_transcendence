@@ -93,11 +93,20 @@ CHANNEL_LAYERS = {
 # Tweaked in order to fetch dynamic credentials from Vault
 
 import hvac
+import time
 
 VAULT_URL = os.environ.get('VAULT_ADDR', 'http://vault_container:8200')
 VAULT_TOKEN = os.environ.get('VAULT_DEV_ROOT_TOKEN_ID', 'root')
 
 client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
+
+while True:
+    try:
+        if client.is_authenticated():
+            break;
+    except Exception as e:
+        print("Waiting for Vault...", e)
+        time.sleep(2)
 
 db_creds = client.secrets.database.generate_credentials(name='django_role')
 

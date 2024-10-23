@@ -17,7 +17,11 @@ services:
 
   vault:
     build: ./vault/
+    depends_on:
+      - db
     container_name: vault_container
+    expose:
+      - "8200"
     ports:
       - "8200:8200"
     environment:
@@ -28,12 +32,11 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
     networks:
       - webnet
-    depends_on:
-      - db
-    restart: always
 
   web:
     build: ./django/
+    depends_on:
+      - vault
     container_name: django_container
     command: >
       sh -c "
@@ -55,10 +58,6 @@ services:
       - "8000"
     networks:
       - webnet
-    depends_on:
-      - db
-      - vault
-    restart: always
 
   nginx:
     build: ./nginx/
