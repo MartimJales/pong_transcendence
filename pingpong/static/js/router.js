@@ -19,8 +19,6 @@ class PageElement extends HTMLElement {
         super();
         this.style.display = "none";
     }
-
-
 }
 
 customElements.define("page-element", PageElement);
