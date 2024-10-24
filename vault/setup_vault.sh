@@ -7,7 +7,7 @@ vault login ${VAULT_DEV_ROOT_TOKEN_ID}
 # and create dynamically generated secrets
 vault secrets enable database
 
-# Delay to guarantee that PostgreSQL initializes properly
+# Delay to assure that PostgreSQL initializes properly
 sleep 5
 
 # Configuring connection to PostgreSQL Database
@@ -22,6 +22,9 @@ vault write database/config/my-postgres \
 # credentials
 vault write database/roles/django-role \
   db_name=my-postgres \
-  creation_statements="CREATE USER \"{{name}}\" WITH PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO \"{{name}}\";" \
+  creation_statements="CREATE USER \"{{name}}\" WITH PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
+                       GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO \"{{name}}\"; \
+					   GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \"{{name}}\"; \
+					   GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"{{name}}\";" \
   default_ttl="1h" \
   max_ttl="24h"

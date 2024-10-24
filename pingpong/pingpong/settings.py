@@ -108,14 +108,16 @@ while True:
         print("Waiting for Vault...", e)
         time.sleep(2)
 
-db_creds = client.secrets.database.generate_credentials(name='django_role')
+time.sleep(7)
+
+db_creds = client.secrets.database.generate_credentials(name='django-role')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': db_creds['data']['username'],
+        'NAME': 'pong',
         'USER': db_creds['data']['username'],
-        'PASSWORD': db_creds['data']['username'],
+        'PASSWORD': db_creds['data']['password'],
         'HOST': os.environ.get('DB_HOST', 'db'),
         'PORT': os.environ.get('DB_PORT', '5433'),
     }
