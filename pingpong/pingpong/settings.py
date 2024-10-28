@@ -103,14 +103,12 @@ client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
 while True:
     try:
         if client.is_authenticated():
-            break;
+            db_creds = client.secrets.database.generate_credentials(name='django-role')
+            if 'data' in db_creds:
+                break
     except Exception as e:
-        print("Waiting for Vault...", e)
-        time.sleep(2)
-
-time.sleep(7)
-
-db_creds = client.secrets.database.generate_credentials(name='django-role')
+        print("Waiting for Vault credentials to be generated...", e)
+    time.sleep(2)
 
 DATABASES = {
     'default': {
@@ -122,7 +120,6 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '5433'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
