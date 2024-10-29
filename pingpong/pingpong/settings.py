@@ -95,8 +95,8 @@ CHANNEL_LAYERS = {
 import hvac
 import time
 
-VAULT_URL = os.environ.get('VAULT_ADDR', 'http://vault_container:8200')
-VAULT_TOKEN = os.environ.get('VAULT_DEV_ROOT_TOKEN_ID', 'root')
+VAULT_URL = os.environ.get('VAULT_ADDR')
+VAULT_TOKEN = os.environ.get('VAULT_DEV_ROOT_TOKEN_ID')
 
 client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
 
@@ -116,8 +116,8 @@ DATABASES = {
         'NAME': 'pong',
         'USER': db_creds['data']['username'],
         'PASSWORD': db_creds['data']['password'],
-        'HOST': os.environ.get('DB_HOST', 'db'),
-        'PORT': os.environ.get('DB_PORT', '5433'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 

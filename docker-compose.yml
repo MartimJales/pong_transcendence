@@ -42,12 +42,8 @@ services:
         python manage.py runserver 0.0.0.0:8000" 
     volumes:
       - .:/app
-    environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
-      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
-      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+    env_file:
+      - .env
     expose:
       - "8000"
     networks:
