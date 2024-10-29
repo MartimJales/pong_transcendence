@@ -102,9 +102,10 @@ client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
 
 while True:
     try:
-        db_creds = client.secrets.database.generate_credentials(name='django-role')
-        if 'data' in db_creds:
-            break
+        if client.is_authenticated():
+            db_creds = client.secrets.database.generate_credentials(name='django-role')
+            if 'data' in db_creds:
+                break
     except Exception as e:
         print("Waiting for Vault credentials to be generated...", e)
     time.sleep(2)
