@@ -3,13 +3,12 @@
 - consertar imagem do user  
 - user module -> Users can add others as friends and view their online status. , da para fazer aparecer o profile, ou so deixar bolinha verde c/ nome
 
-
-
 - blockchain
-- torneio
-
+- tornei
 - consertar error console, ver scrfztirtoken 
-
-
 - cybersecurity
 - Fazer a gninx para https
+
+
+BUG FIX:
+DOUBLE TAP ON REGISTER, FUCKS IT

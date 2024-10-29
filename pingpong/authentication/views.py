@@ -20,25 +20,53 @@ from rest_framework import status
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import authenticate, login
 from django.views.decorators.http import require_http_methods
+from django.db import IntegrityError
 
 # Create your views here.
 
+@csrf_exempt
 def signup(request):
-
-    form = UserCreateForm() #get form from forms.py
-
     if request.method == 'POST':
-        form = UserCreateForm(request.POST) #post for login, gets everything from the form
-        if form.is_valid(): # check everything is ok for register
-            form.save() # dale in database
-            return redirect ('login')
-            #return render(request, 'index.html') #redirect to login page
+        try:
+            data = json.loads(request.body)
+            username = data.get('userName')
+            email = data.get('email')
+            password = data.get('pass')
+            password_conf = data.get('passconf')
 
-    context = {'registerform':form} # to be able to use in .html
-    return render(request, 'signup.html', context=context)
+            try:
+                User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password
+                )
+                return JsonResponse({
+                    'success': 'Account created successfully, please login to computaria'
+                }, status=201)
+
+            except IntegrityError:
+                return JsonResponse({
+                    'error': 'Username or email already exists'
+                },status=401)
+
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'error': 'Invalid JSON data'
+            }, status=400)
+
+        except Exception as e:
+            return JsonResponse({
+                'error': f'sepa que deu emrda: {str(e)}'
+            }, status=500)
+
+    return JsonResponse({
+        'error': 'nao é POST nesse carai'
+    }, status=405)
+
+
 
 @csrf_exempt 
-def loginrender(request):
+def api_login(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
@@ -50,10 +78,14 @@ def loginrender(request):
         user = authenticate(username=username, password=password)
 
         if user is None:
-            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+            return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
         login(request, user)
-        return JsonResponse({'success': 'User logged in successfully'})
+        return JsonResponse({
+            'success': 'User logged in successfully',
+            'user_id': user.id,
+            'username': user.username,
+            })
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
 @login_required
@@ -225,4 +257,6 @@ def add_friend(request):
 
 @ensure_csrf_cookie
 def index(request):
+    #if request.path.startswith('/admin/'):
+     #   return HttpResponseRedirect('/admin/')  # Redirect to admin if someone tries to access it
     return render(request, 'index.html')
