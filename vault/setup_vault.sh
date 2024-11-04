@@ -33,7 +33,6 @@ while [ $IDX -lt 10 ]; do
 
 		break
 	else
-		echo "FUCK"
 		sleep 1
 		IDX=$((IDX+1))
 	fi
@@ -42,3 +41,10 @@ done
 if [ $IDX -eq 10 ]; then
 	echo "Failed to access database"
 fi
+
+mkdir /vault/data/
+
+# Initiate vault development server
+# WARNING: This current server setup is for testing purposes only, it's
+# not intended to be run like this in the final project
+vault server -dev -dev-root-token-id=root -dev-listen-address=0.0.0.0:8200

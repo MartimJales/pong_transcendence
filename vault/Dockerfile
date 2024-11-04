@@ -2,6 +2,10 @@ FROM hashicorp/vault:latest
 
 EXPOSE 8200
 
+RUN mkdir /etc/vault.d/
+COPY ./vault.hcl /etc/vault.d/
+COPY ./Certificates/vault.crt /etc/ssl/certs/
+COPY ./Certificates/vault.key /etc/ssl/private/
 COPY ./setup_vault.sh /tmp/
 
-ENTRYPOINT ["/bin/sh", "-c", "vault server -dev -dev-root-token-id=root -dev-listen-address=0.0.0.0:8200 & /tmp/setup_vault.sh && wait"]
+ENTRYPOINT ["/bin/sh", "-c", "/tmp/setup_vault.sh"]
