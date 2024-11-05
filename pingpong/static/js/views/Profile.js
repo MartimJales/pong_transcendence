@@ -1,54 +1,4 @@
 
- // const friendsList = document.getElementById('friendsList');
- // const addFriendBtn = document.getElementById('addFriendBtn');
- // const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
- // const userPk = friendsListContainer.dataset.userPk;
-//
- // function updateFriendsList() {
- //   fetch(`http://127.0.0.1:8000/get_friends_list/${userPk}/`)
- //     .then(response => response.text())
- //     .then(html => {
- //       const parser = new DOMParser();
- //       const doc = parser.parseFromString(html, 'text/html');
- //       const newFriendsList = doc.getElementById('friendsList');
- //       if (newFriendsList) {
- //         friendsList.innerHTML = newFriendsList.innerHTML;
- //       }
- //     });
- // }
-//
- // function addFriend() {
- //   const friendName = prompt("Enter friend's username:");
- //   if (friendName) {
- //     fetch('http://127.0.0.1:8000/add_friend/', { 
- //       method: 'POST',
- //       headers: {
- //         'Content-Type': 'application/x-www-form-urlencoded',
- //         'X-CSRFToken': csrfToken
- //       },
- //       body: `friend_username=${encodeURIComponent(friendName)}`
- //     })
- //     .then(response => response.json())
- //     .then(data => {
- //       if (data.status === 'success') {
- //         alert(data.message);
- //         updateFriendsList();
- //       } else {
- //         alert(data.message);
- //       }
- //     })
- //     .catch(error => {
- //       console.error('Error:', error);
- //       alert('An error occurred while adding the friend.');
- //     });
- //   }
- // }
-//
- // addFriendBtn.addEventListener('click', addFriend);
-//
- // 
- // updateFriendsList();
-
 console.log("ftech vai ser mandado agora");  
 async function profile_info(){
      console.log("masss que pohaaaaaa");
@@ -104,6 +54,82 @@ async function profile_info(){
 profile_info();
 
 //setTimeout(profile_info, 3000);
-console.log("ta aqui : ")
-console.log(document.getElementById("main"));
+var messageElement = document.getElementById('message');
 
+document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
+    e.preventDefault(); 
+
+    const aplydiv = document.getElementById("friendsbox");
+    const formzin = document.createElement("div");
+    formzin.classList.add("mt-3");
+    formzin.innerHTML = `
+       <form id="loginForm" class="login-form">
+            <input type="text" 
+                   id="friendName" 
+                   name="friendName" 
+                   class="form-control mb-2" 
+                   placeholder="Enter friend's username"
+                   style="background-color: #2b3035; color: white; border: 1px solid #6c757d;">
+            <button id="friendBtn" 
+                    type="submit" 
+                    class="btn btn-secondary w-100"
+                    style="background-color: #6c757d; border-color: #6c757d;">
+                Add MF
+            </button>
+        </form>
+    `;
+    const addFriendBtn = document.getElementById("addFriendBtn");
+    addFriendBtn.style.display = "none";
+    aplydiv.appendChild(formzin);
+
+    
+
+
+    document.getElementById("loginForm").addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const friendName = document.getElementById("friendName").value;
+
+        //verifica fields e os carai 
+
+        try {
+            const csrftoken = window.getCookie('csrftoken');
+            const response = await fetch('http://127.0.0.1:8000/api/add/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({friendName}),
+                credentials: 'include'
+            });
+            if(response.ok){
+            
+                const data = await response.json();
+                console.log(data);
+
+                setTimeout(() => {
+                    formzin.remove();
+                    addFriendBtn.style.display = "block";
+                    profile_info();  // tentar refresh ver se da bom
+                }, 2000)
+            }
+            else{
+                const errorData = await response.json();
+                messageElement.textContent = errorData.error || 'Login failed. Please try again.';
+                messageElement.style.color = 'red';
+
+                setTimeout(() => {
+                    messageElement.style.display = 'none';
+                    // messageElement.remove();
+                }, 3000);
+            }
+        }catch(error){
+
+        }
+
+        formzin.remove();
+        addFriendBtn.style.display = "block";
+    });
+
+
+});

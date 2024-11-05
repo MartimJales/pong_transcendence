@@ -89,6 +89,52 @@ def api_login(request):
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
 @login_required
+def add_friend(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            friend_name = data.get('friendName')
+            
+            if not friend_name:
+                return JsonResponse({'error': 'Please enter friend name'}, status=400)
+            
+            # Get current user's profile
+            current_profile = request.user.playerprofile
+            
+            # Try to find the friend's user and profile
+            try:
+                friend_user = User.objects.get(username=friend_name)
+                friend_profile = friend_user.playerprofile
+            except User.DoesNotExist:
+                return JsonResponse({'error': 'User not found'}, status=404)
+            except PlayerProfile.DoesNotExist:
+                return JsonResponse({'error': 'User profile not found'}, status=404)
+                
+            # Check if trying to add themselves
+            if friend_user == request.user:
+                return JsonResponse({'error': 'Cannot add yourself as friend'}, status=400)
+                
+            # Check if already friends
+            if Friendship.objects.filter(
+                from_playerprofile_id=current_profile,
+                to_playerprofile_id=friend_profile
+            ).exists():
+                return JsonResponse({'error': 'Already friends with this user'}, status=400)
+                
+            # Create friendship
+            Friendship.objects.create(
+                from_playerprofile_id=current_profile,
+                to_playerprofile_id=friend_profile
+            )
+            
+            return JsonResponse({'success': 'Friend added successfully'})
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+       
+    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
+
+@login_required
 def get_profile_data(request):
     print("chegou poha")
     try:
@@ -114,23 +160,6 @@ def get_profile_data(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-def profile_view(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    #profile = user.playerprofile - objeto inteiro, we in .hmlt as profile.nick this way
-    #context = {
-        #'profile': profile,
-    #}
-    profile = user.playerprofile
-    friends = profile.friends.all() # checar pk na pora do user
-    context = {
-        'nick': profile.nick,
-        'total_points': profile.total_points,
-        'wins': profile.wins,
-        'losses': profile.losses,
-        'friends': friends,
-        #'image_url': profile.userpic.url #if profile.userpic else None,
-    }
-    return render(request, 'profile.html', context)
 
 @login_required
 def edit_profile(request, user_id):

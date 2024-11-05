@@ -7,5 +7,6 @@ urlpatterns = [
     path('api/signup/', views.signup, name='signup'),
     path('api/profile/', views.get_profile_data, name='profile'),
     path('api/logout/', views.handle_user_logout, name='logout'),
+    path('api/add/', views.add_friend, name='add_friend'),
     re_path(r'^.*$', views.index, name='index'),   
 ] 
