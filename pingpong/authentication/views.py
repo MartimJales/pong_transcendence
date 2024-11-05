@@ -90,10 +90,12 @@ def api_login(request):
 
 @login_required
 def get_profile_data(request):
-    if request.method == 'POST':
+    print("chegou poha")
+    try:
         user = request.user
-        profile = user.playerprofile  # Assuming you have a PlayerProfile model linked to User
-        return JsonResponse({
+        profile = user.playerprofile
+        
+        data = {
             'username': user.username,
             'nick': profile.nick,
             'losses': profile.losses,
@@ -104,12 +106,13 @@ def get_profile_data(request):
                 {'username': friend.user.username, 'is_online': friend.is_online}
                 for friend in profile.friends.all()
             ]
-        })
-    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
+        }
+        return JsonResponse(data)
+        
+    except Exception as e:
+        print(f"Error in get_profile_data: {str(e)}")  # Server-side logging
+        return JsonResponse({'error': str(e)}, status=500)
 
-def logout(request):
-    auth.logout(request)
-    return render(request, 'index.html')
 
 def profile_view(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -260,3 +263,14 @@ def index(request):
     #if request.path.startswith('/admin/'):
      #   return HttpResponseRedirect('/admin/')  # Redirect to admin if someone tries to access it
     return render(request, 'index.html')
+
+def handle_user_logout(request):
+    if request.user.is_authenticated:
+        
+        profile = request.user.playerprofile
+        profile.is_online = False
+        profile.save()
+        
+        request.session.flush()
+        
+    return HttpResponse(status=200)

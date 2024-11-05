@@ -1,6 +1,4 @@
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("dom vai ser chamado agora");   
  // const friendsList = document.getElementById('friendsList');
  // const addFriendBtn = document.getElementById('addFriendBtn');
  // const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -50,8 +48,62 @@ document.addEventListener('DOMContentLoaded', function() {
 //
  // 
  // updateFriendsList();
-});
 
+console.log("ftech vai ser mandado agora");  
+async function profile_info(){
+     console.log("masss que pohaaaaaa");
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/profile/', {
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                document.querySelector('h1').textContent = `Welcome, ${data.username}`;
+                
+                //document.querySelector('img').src = data.image_url;
+                
+                const h2Elements = document.querySelectorAll('h2');
+                h2Elements[0].textContent = `Nick: ${data.nick}`;
+                h2Elements[1].textContent = `Losses: ${data.losses}`;
+                h2Elements[2].textContent = `Winnings: ${data.wins}`;
+                h2Elements[3].textContent = `Total Points: ${data.total_points}`;
+                
+                // Update friends list
+                const friendsList = document.querySelector('#friendsList ul');
+                if (data.friends.length > 0) {
+                    friendsList.innerHTML = data.friends.map(friend => `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            ${friend.username}
+                            <span class="badge ${friend.is_online ? 'bg-success' : 'bg-secondary'} rounded-pill">
+                                ${friend.is_online ? 'Online' : 'Offline'}
+                            </span>
+                        </li>
+                    `).join('');
+                } else {
+                    friendsList.innerHTML = `
+                        <li class="list-group-item text-center">
+                            No friends added yet
+                        </li>
+                    `;
+                }
+                    
+            } else {
+                const errorData = await response.json();
+                console.log(errorData);
+            }
+        } catch (error) {
+            console.log("Error:", error);
+        }
+    
+}
+
+profile_info();
+
+//setTimeout(profile_info, 3000);
 console.log("ta aqui : ")
 console.log(document.getElementById("main"));
 
