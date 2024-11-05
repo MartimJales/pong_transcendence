@@ -1,18 +1,37 @@
 #!/bin/ash
 
-# Logging in as root
-vault login ${VAULT_DEV_ROOT_TOKEN_ID}
+# Creating necessary directory set in our Vault config for RAFT storage
+mkdir /vault/data/
+chmod -R 755 /vault/data/
+
+# Initiate vault server
+vault server -config /etc/vault.d/vault.hcl &
+
+# Waiting for Vault to be fully initialized
+IDX=0
+while [ $IDX -lt 10 ]; do
+	if (nc -z localhost:8000); then
+		break
+	else
+		sleep 2
+		IDX=$((IDX+1))
+	fi
+done
+
+if [ $IDX -eq 10 ]; then
+	echo "Vault failed to start on time"
+	exit 1
+fi
 
 # Enabling the database secrets engine, which will allow us to store
 # and create dynamically generated secrets
 vault secrets enable database
 
-# Loop to ensure the database in only accessed when its container is
-# fully initialized
+# Waiting for database to be fully initialized
 IDX=0
 while [ $IDX -lt 10 ]; do
 	if (nc -w 3 -zv $DB_ADDR $DB_PORT); then
-		# Configuring connection to PostgreSQL Database
+		# Configuring connection to PostgreSQL database
 		vault write database/config/my-postgres \
 		  plugin_name=postgresql-database-plugin \
 		  allowed_roles="django-role" \
@@ -40,11 +59,7 @@ done
 
 if [ $IDX -eq 10 ]; then
 	echo "Failed to access database"
+	exit 1
 fi
 
-mkdir /vault/data/
-
-# Initiate vault development server
-# WARNING: This current server setup is for testing purposes only, it's
-# not intended to be run like this in the final project
-vault server -dev -dev-root-token-id=root -dev-listen-address=0.0.0.0:8200
+tail -f "/dev/null"
