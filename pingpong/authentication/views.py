@@ -63,7 +63,9 @@ def signup(request):
         'error': 'nao é POST nesse carai'
     }, status=405)
 
-
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({'status': 'CSRF cookie set'})
 
 @csrf_exempt 
 def api_login(request):
@@ -85,6 +87,7 @@ def api_login(request):
             'success': 'User logged in successfully',
             'user_id': user.id,
             'username': user.username,
+            #'cookie' : user,
             })
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
@@ -132,7 +135,7 @@ def add_friend(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
        
-    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
+    return JsonResponse({'deu ruim': 'nao é POST nesse carai'}, status=405)
 
 @login_required
 def get_profile_data(request):

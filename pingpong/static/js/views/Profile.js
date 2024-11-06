@@ -90,13 +90,14 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
         const friendName = document.getElementById("friendName").value;
 
         //verifica fields e os carai 
-
+        console.log("fetch do add friend agora meu nobre");
         try {
             const csrftoken = window.getCookie('csrftoken');
             const response = await fetch('http://127.0.0.1:8000/api/add/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRFToken': csrftoken
                 },
                 body: JSON.stringify({friendName}),

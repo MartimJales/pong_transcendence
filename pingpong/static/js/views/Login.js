@@ -1,6 +1,23 @@
 var loginForm = document.getElementById('loginForm');
 var messageElement = document.getElementById('message');
 
+// async function getCsrfToken() {
+//     console.log("PEGAAAAA O")
+//     try {
+//         const response1 = await fetch('http://127.0.0.1:8000/api/get-csrf/', {
+//             credentials: 'include',
+//         });
+//         if(response1.ok){
+//             const receba = await response1.json();
+//             console.log(receba);
+//         }
+//     } catch (error) {
+//         console.error('Error getting CSRF token:', error);
+//     }
+// }
+
+// getCsrfToken();
+
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     const username = document.getElementById('username').value;
@@ -10,20 +27,19 @@ loginForm.addEventListener('submit', async (e) => {
     console.log(password);
 
     try {
-        const csrftoken = window.getCookie('csrftoken');
         const response = await fetch('http://127.0.0.1:8000/api/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken
             },
             body: JSON.stringify({ username, password }),
-            credentials: 'include'
         });  
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('user_id', data.user_id);
             localStorage.setItem('username', data.username);
+            getCookie('c')
+            
             messageElement.textContent = 'Login successful!';
             messageElement.style.color = 'green';
             console.log("deu bom carai info aqui de baixo");
