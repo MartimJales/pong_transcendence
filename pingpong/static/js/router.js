@@ -109,7 +109,7 @@
         let pageName;
         let hash = window.location.href;
         
-        if (hash === "http://localhost:8000/"){
+        if (hash === "http://localhost:8000/" || hash === "http://127.0.0.1:8000/"){
             if (localStorage.getItem('user_id')){ //asim forcamos o user a presionar sempre logout
                 pageName = "profile";
             }
@@ -164,17 +164,26 @@
 
     window.handleLogout = async () => {
         try {
-            await fetch('/api/logout/', {
+            const csrftoken = window.getCookie('csrftoken');
+            const response = await fetch('/api/logout/', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
                 }
             });
-        } finally {
-            localStorage.clear();
-            updateNavigation();
-            window.go('login');
+    
+            if (response.ok) {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.go('login');
+            } else {
+                const data = await response.json();
+                console.error('Logout failed:', data.message);
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
         }
     };
 

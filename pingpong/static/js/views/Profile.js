@@ -52,8 +52,6 @@ async function profile_info(){
 }
 
 profile_info();
-
-//setTimeout(profile_info, 3000);
 var messageElement = document.getElementById('message');
 
 document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
@@ -82,14 +80,10 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
     addFriendBtn.style.display = "none";
     aplydiv.appendChild(formzin);
 
-    
-
-
     document.getElementById("loginForm").addEventListener('submit', async (e) => {
         e.preventDefault();
         const friendName = document.getElementById("friendName").value;
 
-        //verifica fields e os carai 
         console.log("fetch do add friend agora meu nobre");
         try {
             const csrftoken = window.getCookie('csrftoken');
@@ -103,34 +97,54 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
                 body: JSON.stringify({friendName}),
                 credentials: 'include'
             });
-            if(response.ok){
             
+            if(response.ok) {
                 const data = await response.json();
+                console.log("deu bom");
                 console.log(data);
-
+                
+                // Show success message
+                messageElement.textContent = 'Friend added successfully!';
+                messageElement.style.color = 'green';
+                messageElement.style.display = 'block';
+                
+                // Clear the input field
+                document.getElementById("friendName").value = '';
+                
+                // Update friends list
+                await profile_info();
+                
+                // Hide form after success
+                formzin.remove();
+                addFriendBtn.style.display = "block";
+                
+                // Hide success message after delay
                 setTimeout(() => {
-                    formzin.remove();
-                    addFriendBtn.style.display = "block";
-                    profile_info();  // tentar refresh ver se da bom
-                }, 2000)
-            }
-            else{
+                    messageElement.style.display = 'none';
+                }, 3000);
+            } else {
                 const errorData = await response.json();
-                messageElement.textContent = errorData.error || 'Login failed. Please try again.';
+                messageElement.textContent = errorData.error || 'Failed to add friend. Please try again.';
                 messageElement.style.color = 'red';
+                messageElement.style.display = 'block';
 
                 setTimeout(() => {
                     messageElement.style.display = 'none';
-                    // messageElement.remove();
                 }, 3000);
+                
+                // Don't remove form on error - let user try again
             }
-        }catch(error){
+        } catch(error) {
+            console.error("Error adding friend:", error);
+            messageElement.textContent = 'An error occurred. Please try again.';
+            messageElement.style.color = 'red';
+            messageElement.style.display = 'block';
 
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 3000);
+            
+            // Don't remove form on error - let user try again
         }
-
-        formzin.remove();
-        addFriendBtn.style.display = "block";
     });
-
-
 });

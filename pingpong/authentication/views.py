@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .models import Match
+from .models import Match, PlayerProfile, Friendship
 from django.contrib.auth.models import User
 import json
 from datetime import datetime
@@ -87,7 +87,6 @@ def api_login(request):
             'success': 'User logged in successfully',
             'user_id': user.id,
             'username': user.username,
-            #'cookie' : user,
             })
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
@@ -261,34 +260,6 @@ def get_friends_list(request):
     friend_data = [{'username': friend.user.username, 'is_online': friend.is_online} for friend in friends]
     return JsonResponse({'friends': friend_data})
 
-@login_required
-def add_friend(request):
-    if request.method == 'POST':
-        friend_username = request.POST.get('friend_username')
-        try:
-            friend = User.objects.get(username=friend_username)
-            if friend == request.user:
-                return JsonResponse({'status': 'error', 'message': "You can't add yourself as a friend."})
-            elif request.user.playerprofile.friends.filter(user=friend).exists():
-                return JsonResponse({'status': 'error', 'message': f"You are already friends with {friend_username}."})
-            else:
-                request.user.playerprofile.friends.add(friend.playerprofile)
-                friend.playerprofile.friends.add(request.user.playerprofile)
-                return JsonResponse({'status': 'success', 'message': f"{friend_username} has been added to your friends list."})
-        except User.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': f"User {friend_username} not found."})
-    
-    return JsonResponse({'status': 'error', 'message': "Invalid request method."})
-
-    #def friend_list(request):
-    #user_profile = request.user.playerprofile
-    #friends = user_profile.friends.all()
-    #online_friends = friends.filter(is_online=True)
-    #
-    #return render(request, 'friend_list.html', {
-    #    'friends': friends,
-    #    'online_friends': online_friends,
-    #}).
 
 @ensure_csrf_cookie
 def index(request):
@@ -302,7 +273,14 @@ def handle_user_logout(request):
         profile = request.user.playerprofile
         profile.is_online = False
         profile.save()
+
+        logout(request)
         
         request.session.flush()
+        
+        return JsonResponse({
+                    'status': 'success',
+                    'message': 'Logged out successfully'
+                })
         
     return HttpResponse(status=200)

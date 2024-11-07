@@ -26,19 +26,21 @@ loginForm.addEventListener('submit', async (e) => {
     console.log(username);
     console.log(password);
 
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });  
+        const csrftoken = getCookie('csrftoken');
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                credentials: 'include', //deixa o o django fazer o session cookie
+                body: JSON.stringify({ username, password }),
+            });  
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('user_id', data.user_id);
             localStorage.setItem('username', data.username);
-            getCookie('c')
             
             messageElement.textContent = 'Login successful!';
             messageElement.style.color = 'green';
