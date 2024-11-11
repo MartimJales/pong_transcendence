@@ -2,7 +2,7 @@
 
 # Linking CRS files to a different location and applying custom configuration
 ln -s /opt/owasp-crs /usr/local/owasp-crs
-mv crs-setup.conf /usr/local/owasp-crs/
+mv /modsecurity.tmp.d/crs-setup.conf /usr/local/owasp-crs/
 
 # Renaming example files to be functional
 for f in /usr/local/owasp-crs/rules/*.example; do
