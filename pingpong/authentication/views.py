@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 
@@ -162,26 +162,36 @@ def get_profile_data(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-
 @login_required
-def edit_profile(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    profile = user.playerprofile
-
+def editNick(request):
     if request.method == 'POST':
-        new_nick = request.POST.get('nick')
-        if new_nick:
+        try:
+            data = json.loads(request.body)
+            new_nick = data.get('nick')
+            
+            if not new_nick:
+                return JsonResponse({
+                    'error': 'Please provide a nickname'
+                }, status=400)
+            
+            # Get user's profile and update nick
+            profile = request.user.playerprofile
             profile.nick = new_nick
             profile.save()
-            messages.success(request, 'Your nickname has been updated successfully.')
-        else:
-            messages.error(request, 'Please provide a valid nickname.')
-        return redirect('user_profile', user_id=user.id)
-
-    context = {
-        'nick': profile.nick,
-    }
-    return render(request, 'edit_profile.html', context)
+            
+            return JsonResponse({
+                'success': True,
+                'nick': new_nick
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'error': 'Method not allowed'
+    }, status=405)
 
 def game_option(request, user_id):
     user = request.user
@@ -267,6 +277,7 @@ def index(request):
      #   return HttpResponseRedirect('/admin/')  # Redirect to admin if someone tries to access it
     return render(request, 'index.html')
 
+@login_required
 def handle_user_logout(request):
     if request.user.is_authenticated:
         

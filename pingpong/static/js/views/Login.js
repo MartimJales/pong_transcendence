@@ -1,22 +1,7 @@
 var loginForm = document.getElementById('loginForm');
 var messageElement = document.getElementById('message');
 
-// async function getCsrfToken() {
-//     console.log("PEGAAAAA O")
-//     try {
-//         const response1 = await fetch('http://127.0.0.1:8000/api/get-csrf/', {
-//             credentials: 'include',
-//         });
-//         if(response1.ok){
-//             const receba = await response1.json();
-//             console.log(receba);
-//         }
-//     } catch (error) {
-//         console.error('Error getting CSRF token:', error);
-//     }
-// }
 
-// getCsrfToken();
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault(); 

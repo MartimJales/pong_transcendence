@@ -1,7 +1,7 @@
 
 console.log("ftech vai ser mandado agora");  
 async function profile_info(){
-     console.log("masss que pohaaaaaa");
+     console.log("foi buscarrr o profile");
         try {
             const response = await fetch('http://127.0.0.1:8000/api/profile/', {
                 credentials: 'include',
