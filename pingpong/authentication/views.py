@@ -193,10 +193,35 @@ def editNick(request):
         'error': 'Method not allowed'
     }, status=405)
 
-def game_option(request, user_id):
-    user = request.user
-    return render(request, 'game_option.html', {'user': user})
-    
+@login_required
+def get_match_history(request):
+    try:
+        user = request.user
+        profile = user.playerprofile
+        
+        # Get matches for the user, ordered by date
+        matches = Match.objects.filter(player=user).order_by('-match_date')
+        
+        matches_data = [{
+            'opponent': match.opponent,
+            'result': match.result,
+            'mode': match.mode,
+            'earned_points': match.earned_points,
+            'match_date': match.match_date.isoformat()
+        } for match in matches]
+        
+        data = {
+            'nick': profile.nick,
+            'image_url': profile.userpic.url if profile.userpic else '/media/profile_pics/default.jpg',
+            'matches': matches_data
+        }
+        
+        return JsonResponse(data)
+        
+    except Exception as e:
+        print(f"Error in get_match_history: {str(e)}")
+        return JsonResponse({'error': str(e)}, status=500)
+
 @login_required  # Descomenta essa merde se exigir autenticação   
 def game_local(request):
     if request.method == 'POST':
