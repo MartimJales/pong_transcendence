@@ -196,21 +196,19 @@ def editNick(request):
 def game_option(request, user_id):
     user = request.user
     return render(request, 'game_option.html', {'user': user})
-
-@csrf_exempt  # Desabilita a verificação CSRF (apenas para desenvolvimento)
-# @login_required  # Descomenta essa merde se exigir autenticação   
-def game_end(request):
+    
+@login_required  # Descomenta essa merde se exigir autenticação   
+def game_local(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             print("Received data:", data)
 
-            player = User.objects.get(id=data['player_id'])
-            player2 = User.objects.get(id=data['player2_id']) if data.get('player2_id') else None
+            player = request.user
 
             match = Match.objects.create( 
                 player=player, #recebendo o pk mandando de lonjao
-                player2=player2, # se pa que chama de outra url aqui
+                player2=None, # se pa que chama de outra url aqui
                 earned_points=data['earned_points'],
                 mode=data['mode'],
                 opponent=data['opponent'],
@@ -252,6 +250,7 @@ def game_end(request):
         'status': 'error',
         'message': 'Only POST requests are allowed SEU ARROMBADO'
     }, status=405)
+
 
 def user_history(request, user_id):
     

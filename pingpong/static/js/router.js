@@ -218,7 +218,7 @@
                             <a class="nav-link" onclick="window.go('profile')" data-link>Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" onclick="window.go('game')" data-link>Play Game</a>
+                            <a class="nav-link" onclick="window.go('gameoption')" data-link>Play Game</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" onclick="handleLogout()" data-link>Logout</a>
