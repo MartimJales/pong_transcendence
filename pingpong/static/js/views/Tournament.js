@@ -1,83 +1,9 @@
-export default class Tournament {
-    constructor(params) {
-        this.params = params;
-    }
+console.log("ta safee papai play no tour");
 
-    async getHtml() {
-        return `
-    <style>
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de, 0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
-            }
-            50% {
-                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de;
-            }
-        }
+var usernickzin = localStorage.getItem('usernick');
+console.log(usernickzin);
+document.getElementById("nickzin").textContent = usernickzin;
 
-        .glow-text {
-            font-size:3rem;
-            animation: glow 1s ease-in-out infinite alternate;
-            color: #fff;
-        }
-    </style>
-    <div class="container">
-        <div class="text-center mt-5">
-            <h1 id="pong-game" class="text-center">Pong Local Tournament: <p class="glow-text"> The best 4 WorldWide Players</p></h1>
-            <br>
-            <br>
-            <div class="centered-div">
-                <div>
-                    <div class="mb-4">
-                        <label for="player1" class="form-label">Challenger 1:</label>
-                        <input type="text" class="form-control" id="player1" placeholder="Enter nickname">
-                    </div>
-                    <div class="mb-4">
-                        <label for="player2" class="form-label">Challenger 2:</label>
-                        <input type="text" class="form-control" id="player2" placeholder="Enter nickname">
-                    </div>
-                    <div class="mb-4">
-                        <label for="player3" class="form-label">Challenger 3:</label>
-                        <input type="text" class="form-control" id="player3" placeholder="Enter nickname">
-                    </div>
-                    <div class="d-flex justify-content-center mt-4">
-                        <button id="startTournamentButton" class="btn btn-primary btn-lg">Start Tournament</button>
-                    </div>
-                    <input type="hidden" id="gameMode" value="local">
-                </div>
-            </div>
-        </div>
-    </div>
-        <canvas id="gameCanvas" style="display: none;"></canvas>
-        <input type="hidden" id="userId" value="">
-        <input type="hidden" id="gameMode" value="local">
-
-        `;
-    }
-
-    async afterRender() {
-        const startTournamentButton = document.getElementById('startTournamentButton');
-        startTournamentButton.addEventListener('click', () => {
-            const players = [
-                document.getElementById('player1').value,
-                document.getElementById('player2').value,
-                document.getElementById('player3').value,
-            ].filter(player => player.trim() !== '');
-
-            if (players.length !== 3) {
-                alert('Please enter nicknames for all the Host Challengers.');
-                return;
-            }
-
-            // Hide the form and show the game canvas
-            document.querySelector('.centered-div').style.display = 'none';
-            document.getElementById('gameCanvas').style.display = 'block';
-            gameMode = document.getElementById('gameMode').value;
-            // Start the game with 4 players
-            startGame(4, '#ffffff', '#000000', '#ffffff');  // You can adjust these parameters as needed
-        });
-    }
-}
 
 // Global Variables
 var DIRECTION = {
@@ -88,9 +14,10 @@ var DIRECTION = {
 	RIGHT: 4
 };
 
-var userId;
+//var userId;
 var gameMode;
 var match_result;
+var challanger;
 
 // The ball object (The cube that bounces back and forth)
 var Ball = {
@@ -135,7 +62,7 @@ var Paddle = {
 };
 
 var Game = {
-	initialize: function (players, ballColor, bgColor, paddleColor) {
+	 initialize: function (players, ballColor, bgColor, paddleColor) {
 		this.canvas = document.querySelector('canvas');
 		this.context = this.canvas.getContext('2d');
 
@@ -150,6 +77,8 @@ var Game = {
 		this.player2 = (players == 2 || players == 4) ? Paddle.new.call(this, 'right') : null;
 		
 		if (players == 4) {
+			this.playerTop = Paddle.new.call(this, 'top');
+			this.playerBottom = Paddle.new.call(this, 'bottom');
 			this.players = 4;
 		}
 		
@@ -196,23 +125,26 @@ var Game = {
 	endGameMenu: function (text) {
 		// Preparar os dados do jogo para enviar
 		const gameData = {
-			player_id: userId,  // TO-DO: Substitui pelo ID do jogador atual
+			player_id: null,  // TO-DO: Substitui pelo ID do jogador atual
 			player2_id: null,  // this.player2 ? 2 :  TO-DO: Substitui pelo ID do segundo jogador, se existir, para 1v1
-			earned_points: match_result ? 15 : 0,  // Podes ajustar esta lógica conforme necessário
+			earned_points: match_result ? 30 : 0,  // Podes ajustar esta lógica conforme necessário
 			mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
-			opponent: this.ai ? 'Chatgtp' : 'Local Challenger',  // Define o oponente
+			opponent: challanger,  // Define o oponente
 			result: match_result,  // True se o jogador ganhou, False se perdeu
 			match_date: new Date().toISOString()  // Data e hora atual em formato ISO
 		};
 
-		console.log('useriD: ' + userId);
+		//console.log('useriD: ' + userId);
 	
 		// Enviar os dados para o backend
+		const csrftoken = window.getCookie('csrftoken');
 		fetch('http://127.0.0.1:8000/api/game_local/', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrftoken
 			},
+			credentials: 'include',
 			body: JSON.stringify(gameData)
 		})
 		.then(response => response.json())  // Change this to .json()
@@ -223,7 +155,7 @@ var Game = {
 				console.log('o resultado dessa poha e ' + match_result);
 				console.log('os pontinhos ganhados sao ' + gameData.earned_points);
 				//window.location.href = `/vaisefuder/`;
-				window.location.href = `/profile/${userId}/`;
+				window.go('profile');
 			} else {
 				console.error('Error saving match data:', data.message);
 			}
@@ -669,5 +601,35 @@ function startGame(players, ballColor, bgColor, paddleColor) {
 	Pong.initialize(players, ballColor, bgColor, paddleColor);
 }
 
+document.getElementById('startGameButton').addEventListener('click', function () {
+	let selectedPlayers = 2; // tornomentao is always 1
+	
+	const ballColor = document.getElementById('ballColor').value;
+	const bgColor = document.getElementById('bgColor').value;
+	const paddleColor = document.getElementById('paddleColor').value;
+	gameMode = document.getElementById('gameMode').value;
+	const p1 = document.getElementById("challenger1").value;
+	const p2 = document.getElementById("challenger2").value;
+	const p3 = document.getElementById("challenger3").value;
 
 
+	console.log('Starting game with the following settings:');
+	console.log('Players:', selectedPlayers); //chatgtp, local v1, suruba
+	console.log('Ball Color:', ballColor);
+	console.log('Background Color:', bgColor);
+	console.log('Paddle Color:', paddleColor);
+	console.log("players: " + p1 + " " + p2 + " " + p3);
+
+	//if (s=nao tem crriar a div com err), este start game 
+	
+
+	// Limpar o conteúdo da div container e mostrar apenas o canvas
+	const container = document.querySelector('.container');
+	container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
+	const canvas = document.getElementById('gameCanvas');
+	canvas.style.display = 'block';
+
+	
+	// Iniciar o jogo com as configurações selecionadas
+	//startGame(selectedPlayers, ballColor, bgColor, paddleColor);
+});

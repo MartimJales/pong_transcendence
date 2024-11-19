@@ -1,0 +1,179 @@
+{% csrf_token %}
+{% load static %}
+<page-element name="tournament"  src="/static/js/views/Tournament.js">
+
+    <div class="container">
+        <div class="text-center mt-5">
+            <div class="centered-div">
+                <h1>Local Tournament - Quarter finals  Beat the Host: <span id="nickzin">meucu</span></h1>
+                <h6>(de 4, lá ele)</h6>
+                <h2>Challangers:</h2><br>
+                
+                
+                <div class="challengers-container mb-4">
+                    <div class="challenger-input mb-2">
+                        <input type="text" id="challenger1" class="form-control mb-2" placeholder="Challenger 1">
+                        <span id="challenger1Display" class="challenger-name"></span>
+                    </div>
+                    <div class="challenger-input mb-2">
+                        <input type="text" id="challenger2" class="form-control mb-2" placeholder="Challenger 2">
+                        <span id="challenger2Display" class="challenger-name"></span>
+                    </div>
+                    <div class="challenger-input mb-2">
+                        <input type="text" id="challenger3" class="form-control mb-2" placeholder="Challenger 3">
+                        <span id="challenger3Display" class="challenger-name"></span>
+                    </div>
+                </div>
+            
+
+                <h3>Choose the color of the ball</h3><br>
+                <form class="d-flex justify-content-center" >
+                    <input type="color" class="form-control form-control-color" id="ballColor" value="#00CC00" title="Choose a color">
+                </form><br>
+                <h3>Choose the background color</h3><br>
+                <form class="d-flex justify-content-center">
+                    <input type="color" class="form-control form-control-color" id="bgColor" value="#000000" title="Choose a color">
+                </form><br>
+                <h3>Choose the color of the paddles</h3><br>
+                <form class="d-flex justify-content-center">
+                    <input type="color" class="form-control form-control-color" id="paddleColor" value="#00CC00" title="Choose a color">
+                </form><br>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-secondary" id="startGameButton">Start GangBang!</button>
+                </div>  	
+                <input type="hidden" >
+                <input type="hidden" id="gameMode" value="Tournament">
+            </div>
+            <canvas id="gameCanvas"></canvas>
+        </div>
+    </div>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .challenger-name {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.2em;
+        color: #00ff88;
+        text-shadow: 0 0 10px #00ff88,
+                     0 0 20px #00ff88,
+                     0 0 30px #00ff88;
+        background: linear-gradient(90deg, 
+                    rgba(0,0,0,0) 0%,
+                    rgba(0,255,136,0.1) 50%,
+                    rgba(0,0,0,0) 100%);
+        padding: 5px 15px;
+        border: 2px solid #00ff88;
+        border-radius: 4px;
+        position: relative;
+        display: none;  /* Initially hidden */
+        animation: glow 1.5s ease-in-out infinite alternate;
+        letter-spacing: 2px;
+        transform: skew(-5deg);
+    }
+
+    .challengers-container {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .challenger-input input {
+        margin-bottom: 10px;
+    }
+        
+        .btn-group .btn.active {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        canvas {
+            display: none;
+        }
+    
+        .centered-div {
+            padding-top: 90px;
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    
+        #nickzin {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88,
+                         0 0 20px #00ff88,
+                         0 0 30px #00ff88;
+            background: linear-gradient(90deg, 
+                        rgba(0,0,0,0) 0%,
+                        rgba(0,255,136,0.1) 50%,
+                        rgba(0,0,0,0) 100%);
+            padding: 5px 15px;
+            border: 2px solid #00ff88;
+            border-radius: 4px;
+            position: relative;
+            display: inline-block;
+            animation: glow 1.5s ease-in-out infinite alternate;
+            letter-spacing: 2px;
+            transform: skew(-5deg);
+        }
+    
+        #nickzin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -2px;
+            width: 2px;
+            height: 100%;
+            background-color: #00ff88;
+            animation: borderPulse 2s infinite;
+        }
+    
+        #nickzin::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 2px;
+            height: 100%;
+            background-color: #00ff88;
+            animation: borderPulse 2s infinite reverse;
+        }
+    
+        @keyframes glow {
+            from {
+                filter: brightness(1);
+            }
+            to {
+                filter: brightness(1.5);
+            }
+        }
+    
+        @keyframes borderPulse {
+            0% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scaleY(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+    
+        #nickzin:hover {
+            transform: skew(-5deg) scale(1.05);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+    </style>
+</page-element>

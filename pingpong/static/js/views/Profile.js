@@ -21,6 +21,8 @@ async function profile_info(){
                 h2Elements[1].textContent = `Losses: ${data.losses}`;
                 h2Elements[2].textContent = `Winnings: ${data.wins}`;
                 h2Elements[3].textContent = `Total Points: ${data.total_points}`;
+
+                localStorage.setItem('usernick', data.nick);
                 
                 // Update friends list
                 const friendsList = document.querySelector('#friendsList ul');
