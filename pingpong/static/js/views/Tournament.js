@@ -14,10 +14,17 @@ var DIRECTION = {
 	RIGHT: 4
 };
 
-//var userId;
 var gameMode;
 var match_result;
 var challanger;
+var p1;
+var p2;
+var p3;
+var ballColor;
+var bgColor;
+var paddleColor;
+let selectedPlayers;
+
 
 // The ball object (The cube that bounces back and forth)
 var Ball = {
@@ -124,45 +131,45 @@ var Game = {
 
 	endGameMenu: function (text) {
 		// Preparar os dados do jogo para enviar
-		const gameData = {
-			player_id: null,  // TO-DO: Substitui pelo ID do jogador atual
-			player2_id: null,  // this.player2 ? 2 :  TO-DO: Substitui pelo ID do segundo jogador, se existir, para 1v1
-			earned_points: match_result ? 30 : 0,  // Podes ajustar esta lógica conforme necessário
-			mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
-			opponent: challanger,  // Define o oponente
-			result: match_result,  // True se o jogador ganhou, False se perdeu
-			match_date: new Date().toISOString()  // Data e hora atual em formato ISO
-		};
-
-		//console.log('useriD: ' + userId);
-	
-		// Enviar os dados para o backend
-		const csrftoken = window.getCookie('csrftoken');
-		fetch('http://127.0.0.1:8000/api/game_local/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': csrftoken
-			},
-			credentials: 'include',
-			body: JSON.stringify(gameData)
-		})
-		.then(response => response.json())  // Change this to .json()
-		.then(data => {
-			console.log('Response data:', data);  // Log the entire response
-			if (data.status === 'success') {
-				console.log('Match data saved successfully');
-				console.log('o resultado dessa poha e ' + match_result);
-				console.log('os pontinhos ganhados sao ' + gameData.earned_points);
-				//window.location.href = `/vaisefuder/`;
-				window.go('profile');
-			} else {
-				console.error('Error saving match data:', data.message);
-			}
-		})
-		.catch((error) => {
-			console.error('Error:', error);
-		});
+		//const gameData = {
+		//	player_id: null,  // TO-DO: Substitui pelo ID do jogador atual
+		//	player2_id: null,  // this.player2 ? 2 :  TO-DO: Substitui pelo ID do segundo jogador, se existir, para 1v1
+		//	earned_points: match_result ? 30 : 0,  // Podes ajustar esta lógica conforme necessário
+		//	mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
+		//	opponent: challanger,  // Define o oponente
+		//	result: match_result,  // True se o jogador ganhou, False se perdeu
+		//	match_date: new Date().toISOString()  // Data e hora atual em formato ISO
+		//};
+//
+		////console.log('useriD: ' + userId);
+	//
+		//// Enviar os dados para o backend
+		//const csrftoken = window.getCookie('csrftoken');
+		//fetch('http://127.0.0.1:8000/api/game_local/', {
+		//	method: 'POST',
+		//	headers: {
+		//		'Content-Type': 'application/json',
+		//		'X-CSRFToken': csrftoken
+		//	},
+		//	credentials: 'include',
+		//	body: JSON.stringify(gameData)
+		//})
+		//.then(response => response.json())  // Change this to .json()
+		//.then(data => {
+		//	console.log('Response data:', data);  // Log the entire response
+		//	if (data.status === 'success') {
+		//		console.log('Match data saved successfully');
+		//		console.log('o resultado dessa poha e ' + match_result);
+		//		console.log('os pontinhos ganhados sao ' + gameData.earned_points);
+		//		//window.location.href = `/vaisefuder/`;
+		//		window.go('profile');
+		//	} else {
+		//		console.error('Error saving match data:', data.message);
+		//	}
+		//})
+		//.catch((error) => {
+		//	console.error('Error:', error);
+		//});
 		
 		
 	
@@ -184,9 +191,7 @@ var Game = {
 			Pong.canvas.height / 2 + 15
 		);
 	
-		//setTimeout(function () {
-		//	window.location.href = 'game';
-		//}, 1000);
+	
 	},
 
 	// Update all objects (move the player, ai, ball, increment the score, etc.)
@@ -601,16 +606,18 @@ function startGame(players, ballColor, bgColor, paddleColor) {
 	Pong.initialize(players, ballColor, bgColor, paddleColor);
 }
 
+
+
 document.getElementById('startGameButton').addEventListener('click', function () {
-	let selectedPlayers = 2; // tornomentao is always 1
+	selectedPlayers = 2; // tornomentao is always 1
 	
-	const ballColor = document.getElementById('ballColor').value;
-	const bgColor = document.getElementById('bgColor').value;
-	const paddleColor = document.getElementById('paddleColor').value;
+	ballColor = document.getElementById('ballColor').value;
+	bgColor = document.getElementById('bgColor').value;
+	paddleColor = document.getElementById('paddleColor').value;
 	gameMode = document.getElementById('gameMode').value;
-	const p1 = document.getElementById("challenger1").value;
-	const p2 = document.getElementById("challenger2").value;
-	const p3 = document.getElementById("challenger3").value;
+	p1 = document.getElementById("challenger1").value;
+	p2 = document.getElementById("challenger2").value;
+	p3 = document.getElementById("challenger3").value;
 
 
 	console.log('Starting game with the following settings:');
@@ -620,16 +627,98 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	console.log('Paddle Color:', paddleColor);
 	console.log("players: " + p1 + " " + p2 + " " + p3);
 
-	//if (s=nao tem crriar a div com err), este start game 
-	
 
+
+	if (!p1 || p1.trim() === "" || !p2 || p2.trim() === "" || !p3 || p3.trim() === "") {
+		let divzininha = document.getElementById("divgetbolquet");
+		divzininha.innerHTML = `
+			<div class="alert alert-danger" role="alert">
+				Please enter names for all challengers!
+				<span style="color: #00ff88; text-shadow: 0 0 10px #00ff88">
+					⚠️ All challenger names are required
+				</span>
+			</div>
+		`;
+		divzininha.style.marginTop = "10px";
+		
+		setTimeout(() => {
+			divzininha.innerHTML = '';
+		}, 3000);
+
+
+	}else{
+	
 	// Limpar o conteúdo da div container e mostrar apenas o canvas
+	//const container = document.querySelector('.container');
+	//container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
+	//const canvas = document.getElementById('gameCanvas');
+	//canvas.style.display = 'block';
+
+	//match makin
+	console.log("pau no mach");
+	preGameMode();
+	
+	//startGame(selectedPlayers, ballColor, bgColor, paddleColor);
+	}
+});
+
+
+function preGameMode(){
 	const container = document.querySelector('.container');
-	container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
-	const canvas = document.getElementById('gameCanvas');
-	canvas.style.display = 'block';
+	container.innerHTML = `
+	<div class="tournament-bracket">
+		<h1 class="bracket-title">Semi Finals</h1>
+		<div class="bracket-container">
+			<div class="semifinal-matches">
+				<div class="match match-1">
+					<div class="player player-top challenger-style">${p1}</div>
+					<div class="vs">VS</div>
+					<div class="player player-bottom challenger-style">${p3}</div>
+				</div>
+				<div class="match match-2">
+					<div class="player player-top challenger-style">${p2}</div>
+					<div class="vs">VS</div>
+					<div class="player player-bottom challenger-style">${usernickzin}</div>
+				</div>
+			</div>
+			<div class="final-match">
+				<div class="final-text">FINALS</div>
+				<div class="player-placeholder">Winner Match 1</div>
+				<div class="vs">VS</div>
+				<div class="player-placeholder">Winner Match 2</div>
+			</div>
+		</div>
+	</div>
+	`;
+
+	setTimeout(() => {
+
+		const containerMod = document.querySelector('.container');
+		containerMod.innerHTML = `
+		<div class="tournament-bracket">
+			<h1 class="bracket-title">Next Match: DALE DURO SENPAI</h1>
+			<div class="bracket-container">
+				<div class="semifinal-matches">
+					<div class="match match-1">
+						<div class="player player-top challenger-style">${p1}</div>
+						<div class="vs">VS</div>
+						<div class="player player-bottom challenger-style">${p3}</div>
+					</div>
+		</div>
+		`;
+
+		setTimeout(() => {
+			containerMod.innerHTML = "";
+				const container = document.querySelector('.container');
+				container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
+				const canvas = document.getElementById('gameCanvas');
+				canvas.style.display = 'block';
+				startGame(selectedPlayers, ballColor, bgColor, paddleColor);
+		}, 3000);
+		
+	}, 3000);
+
+
 
 	
-	// Iniciar o jogo com as configurações selecionadas
-	//startGame(selectedPlayers, ballColor, bgColor, paddleColor);
-});
+}

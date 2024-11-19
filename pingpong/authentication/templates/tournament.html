@@ -5,12 +5,12 @@
     <div class="container">
         <div class="text-center mt-5">
             <div class="centered-div">
-                <h1>Local Tournament - Quarter finals  Beat the Host: <span id="nickzin">meucu</span></h1>
+                <h1>Local Tournament - Semi finals </h1> <br> <h1>Beat the Host: <span id="nickzin">meucu</span></h1>
                 <h6>(de 4, lá ele)</h6>
                 <h2>Challangers:</h2><br>
                 
                 
-                <div class="challengers-container mb-4">
+                <div class="challengers-container mb-4" >
                     <div class="challenger-input mb-2">
                         <input type="text" id="challenger1" class="form-control mb-2" placeholder="Challenger 1">
                         <span id="challenger1Display" class="challenger-name"></span>
@@ -23,6 +23,7 @@
                         <input type="text" id="challenger3" class="form-control mb-2" placeholder="Challenger 3">
                         <span id="challenger3Display" class="challenger-name"></span>
                     </div>
+                    <div id="divgetbolquet"></div>
                 </div>
             
 
@@ -175,5 +176,87 @@
             transition: transform 0.2s ease;
             cursor: pointer;
         }
+
+        .tournament-bracket {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 2rem;
+        border-radius: 10px;
+        color: white;
+        margin: 20px auto;
+        max-width: 800px;
+    }
+
+    .bracket-title {
+        text-align: center;
+        color: #00ff88;
+        font-family: 'Orbitron', sans-serif;
+        margin-bottom: 2rem;
+        text-shadow: 0 0 10px #00ff88;
+    }
+
+    .bracket-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .semifinal-matches {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .match {
+        background: linear-gradient(90deg, 
+            rgba(0,0,0,0.8) 0%,
+            rgba(0,255,136,0.1) 50%,
+            rgba(0,0,0,0.8) 100%);
+        padding: 1rem;
+        border: 2px solid #00ff88;
+        border-radius: 8px;
+        width: 250px;
+        text-align: center;
+    }
+
+    .player {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.2em;
+        color: #00ff88;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        text-shadow: 0 0 10px #00ff88;
+        animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    .vs {
+        color: #ff4444;
+        font-weight: bold;
+        font-size: 1.2em;
+        margin: 0.5rem 0;
+        text-shadow: 0 0 10px #ff4444;
+    }
+
+    .final-match {
+        border-left: 2px solid #00ff88;
+        padding-left: 2rem;
+        text-align: center;
+    }
+
+    .final-text {
+        color: #00ff88;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.5em;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px #00ff88;
+    }
+
+    .player-placeholder {
+        font-family: 'Orbitron', sans-serif;
+        color: rgba(0, 255, 136, 0.5);
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        font-style: italic;
+    }
     </style>
 </page-element>
