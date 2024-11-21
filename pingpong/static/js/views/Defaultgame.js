@@ -317,14 +317,14 @@ var Game = {
 
 		// Handle the end of round transition
 		// Check to see if the player won the round.
-		if (this.player.score === 5 || (this.players === 4 && (this.playerTop.score === 5 || this.playerBottom.score === 5))) {
+		if (this.player.score === 2 || (this.players === 4 && (this.playerTop.score === 2 || this.playerBottom.score === 5))) {
 			this.over = true;
 			match_result = true;
 			setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
 		}
 
 		// Check to see if the ai/AI or player2 has won the round.
-		if ((this.ai && this.ai.score === 1) || (this.player2 && this.player2.score === 1)) {
+		if ((this.ai && this.ai.score === 2) || (this.player2 && this.player2.score === 2)) {
 			this.over = true;
 			match_result = false;
 			setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
@@ -586,9 +586,9 @@ var Game = {
 
 var Pong = null;
 function startGame(players, ballColor, bgColor, paddleColor) {
-	if (Pong && Pong.running) {
-		return;
-	}
+	//if (Pong && Pong.running) {
+	//	return;
+	//}
 	Pong = Object.assign({}, Game);
 	Pong.initialize(players, ballColor, bgColor, paddleColor);
 }
