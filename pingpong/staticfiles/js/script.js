@@ -607,6 +607,8 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	console.log('Ball Color:', ballColor);
 	console.log('Background Color:', bgColor);
 	console.log('Paddle Color:', paddleColor);
+	console.log(" ta aqui esse caralho");
+
 
 	// Limpar o conteúdo da div container e mostrar apenas o canvas
 	const container = document.querySelector('.container');

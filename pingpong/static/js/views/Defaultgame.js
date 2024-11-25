@@ -487,9 +487,10 @@ var Game = {
 			this.drawFutureTrajectory();
 	},
 
-	drawFutureTrajectory: function () {
-		const futurePositions = this.calculateFutureIntersections();
-		this.context.fillStyle = 'red';
+	drawFutureTrajectory:  function () {
+		const futurePositions =  this.calculateFutureIntersections();
+		this.context.fillStyle = 'yellow';
+		console.log("AMARELO")
 
 		futurePositions.forEach(pos => {
 			this.context.beginPath();
@@ -498,7 +499,19 @@ var Game = {
 		});
 	},
 
-	calculateFutureIntersections: function () {
+	sleep: function(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	},
+	
+
+	calculateFutureIntersections:  function () {
+		
+
+		this.sleep(100000); 
+
+		
+		console.log("vai poha")
+
 		let futureX = this.ball.x;
 		let futureY = this.ball.y;
 		let futurePositions = [];
@@ -537,7 +550,7 @@ var Game = {
 		document.addEventListener('keydown', function (key) {
 			// Handle the 'Press any key to begin' function and start the game.
 			if (Pong.running === false) {
-				console.log('running');
+				console.log('runnnnnnnnnning');
 				Pong.running = true;
 				window.requestAnimationFrame(Pong.loop);
 			}
@@ -610,7 +623,11 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	console.log('Ball Color:', ballColor);
 	console.log('Background Color:', bgColor);
 	console.log('Paddle Color:', paddleColor);
+	console.log("mass esses ai sim viado");
 
+	
+	
+	
 	// Limpar o conteúdo da div container e mostrar apenas o canvas
 	const container = document.querySelector('.container');
 	container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';

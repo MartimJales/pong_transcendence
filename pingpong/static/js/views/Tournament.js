@@ -159,55 +159,6 @@ var Game = {
 			startGame(selectedPlayers, ballColor, bgColor, paddleColor);
 		}, 3000);
 
-		
-
-
-		//SECOND MATCH
-
-
-
-		// Preparar os dados do jogo para enviar
-		//const gameData = {
-		//	player_id: null,  // TO-DO: Substitui pelo ID do jogador atual
-		//	player2_id: null,  // this.player2 ? 2 :  TO-DO: Substitui pelo ID do segundo jogador, se existir, para 1v1
-		//	earned_points: match_result ? 30 : 0,  // Podes ajustar esta lógica conforme necessário
-		//	mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
-		//	opponent: challanger,  // Define o oponente
-		//	result: match_result,  // True se o jogador ganhou, False se perdeu
-		//	match_date: new Date().toISOString()  // Data e hora atual em formato ISO
-		//};
-//
-		////console.log('useriD: ' + userId);
-	//
-		//// Enviar os dados para o backend
-		//const csrftoken = window.getCookie('csrftoken');
-		//fetch('http://127.0.0.1:8000/api/game_local/', {
-		//	method: 'POST',
-		//	headers: {
-		//		'Content-Type': 'application/json',
-		//		'X-CSRFToken': csrftoken
-		//	},
-		//	credentials: 'include',
-		//	body: JSON.stringify(gameData)
-		//})
-		//.then(response => response.json())  // Change this to .json()
-		//.then(data => {
-		//	console.log('Response data:', data);  // Log the entire response
-		//	if (data.status === 'success') {
-		//		console.log('Match data saved successfully');
-		//		console.log('o resultado dessa poha e ' + match_result);
-		//		console.log('os pontinhos ganhados sao ' + gameData.earned_points);
-		//		//window.location.href = `/vaisefuder/`;
-		//		window.go('profile');
-		//	} else {
-		//		console.error('Error saving match data:', data.message);
-		//	}
-		//})
-		//.catch((error) => {
-		//	console.error('Error:', error);
-		//});
-		
-		
 	
 		// Resto do código de exibição do menu de fim de jogo
 		Pong.context.font = '45px Courier New';
