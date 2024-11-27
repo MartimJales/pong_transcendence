@@ -188,6 +188,7 @@ var Game = {
 			var targetPosition;
 
 			if (this.ai) {
+				
 				futureIntersections = this.calculateFutureIntersections();
 				if (futureIntersections.length > 0) {
 					// Set the first future intersection as the target position for the AI
@@ -497,46 +498,59 @@ var Game = {
 			this.context.arc(pos.x, pos.y, 5, 0, Math.PI * 2, false);
 			this.context.fill();
 		});
-	},
+	},	
 
-	sleep: function(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	},
+	calculateFutureIntersections: function () {
+		// Inicializar variáveis de controlo se ainda não existirem
+		if (!this.lastIntersectionCalculationTime) {
+			this.lastIntersectionCalculationTime = 0;
+		}
+		if (!this.lastFuturePositions) {
+			this.lastFuturePositions = [];
+		}
 	
-
-	calculateFutureIntersections:  function () {
-		
-
-		this.sleep(100000); 
-
-		
-		console.log("vai poha")
-
+		const now = Date.now(); // Hora atual em milissegundos
+	
+		// Verificar se passou 1 segundo desde a última chamada
+		if (now - this.lastIntersectionCalculationTime < 2000) {
+			console.warn("Function calculateFutureIntersections() is being called too frequently. Returning previous results.");
+			return this.lastFuturePositions; // Retorna as posições calculadas previamente
+		}
+	
+		// Atualizar o tempo da última chamada
+		this.lastIntersectionCalculationTime = now;
+	
+		console.log("vai poha");
+	
 		let futureX = this.ball.x;
 		let futureY = this.ball.y;
 		let futurePositions = [];
-
+	
 		let moveX = this.ball.moveX;
 		let moveY = this.ball.moveY;
-
+	
 		while (futureX > 0 && futureX < this.canvas.width) {
 			if (futureY <= 0) moveY = DIRECTION.DOWN;
 			if (futureY >= this.canvas.height) moveY = DIRECTION.UP;
-
+	
 			futureX += (moveX === DIRECTION.LEFT ? -this.ball.speed : this.ball.speed);
 			futureY += (moveY === DIRECTION.UP ? -this.ball.speed : this.ball.speed);
-
+	
 			if (futureX <= this.player.x + this.player.width && futureX >= this.player.x) {
 				futurePositions.push({ x: futureX, y: futureY });
 			}
-
+	
 			if (futureX >= this.ai.x - this.ai.width && futureX <= this.ai.x) {
 				futurePositions.push({ x: futureX, y: futureY });
 			}
 		}
-
+	
+		// Atualizar as posições calculadas previamente
+		this.lastFuturePositions = futurePositions;
+	
 		return futurePositions;
 	},
+	
 
 	loop: function () {
 		Pong.update();
