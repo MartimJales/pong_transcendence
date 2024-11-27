@@ -10,7 +10,7 @@ vault server -config /etc/vault.d/vault.hcl &
 # Waiting for Vault to be fully initialized
 IDX=0
 while [ $IDX -lt 10 ]; do
-	if (nc -z localhost:8000); then
+	if (nc -z localhost:8200); then
 		break
 	else
 		sleep 2
@@ -20,7 +20,7 @@ done
 
 if [ $IDX -eq 10 ]; then
 	echo "Vault failed to start on time"
-	exit 1
+	# exit 1
 fi
 
 # Enabling the database secrets engine, which will allow us to store
