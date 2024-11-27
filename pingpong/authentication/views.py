@@ -91,6 +91,18 @@ def api_login(request):
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
 @login_required
+def endTour(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        winner = data['tWinner']
+        print(winner)
+        return JsonResponse({
+            'success': 'deu bom',
+            'winner': winner
+            })
+    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
+
+@login_required
 def add_friend(request):
     if request.method == 'POST':
         try:

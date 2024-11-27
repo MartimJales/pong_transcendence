@@ -41,11 +41,9 @@
         data.currentPageName = name;
 
         data.page?.remove();
-        //if (data.page) { //script remove, precisa ?
-        //    const oldScripts = document.querySelectorAll('script[data-page-script]');
-        //    oldScripts.forEach(script => script.remove());
-        //    data.page.remove();
-        //}
+
+       
+     
      
         
         const page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default") == "");

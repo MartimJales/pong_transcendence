@@ -1,3 +1,25 @@
+var tournamentMatch = {
+    date: new Date().toISOString(),
+    tWinner: "",
+    
+    quarter1: {
+        p1: "",
+        p2: "",
+        winner: ""
+    },
+    quarter2: {
+        p1: "",
+        p2: "",
+        winner: ""  
+    },
+    final: {
+        p1: "",
+        p2: "",
+        winner: ""  
+    }
+};
+
+
 console.log("ta safee papai play no tour");
 
 var usernickzin = localStorage.getItem('usernick');
@@ -23,7 +45,7 @@ var p3;
 var ballColor;
 var bgColor;
 var paddleColor;
-let selectedPlayers;
+var selectedPlayers;
 
 
 // The ball object (The cube that bounces back and forth)
@@ -129,56 +151,100 @@ var Game = {
 		);
 	},
 
+	// Update the draw function in the Game object to include player names
+draw: function () {
+    // ... (keep existing clear and background drawing code) ...
+
+    // Set the default canvas font and align it to the center
+    this.context.font = '100px Courier New';
+    this.context.textAlign = 'center';
+    
+    // Draw player names above scores with smaller font
+    this.context.font = '40px Courier New';
+    this.context.fillText(
+        this.player1Name,
+        (this.canvas.width / 2) - 300,
+        120  // Position above the score
+    );
+
+    // Draw the right side player name (AI or Player 2)
+    this.context.fillText(
+        this.player2Name,
+        (this.canvas.width / 2) + 300,
+        120  // Position above the score
+    );
+
+    // Draw scores with larger font
+    this.context.font = '100px Courier New';
+    // Draw the players score (left)
+    this.context.fillText(
+        this.player.score.toString(),
+        (this.canvas.width / 2) - 300,
+        200
+    );
+
+    // Draw the paddles score (right)
+    if (this.player2) {
+        this.context.fillText(
+            this.player2.score.toString(),
+            (this.canvas.width / 2) + 300,
+            200
+        );
+    } else if (this.ai) {
+        this.context.fillText(
+            this.ai.score.toString(),
+            (this.canvas.width / 2) + 300,
+            200
+        );
+    }
+
+    // ... (keep rest of the existing drawing code) ...
+    
+    // Update endGameMenu display
+    this.context.font = '30px Courier New';
+    this.context.fillText(
+        'Round ' + (Pong.round + 1),
+        (this.canvas.width / 2),
+        35
+    );
+},
+
+// Also update the endGameMenu function to maintain the style
 	endGameMenu: function (text) {
+	    Pong.context.font = '45px Courier New';
+	    Pong.context.fillStyle = this.bgColor;
 
+	    Pong.context.fillRect(
+	        Pong.canvas.width / 2 - 350,
+	        Pong.canvas.height / 2 - 100,
+	        700,
+	        200
+	    );
 
-		console.log("CHEEGOU");
+	    Pong.context.fillStyle = '#00ff00';  // Keep the green color
+	
+	    let winnerName = '';
+	    if (this.player.score > (this.ai ? this.ai.score : this.player2.score)) {
+	        winnerName = this.player1Name;
+	    } else {
+	        winnerName = this.player2Name;
+	    }
 
-		const containerMod = document.querySelector('.container');
-		containerMod.innerHTML = `
-		<div class="tournament-bracket">
-			<h1 class="bracket-title">Next Match: DALE DURO SENPAI</h1>
-			<div class="bracket-container">
-				<div class="semifinal-matches">
-					<div class="match match-1">
-						<div class="player player-top challenger-style">${p2}</div>
-						<div class="vs">VS</div>
-						<div class="player player-bottom challenger-style">${usernickzin}</div>
-					</div>
-		</div>
-		`;
+	    // Display Winner!
+	    Pong.context.fillText(
+	        'Winner!',
+	        Pong.canvas.width / 2,
+	        Pong.canvas.height / 2 - 30
+	    );
 
-		console.log("vai carai");
-		setTimeout(() => {
-			console.log("nao deu");
-			const container2 = document.querySelector('.container');
-			container2.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
-			const canvas2 = document.getElementById('gameCanvas');
-			canvas2.style.display = 'block';
+	    // Display winner's name on next line
+	    Pong.context.fillText(
+	        `${winnerName}!`,
+	        Pong.canvas.width / 2,
+	        Pong.canvas.height / 2 + 30
+	    );
 
-			startGame(selectedPlayers, ballColor, bgColor, paddleColor);
-		}, 3000);
-
-	
-		// Resto do código de exibição do menu de fim de jogo
-		Pong.context.font = '45px Courier New';
-		Pong.context.fillStyle = this.bgColor;
-	
-		Pong.context.fillRect(
-			Pong.canvas.width / 2 - 350,
-			Pong.canvas.height / 2 - 48,
-			700,
-			100
-		);
-	
-		Pong.context.fillStyle = '#ffffff';
-	
-		Pong.context.fillText(text,
-			Pong.canvas.width / 2,
-			Pong.canvas.height / 2 + 15
-		);
-	
-	
+	    return winnerName;
 	},
 
 	// Update all objects (move the player, ai, ball, increment the score, etc.)
@@ -485,6 +551,63 @@ var Game = {
 		// );
 		if (this.ai)
 			this.drawFutureTrajectory();
+
+
+
+
+		////////agora
+
+		this.context.font = '100px Courier New';
+		this.context.textAlign = 'center';
+		
+		// Draw player names above scores with smaller font
+		this.context.font = '40px Courier New';
+		this.context.fillText(
+			this.player1Name,
+			(this.canvas.width / 2) - 300,
+			120  // Position above the score
+		);
+	
+		// Draw the right side player name (AI or Player 2)
+		this.context.fillText(
+			this.player2Name,
+			(this.canvas.width / 2) + 300,
+			120  // Position above the score
+		);
+	
+		// Draw scores with larger font
+		this.context.font = '100px Courier New';
+		// Draw the players score (left)
+		this.context.fillText(
+			this.player.score.toString(),
+			(this.canvas.width / 2) - 300,
+			200
+		);
+	
+		// Draw the paddles score (right)
+		if (this.player2) {
+			this.context.fillText(
+				this.player2.score.toString(),
+				(this.canvas.width / 2) + 300,
+				200
+			);
+		} else if (this.ai) {
+			this.context.fillText(
+				this.ai.score.toString(),
+				(this.canvas.width / 2) + 300,
+				200
+			);
+		}
+	
+		// ... (keep rest of the existing drawing code) ...
+		
+		// Update endGameMenu display
+		this.context.font = '30px Courier New';
+		this.context.fillText(
+			'Round ' + (Pong.round + 1),
+			(this.canvas.width / 2),
+			35
+		);
 	},
 
 	drawFutureTrajectory: function () {
@@ -526,10 +649,12 @@ var Game = {
 	},
 
 	loop: function () {
+
 		Pong.update();
 		Pong.draw();
+		console.log("ignored - looping here");
 
-		// If the game is not over, draw the next frame.
+		
 		if (!Pong.over) requestAnimationFrame(Pong.loop);
 	},
 
@@ -584,19 +709,73 @@ var Game = {
 	}
 };
 
+function cleanupPongGame() {
+    if (Pong) {
+        // Stop animation frame
+        if (Pong.animationFrameId) {
+            cancelAnimationFrame(Pong.animationFrameId);
+            Pong.animationFrameId = null;
+        }
+        
+        // Remove event listeners
+        document.removeEventListener('keydown', Pong.keyDownHandler);
+        document.removeEventListener('keyup', Pong.keyUpHandler);
+        
+        // Clear the canvas if it exists
+        if (Pong.canvas && Pong.context) {
+            Pong.context.clearRect(0, 0, Pong.canvas.width, Pong.canvas.height);
+        }
+        
+        // Reset game state
+        Pong.running = false;
+        Pong.over = true;
+        Pong = null;
+    }
+}
+
 var Pong = null;
-function startGame(players, ballColor, bgColor, paddleColor) {
-	//if (Pong && Pong.running) {   
-	//	return;
-	//}
-	console.log("XUXUTA");
-	Pong = Object.assign({}, Game);
-	Pong.initialize(players, ballColor, bgColor, paddleColor);
+function startGame(players, ballColor, bgColor, paddleColor, player1, player2) {
+    return new Promise((resolve) => {
+        cleanupPongGame();
+        Pong = Object.assign({}, Game);
+        
+        // Add players to the Pong object
+        Pong.player1Name = player1;
+        Pong.player2Name = player2;
+        
+        // Modify the initialize function to store player names
+        const originalInit = Pong.initialize;
+        Pong.initialize = function(players, ballColor, bgColor, paddleColor) {
+            originalInit.call(this, players, ballColor, bgColor, paddleColor);
+            this.player1Name = player1;
+            this.player2Name = player2;
+        };
+        
+        // Modify the endGameMenu function to handle winner resolution
+        const originalEndGameMenu = Pong.endGameMenu;
+        Pong.endGameMenu = function(text) {
+            originalEndGameMenu.call(this, text);
+            
+            // Determine winner based on scores
+            let winner;
+            if (this.player.score > (this.ai ? this.ai.score : this.player2.score)) {
+                winner = this.player1Name;
+            } else {
+                winner = this.player2Name;
+            }
+            
+            // Small delay to ensure game state is properly updated
+            setTimeout(() => {
+                resolve(winner);
+            }, 1000);
+        };
+        
+        Pong.initialize(players, ballColor, bgColor, paddleColor);
+    });
 }
 
 
-
-document.getElementById('startGameButton').addEventListener('click', function () {
+document.getElementById('startGameButton').addEventListener('click', async function () {
 	selectedPlayers = 2; // tornomentao is always 1
 	
 	ballColor = document.getElementById('ballColor').value;
@@ -635,21 +814,106 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 
 
 	}else{
-	
-	// Limpar o conteúdo da div container e mostrar apenas o canvas
-	//const container = document.querySelector('.container');
-	//container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
-	//const canvas = document.getElementById('gameCanvas');
-	//canvas.style.display = 'block';
 
-	//match makin
-	console.log("pau no mach");
-	preGameMode();
+		tournamentMatch.quarter1.p1 = p1;
+		tournamentMatch.quarter1.p2 = p3;
+
+		tournamentMatch.quarter2.p1 = usernickzin;
+		tournamentMatch.quarter2.p2 = p2;
 	
-	//startGame(selectedPlayers, ballColor, bgColor, paddleColor);
+		preGameMode();
+		
+		await new Promise(resolve => setTimeout(resolve, 3000));
+
+		displayNextMatch(p1, p3);
+
+		await new Promise(resolve => setTimeout(resolve, 3000));
+
+		setGameCanva();
+
+		tournamentMatch.quarter1.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, p1, p3);
+		console.log("Match winner: Q1", tournamentMatch.quarter1.w);
+		await new Promise(resolve => setTimeout(resolve, 3000));
+
+		displayNextMatch(usernickzin, p2);
+		await new Promise(resolve => setTimeout(resolve, 3000));
+
+		setGameCanva();
+
+		tournamentMatch.quarter2.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, usernickzin, p2);
+		console.log("Match winner: Q1", tournamentMatch.quarter2.w);
+
+		await new Promise(resolve => setTimeout(resolve, 3000));
+		displayNextMatch(tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
+		tournamentMatch.final.p1 = tournamentMatch.quarter1.w;
+		tournamentMatch.final.p2 = tournamentMatch.quarter2.w;
+		await new Promise(resolve => setTimeout(resolve, 3000));
+
+		setGameCanva();
+
+		tournamentMatch.tWinner = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
+		
+		console.log("WINEEEEEEEERR desse carai", tournamentMatch.tWinner);
+		await new Promise(resolve => setTimeout(resolve, 3000));
+
+		const csrftoken = getCookie('csrftoken');
+		try{
+			const response = await fetch('http://127.0.0.1:8000/api/endTour/', {
+				method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                credentials: 'include', 
+                body: JSON.stringify(tournamentMatch),
+
+			});
+
+			if(response.ok){
+				const data = await response.json();
+				console.log(data);
+			}else{
+				const errorData = await response.json();
+			console.log(errorData);
+			}
+
+		}catch(error){
+			console.log(error);
+		}
+
+
+	
+
 	}
+	
 });
 
+function setGameCanva(){
+	const containerMod1 = document.querySelector('.container');
+		containerMod1.innerHTML = "";
+		const container = document.querySelector('.container');
+		container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
+		const canvas = document.getElementById('gameCanvas');
+		canvas.style.display = 'block';
+}
+
+function displayNextMatch(player1, player2) {
+    const containerMod = document.querySelector('.container');
+    containerMod.innerHTML = `
+    <div class="tournament-bracket">
+        <h1 class="bracket-title">Next Match: DALE DURO SENPAI</h1>
+        <div class="bracket-container">
+            <div class="semifinal-matches">
+                <div class="match match-1">
+                    <div class="player player-top challenger-style">${player1}</div>
+                    <div class="vs">VS</div>
+                    <div class="player player-bottom challenger-style">${player2}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+}
 
 function preGameMode(){
 	const container = document.querySelector('.container');
@@ -678,35 +942,5 @@ function preGameMode(){
 		</div>
 	</div>
 	`;
-
-	setTimeout(() => {
-
-		const containerMod = document.querySelector('.container');
-		containerMod.innerHTML = `
-		<div class="tournament-bracket">
-			<h1 class="bracket-title">Next Match: DALE DURO SENPAI</h1>
-			<div class="bracket-container">
-				<div class="semifinal-matches">
-					<div class="match match-1">
-						<div class="player player-top challenger-style">${p1}</div>
-						<div class="vs">VS</div>
-						<div class="player player-bottom challenger-style">${p3}</div>
-					</div>
-		</div>
-		`;
-
-		setTimeout(() => {
-			containerMod.innerHTML = "";
-				const container = document.querySelector('.container');
-				container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
-				const canvas = document.getElementById('gameCanvas');
-				canvas.style.display = 'block';
-				startGame(selectedPlayers, ballColor, bgColor, paddleColor);
-		}, 3000);
-		
-	}, 3000);
-
-
-
 	
 }

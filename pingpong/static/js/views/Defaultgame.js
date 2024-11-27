@@ -602,6 +602,7 @@ function startGame(players, ballColor, bgColor, paddleColor) {
 	//if (Pong && Pong.running) {
 	//	return;
 	//}
+	
 	Pong = Object.assign({}, Game);
 	Pong.initialize(players, ballColor, bgColor, paddleColor);
 }

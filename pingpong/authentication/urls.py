@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/editNick/', views.editNick, name='editNick'),
     path('api/game_local/', views.game_local, name='game_local'),
     path('api/matchhistory/', views.get_match_history, name='get_match_history'),
+    path('api/endTour/', views.endTour, name='endTour'),
     re_path(r'^.*$', views.index, name='index'),
     
 ] 
