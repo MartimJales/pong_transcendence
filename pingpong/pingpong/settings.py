@@ -118,6 +118,10 @@ DATABASES = {
         'PASSWORD': db_creds['data']['password'],
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': 'require',
+            'sslrootcert': '/usr/share/ca-certificates/pac4_ca.crt'
+        },
     }
 }
 

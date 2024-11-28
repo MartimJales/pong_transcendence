@@ -4,8 +4,11 @@
 mkdir /vault/data/
 chmod -R 755 /vault/data/
 
-# Initiate vault server
+# Initializing the Vault server in the background so we can keep
+# executing the script
 vault server -config /etc/vault.d/vault.hcl &
+
+tail -f /dev/null
 
 # Waiting for Vault to be fully initialized
 IDX=0
@@ -35,7 +38,7 @@ while [ $IDX -lt 10 ]; do
 		vault write database/config/my-postgres \
 		  plugin_name=postgresql-database-plugin \
 		  allowed_roles="django-role" \
-		  connection_url="postgresql://{{username}}:{{password}}@db:5432/${DB_NAME}?sslmode=disable" \
+		  connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=require&sslrootcert=/etc/vault/ca-certificates/pac4_ca.crt" \
 		  username="${DB_USER}" \
 		  password="${DB_PASSWORD}"
 
@@ -62,4 +65,8 @@ if [ $IDX -eq 10 ]; then
 	exit 1
 fi
 
+echo "Setup script has finished successfully"
+
+# Keeping the container running since the Vault server execution has
+# been sent to the background
 tail -f "/dev/null"

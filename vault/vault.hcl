@@ -13,3 +13,4 @@ listener "tcp"
 
 api_addr = "https://vault_container:8200"
 cluster_addr = "https://vault_container:8201"
+disable_mlock = true
