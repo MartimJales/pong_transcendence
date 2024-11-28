@@ -1,7 +1,7 @@
 var tournamentMatch = {
     date: new Date().toISOString(),
     tWinner: "",
-    
+    fScore: "",
     quarter1: {
         p1: "",
         p2: "",
@@ -757,11 +757,14 @@ function startGame(players, ballColor, bgColor, paddleColor, player1, player2) {
             originalEndGameMenu.call(this, text);
             
             // Determine winner based on scores
-            let winner;
+			let winner;
+            
             if (this.player.score > (this.ai ? this.ai.score : this.player2.score)) {
                 winner = this.player1Name;
+                tournamentMatch.fScore = `${this.player.score}-${this.ai ? this.ai.score : this.player2.score}`;
             } else {
                 winner = this.player2Name;
+                tournamentMatch.fScore = `${this.ai ? this.ai.score : this.player2.score}-${this.player.score}`;
             }
             
             // Small delay to ensure game state is properly updated

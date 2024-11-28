@@ -95,9 +95,11 @@ def endTour(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         winner = data['tWinner']
+        score = data['fScore']
         print(winner)
         return JsonResponse({
             'success': 'deu bom',
+            'score': score,
             'winner': winner
             })
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})

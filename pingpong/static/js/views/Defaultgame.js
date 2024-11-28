@@ -117,7 +117,7 @@ var Game = {
 	endGameMenu: function (text) {
 		// Preparar os dados do jogo para enviar
 		const gameData = {
-			player_id: null,  // TO-DO: Substitui pelo ID do jogador atual
+			player_id: "host",  // TO-DO: Substitui pelo ID do jogador atual
 			player2_id: null,  // this.player2 ? 2 :  TO-DO: Substitui pelo ID do segundo jogador, se existir, para 1v1
 			earned_points: match_result ? 15 : 0,  // Podes ajustar esta lógica conforme necessário
 			mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
@@ -126,9 +126,7 @@ var Game = {
 			match_date: new Date().toISOString()  // Data e hora atual em formato ISO
 		};
 
-		//console.log('useriD: ' + userId);
-	
-		// Enviar os dados para o backend
+		
 		const csrftoken = window.getCookie('csrftoken');
 		fetch('http://127.0.0.1:8000/api/game_local/', {
 			method: 'POST',
@@ -513,7 +511,7 @@ var Game = {
 	
 		// Verificar se passou 1 segundo desde a última chamada
 		if (now - this.lastIntersectionCalculationTime < 2000) {
-			console.warn("Function calculateFutureIntersections() is being called too frequently. Returning previous results.");
+			//console.warn("Function calculateFutureIntersections() is being called too frequently. Returning previous results.");
 			return this.lastFuturePositions; // Retorna as posições calculadas previamente
 		}
 	
