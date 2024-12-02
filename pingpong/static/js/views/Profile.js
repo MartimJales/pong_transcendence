@@ -153,3 +153,59 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
         }
     });
 });
+
+
+// Get the elements
+var profileImg = document.querySelector('.profile-img');
+var fileInput = document.querySelector('#profileImageUpload');
+
+console.log(profileImg);
+
+// Make image clickable
+profileImg.style.cursor = 'pointer';
+
+// Add click handler to image
+profileImg.addEventListener('click', () => {
+    fileInput.click();
+});
+
+// Handle file selection
+fileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+    }
+
+    // Create FormData
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+        const csrftoken = getCookie('csrftoken');
+        const response = await fetch('http://127.0.0.1:8000/api/upload_profile_image/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData,
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            // Update the image source
+            profileImg.src = data.image_url;
+        } else {
+            const errorData = await response.json();
+            console.error('Upload failed:', errorData);
+            alert(errorData.error || 'Failed to upload image');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while uploading');
+    }
+});

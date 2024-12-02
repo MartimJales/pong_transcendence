@@ -22,6 +22,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 
+from PIL import Image
+from django.conf import settings
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import uuid
+
+
 # Create your views here.
 
 @csrf_exempt
@@ -333,3 +340,76 @@ def handle_user_logout(request):
                 })
         
     return HttpResponse(status=200)
+
+@login_required
+def upload_profile_image(request):
+    try:
+        # Check if there's a file in the request
+        if 'image' not in request.FILES:
+            return JsonResponse({'error': 'No image file provided'}, status=400)
+        
+        image_file = request.FILES['image']
+        
+        # Validate file type
+        allowed_types = ['image/jpeg', 'image/png', 'image/gif']
+        if image_file.content_type not in allowed_types:
+            return JsonResponse({'error': 'Invalid file type. Please upload a JPEG, PNG or GIF'}, status=400)
+        
+        # Validate file size (e.g., 5MB max)
+        if image_file.size > 5 * 1024 * 1024:
+            return JsonResponse({'error': 'File too large. Maximum size is 5MB'}, status=400)
+        
+        # Generate a unique filename
+        file_extension = os.path.splitext(image_file.name)[1]
+        new_filename = f"profile_{request.user.id}_{uuid.uuid4().hex[:10]}{file_extension}"
+        
+        # Define the upload path within MEDIA_ROOT/profile_pics
+        upload_path = os.path.join('profile_pics', new_filename)
+        
+        try:
+            # Open the image using Pillow
+            img = Image.open(image_file)
+            
+            # Convert to RGB if necessary (in case of PNG with transparency)
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+            
+            # Resize image to a maximum size while maintaining aspect ratio
+            max_size = (800, 800)
+            img.thumbnail(max_size, Image.Resampling.LANCZOS)
+            
+            # Create a temporary file to save the processed image
+            temp_path = os.path.join('profile_pics', f'temp_{new_filename}')
+            with default_storage.open(temp_path, 'wb') as f:
+                img.save(f, format='JPEG', quality=85)
+            
+            # If user already has a profile image that's not the default, delete it
+            if request.user.userpic and \
+               str(request.user.userpic) != 'profile_pics/default.jpg' and \
+               os.path.exists(os.path.join(settings.MEDIA_ROOT, str(request.user.userpic))):
+                default_storage.delete(str(request.user.userpic))
+            
+            # Save the new image path to user's profile
+            request.user.userpic = upload_path
+            request.user.save()
+            
+            # Move temp file to final location
+            default_storage.save(upload_path, default_storage.open(temp_path))
+            default_storage.delete(temp_path)
+            
+            # Generate the URL for the uploaded image
+            image_url = default_storage.url(upload_path)
+            
+            return JsonResponse({
+                'success': True,
+                'image_url': image_url
+            })
+            
+        except Exception as e:
+            # Clean up any temporary files if they exist
+            if 'temp_path' in locals() and default_storage.exists(temp_path):
+                default_storage.delete(temp_path)
+            return JsonResponse({'error': 'Error processing image'}, status=500)
+            
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

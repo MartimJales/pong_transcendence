@@ -83,8 +83,8 @@
 
     window.addEventListener("popstate", (e) => { //everythime we change this shit with .go()
         const name = window.location.href.split("#/")[1];
-        if (window.location.href === "http://localhost:8000/" && localStorage.getItem('user_id')) // in case of manueally http://localhost:8000/ again
-            name = "profile";
+        if (window.location.href === "http://localhost:8000/") // in case of manueally http://localhost:8000/ again
+            name = "404";
         setPage(name);  
     });
 

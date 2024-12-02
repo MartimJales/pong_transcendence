@@ -9,7 +9,16 @@
         <div class="text-center mt-5">
             <h1>Welcome, </h1>
             <br>
-            <img src="{% static 'images/default.jpg' %}" alt="Default Profile Image" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
+            <div class="profile-img-wrapper position-relative">
+              <img src="{% static 'images/Gabriel.png' %}" 
+                   alt="Default Profile Image" 
+                   class="img-fluid rounded-circle profile-img" 
+                   style="width: 200px; height: 200px; object-fit: cover;">
+              <input type="file" 
+                     id="profileImageUpload" 
+                     accept="image/*" 
+                     style="display: none;">
+          </div>
             <br>
             <h2>Nick: </h2>
             <h2>Losses: </h2>
