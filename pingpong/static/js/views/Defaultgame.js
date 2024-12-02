@@ -647,6 +647,8 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	const canvas = document.getElementById('gameCanvas');
 	canvas.style.display = 'block';
 
+	document.getElementById('navs').style.display = 'none';
+
 	// Iniciar o jogo com as configurações selecionadas
 	startGame(selectedPlayers, ballColor, bgColor, paddleColor);
 });

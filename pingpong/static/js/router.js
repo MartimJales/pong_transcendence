@@ -93,25 +93,29 @@
     let varzinha;
     function getPageNameFromURL() { // only runs once when django renders a poha do html
 
-        let flag = parseInt(localStorage.getItem('pageFlag') || '0'); // this shit is to prevent default behaviour do 404 page
-        if (!flag) { 
-            localStorage.setItem('pageFlag', '1'); // i++;
-            if(localStorage.getItem('user_id')){
-                console.log("trigged automatico aqui!! --> login profile");
-                return "profile";
-            }
-            console.log("trigged automatico aqui!! --> login profile")
-            return "login";
-        }
+        //let flag = parseInt(localStorage.getItem('pageFlag') || '0'); // this shit is to prevent default behaviour do 404 page
+        //if (!flag) { 
+        //    localStorage.setItem('pageFlag', '1'); // i++;
+        //    if(localStorage.getItem('user_id')){
+        //        console.log("trigged automatico aqui!! --> login profile");
+        //        return "profile";
+        //    }
+        //    console.log("trigged automatico aqui!! --> login profile")
+        //    return "login";
+        //}
 
         let pageName;
         let hash = window.location.href;
         
-        if (hash === "http://localhost:8000/" || hash === "http://127.0.0.1:8000/"){
+        if (hash === "http://localhost:8000/" || hash === "http://127.0.0.1:8000/" || hash === "http://127.0.0.1:8000/#/profile"){
+           
             if (localStorage.getItem('user_id')){ //asim forcamos o user a presionar sempre logout
                 pageName = "profile";
             }
             else{
+                console.log(getSessionId());
+               // handleLogout();
+               // updateNavigation();
                 pageName = "login";
             }
             return pageName;   //talvez checkar se o user ja foi logado para redirecionar para lo profile security here
@@ -155,6 +159,25 @@
         return cookieValue;
     }
 
+    function getSessionId() {
+        if (!document.cookie) {
+            console.log("No cookies found");
+            return null;
+        }
+    
+        const cookies = document.cookie.split(';');
+        console.log("All cookies:", cookies);  // Debug log
+    
+        for (let cookie of cookies) {
+            // Use startsWith to properly match the cookie name
+            if (cookie.trim().startsWith('sessionid=')) {
+                const value = cookie.trim().split('=')[1];
+                console.log("Found session ID:", value);  // Debug log
+                return value;
+            }
+        }
+        return null;
+    }
 
     window.getCookie = getCookie;
 
@@ -185,7 +208,6 @@
         }
     };
 
-
     const navTemplates = {
         loggedOut: `
             <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
@@ -204,7 +226,7 @@
             </nav>
         `,
         loggedIn: `
-            <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4" id="navs">
                 <a class="navbar-brand" href="/" data-link>Transcendence</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" 
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">

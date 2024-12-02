@@ -817,7 +817,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 
 
 	}else{
-
+		document.getElementById('navs').style.display = 'none';
 		tournamentMatch.quarter1.p1 = p1;
 		tournamentMatch.quarter1.p2 = p3;
 
