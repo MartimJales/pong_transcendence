@@ -2,33 +2,76 @@
 
 # Creating necessary directory set in our Vault config for RAFT storage
 mkdir /vault/data/
-chmod -R 755 /vault/data/
+chmod -R 750 /vault/data/
+chown -R vault:vault /vault/data/
 
-# Initializing the Vault server in the background so we can keep
-# executing the script
-vault server -config /etc/vault.d/vault.hcl &
+# Starting Vault server and sending it to the background since it
+# defaults to running on the foreground and would interfere with the
+# execution of the rest of the script, while also storing its PID
+echo "Initializing Vault server in the background..."
+vault server -config=/etc/vault.d/vault.hcl &
+VAULT_PID=$!
 
-tail -f /dev/null
-
-# Waiting for Vault to be fully initialized
-IDX=0
-while [ $IDX -lt 10 ]; do
-	if (nc -z localhost:8200); then
+# Waiting for Vault server initialization since it starts running in
+# parallel with this script and killing it if it fails to start on time
+for i in {1..10}; do
+	if [ vault status &> /dev/null ] ; then
+		echo "Vault server is ready"
 		break
-	else
-		sleep 2
-		IDX=$((IDX+1))
 	fi
+	echo "Waiting for Vault initialization... ($i/10)"
+	sleep 2
 done
 
-if [ $IDX -eq 10 ]; then
-	echo "Vault failed to start on time"
-	# exit 1
+if [ ! vault status &> /dev/null ] ; then
+	echo "Vault server failed to start on time"
+	kill $VAULT_PID
+	exit 1
 fi
+
+# Initializing Vault's storage backend and storing the command's output
+if [ ! -f /vault/init-output.json ]; then
+	echo "Initializing Vault..."
+	vault operator init -format=json > /vault/init-output.json
+	echo "Vault initialized. Output stored in /vault/init-output.json"
+else
+	echo "Vault is already initialized. Skipping initialization."
+fi
+
+# Extracting Vault's unseal keys and root token from the aforementioned
+# output
+UNSEAL_KEYS=$(jq -r '.unseal_keys_b64[]' /vault/init-output.json)
+ROOT_TOKEN=$(jq -r '.root_token' /vault/init-output.json)
+
+# Unsealing Vault in order to modify its default values
+echo "Unsealing Vault..."
+for key in $UNSEAL_KEYS; do
+	vault operator unseal "$key"
+done
+echo "Vault is now unsealed"
+
+echo "Starting Vault configuration..."
+export VAULT_TOKEN=$ROOT_TOKEN
 
 # Enabling the database secrets engine, which will allow us to store
 # and create dynamically generated secrets
 vault secrets enable database
+
+# Enabling a KV secrets engine and storing the SSL certificates that will
+# allow us to connect to the PostgreSQL container over HTTPS
+#vault secrets enable -path=certs kv
+
+# Creating references to the SSL certificates and keys inside Vault
+#vault kv put secret/postgres-cert/ \
+#	client_cert=@vault_crt \
+#	client_key=@vault_key \
+#	ca_cert=@pac4_ca_crt
+
+# Fetching the contents of the SSL certificates and keys and storing
+# them inside the references we created earlier
+#vault kv get -format=json certs/postgres | jq -r '.data.data.vault_crt' > /etc/ssl/certs/vault.crt
+#vault kv get -format=json certs/postgres | jq -r '.data.data.vault_key' > /etc/ssl/private/vault.key
+#vault kv get -format=json certs/postgres | jq -r '.data.data.pac4_ca_crt' > /etc/vault.d/ca-certificates/pac4_ca.crt
 
 # Waiting for database to be fully initialized
 IDX=0
@@ -36,22 +79,22 @@ while [ $IDX -lt 10 ]; do
 	if (nc -w 3 -zv $DB_ADDR $DB_PORT); then
 		# Configuring connection to PostgreSQL database
 		vault write database/config/my-postgres \
-		  plugin_name=postgresql-database-plugin \
-		  allowed_roles="django-role" \
-		  connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=require&sslrootcert=/etc/vault/ca-certificates/pac4_ca.crt" \
-		  username="${DB_USER}" \
-		  password="${DB_PASSWORD}"
+			plugin_name=postgresql-database-plugin \
+			allowed_roles="django-role" \
+			connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=require&sslrootcert=/etc/vault.d/ca-certificates/pac4_ca.crt" \
+			username="${DB_USER}" \
+			password="${DB_PASSWORD}"
 
 		# Creating a role to enable Django to access dynamically 
 		# generated credentials
 		vault write database/roles/django-role \
-		  db_name=my-postgres \
-		  creation_statements="CREATE USER \"{{name}}\" WITH PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
+			db_name=my-postgres \
+			creation_statements="CREATE USER \"{{name}}\" WITH PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
 							   GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO \"{{name}}\"; \
 							   GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \"{{name}}\"; \
 							   GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"{{name}}\";" \
-		  default_ttl="1h" \
-		  max_ttl="24h"
+			default_ttl="1h" \
+			max_ttl="24h"
 
 		break
 	else
@@ -65,8 +108,17 @@ if [ $IDX -eq 10 ]; then
 	exit 1
 fi
 
+# Sealing Vault back up once the configuration has finished
+echo "Sealing Vault..."
+vault operator seal
+
+# Removing the output file of the "vault operator init" command
+# considering it contains both the Vault's unseal keys and root token
+# stored in plain text
+rm /vault/init-output.json
+
 echo "Setup script has finished successfully"
 
 # Keeping the container running since the Vault server execution has
 # been sent to the background
-tail -f "/dev/null"
+wait $VAULT_PID

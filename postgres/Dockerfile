@@ -1,6 +1,7 @@
 FROM postgres:13
 
-# SSL certificates
+# SSL certificates for comunicating with other containers in the Docker
+# network via HTTPS
 COPY ./Certificates/pac4_ca.crt /etc/postgresql-common/
 COPY ./Certificates/postgres.crt /etc/ssl/certs/
 COPY ./Certificates/postgres.key /etc/ssl/private/
