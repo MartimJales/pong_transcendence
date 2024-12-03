@@ -1,0 +1,1 @@
+console.log("game option view");
