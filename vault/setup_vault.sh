@@ -57,22 +57,6 @@ export VAULT_TOKEN=$ROOT_TOKEN
 # and create dynamically generated secrets
 vault secrets enable database
 
-# Enabling a KV secrets engine and storing the SSL certificates that will
-# allow us to connect to the PostgreSQL container over HTTPS
-#vault secrets enable -path=certs kv
-
-# Creating references to the SSL certificates and keys inside Vault
-#vault kv put secret/postgres-cert/ \
-#	client_cert=@vault_crt \
-#	client_key=@vault_key \
-#	ca_cert=@pac4_ca_crt
-
-# Fetching the contents of the SSL certificates and keys and storing
-# them inside the references we created earlier
-#vault kv get -format=json certs/postgres | jq -r '.data.data.vault_crt' > /etc/ssl/certs/vault.crt
-#vault kv get -format=json certs/postgres | jq -r '.data.data.vault_key' > /etc/ssl/private/vault.key
-#vault kv get -format=json certs/postgres | jq -r '.data.data.pac4_ca_crt' > /etc/vault.d/ca-certificates/pac4_ca.crt
-
 # Waiting for database to be fully initialized
 IDX=0
 while [ $IDX -lt 10 ]; do
@@ -81,7 +65,7 @@ while [ $IDX -lt 10 ]; do
 		vault write database/config/my-postgres \
 			plugin_name=postgresql-database-plugin \
 			allowed_roles="django-role" \
-			connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=require&sslrootcert=/etc/vault.d/ca-certificates/pac4_ca.crt" \
+			connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=verify-full&sslcert=/etc/ssl/certs/vault.crt&sslkey=/etc/ssl/private/vault.key&sslrootcert=/etc/vault.d/ca-certificates/pac4_ca.crt" \
 			username="${DB_USER}" \
 			password="${DB_PASSWORD}"
 

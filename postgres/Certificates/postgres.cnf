@@ -6,7 +6,7 @@ distinguished_name	= req_distinguished_name
 req_extensions		= v3_req
 
 [req_distinguished_name]
-commonName			= postgres_container
+commonName			= postgres
 
 [v3_req]
 subjectAltName		= @alt_names
@@ -14,4 +14,5 @@ subjectAltName		= @alt_names
 [alt_names]
 DNS.1				= postgres_container
 DNS.2				= localhost
+DNS.3				= db
 IP.1				= 127.0.0.1
