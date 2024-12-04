@@ -16,7 +16,7 @@ ARG PACKAGES="	curl \
 
 # Updating the repository lists and installing the aforementioned
 # packges
-RUN apk update && apk add $(PACKAGES)
+RUN apk update && apk add $PACKAGES
 
 # Creating directories for the SSL certificates that will allow us
 # to connect to our other containers over an encrypted HTTPS
