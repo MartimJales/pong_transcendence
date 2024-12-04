@@ -198,7 +198,7 @@ fileInput.addEventListener('change', async (e) => {
         if (response.ok) {
             const data = await response.json();
             // Update the image source
-            profileImg.src = data.image_url;
+            profileImg.src = "/static/images/" + data.image_url;
         } else {
             const errorData = await response.json();
             console.error('Upload failed:', errorData);
@@ -206,6 +206,6 @@ fileInput.addEventListener('change', async (e) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while uploading');
+        alert(error);
     }
 });

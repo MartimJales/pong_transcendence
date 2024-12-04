@@ -206,6 +206,6 @@ fileInput.addEventListener('change', async (e) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while uploading');
+        alert(error);
     }
 });

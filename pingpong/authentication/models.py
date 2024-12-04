@@ -6,7 +6,7 @@ from datetime import datetime
 
 class PlayerProfile(models.Model):
     nick = models.CharField(max_length=50, default="Please choose a nick")
-    userpic = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.jpg')
+    userpic = models.ImageField(upload_to='static/images', default='profile_pics/default.jpg')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     total_points = models.PositiveIntegerField(default=0)
     wins = models.PositiveIntegerField(default=0)
