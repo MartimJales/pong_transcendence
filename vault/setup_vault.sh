@@ -19,7 +19,7 @@ for i in {1..10}; do
 		echo "Vault server is ready"
 		break
 	fi
-	echo "Waiting for Vault initialization... ($i/10)"
+	echo "Waiting for Vault initialization..."
 	sleep 2
 done
 
@@ -100,6 +100,9 @@ vault operator seal
 # considering it contains both the Vault's unseal keys and root token
 # stored in plain text
 rm /vault/init-output.json
+
+# Removing environment variables containing sensitive information
+unset DB_ADDR DB_HOST DB_NAME DB_PASSWORD DB_PORT DB_USER VAULT_TOKEN 
 
 echo "Setup script has finished successfully"
 

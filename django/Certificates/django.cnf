@@ -6,7 +6,7 @@ distinguished_name	= req_distinguished_name
 req_extensions		= v3_req
 
 [req_distinguished_name]
-commonName			= django_container
+commonName			= django
 
 [v3_req]
 subjectAltName		= @alt_names
