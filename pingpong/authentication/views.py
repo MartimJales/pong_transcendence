@@ -28,6 +28,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import uuid
 
+import os
 
 # Create your views here.
 
@@ -170,7 +171,7 @@ def get_profile_data(request):
             'losses': profile.losses,
             'wins': profile.wins,
             'total_points': profile.total_points,
-            'image_url': profile.userpic.url if profile.userpic else '/media/profile_pics/default.jpg',
+            'image_url': profile.userpic.url if profile.userpic else '/static/images/profile_pics/default.jpg',
             'friends': [
                 {'username': friend.user.username, 'is_online': friend.is_online}
                 for friend in profile.friends.all()
@@ -384,13 +385,13 @@ def upload_profile_image(request):
                 img.save(f, format='JPEG', quality=85)
             
             # If user already has a profile image that's not the default, delete it
-            if request.user.userpic and \
-               str(request.user.userpic) != 'profile_pics/default.jpg' and \
-               os.path.exists(os.path.join(settings.MEDIA_ROOT, str(request.user.userpic))):
-                default_storage.delete(str(request.user.userpic))
+            if request.user.playerprofile.userpic and \
+               str(request.user.playerprofile.userpic) != 'profile_pics/default.jpg' and \
+               os.path.exists(os.path.join(settings.MEDIA_ROOT, str(request.user.playerprofile.userpic))):
+                default_storage.delete(str(request.user.playerprofile.userpic))
             
             # Save the new image path to user's profile
-            request.user.userpic = upload_path
+            request.user.playerprofile.userpic = upload_path
             request.user.save()
             
             # Move temp file to final location
@@ -409,7 +410,7 @@ def upload_profile_image(request):
             # Clean up any temporary files if they exist
             if 'temp_path' in locals() and default_storage.exists(temp_path):
                 default_storage.delete(temp_path)
-            return JsonResponse({'error': 'Error processing image'}, status=500)
+            return JsonResponse({'error': str(e)}, status=500)
             
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
