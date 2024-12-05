@@ -5,17 +5,17 @@ var tournamentMatch = {
     quarter1: {
         p1: "",
         p2: "",
-        winner: ""
+        w: ""
     },
     quarter2: {
         p1: "",
         p2: "",
-        winner: ""  
+        w: ""  
     },
     final: {
         p1: "",
         p2: "",
-        winner: ""  
+        w: ""  
     }
 };
 

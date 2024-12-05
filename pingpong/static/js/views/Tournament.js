@@ -5,17 +5,19 @@ var tournamentMatch = {
     quarter1: {
         p1: "",
         p2: "",
-        winner: ""
+        w: "",
+		score: ""
     },
     quarter2: {
         p1: "",
         p2: "",
-        winner: ""  
+        w: "" ,
+		score: "" 
     },
     final: {
         p1: "",
         p2: "",
-        winner: ""  
+        w: ""  
     }
 };
 
@@ -739,11 +741,9 @@ function startGame(players, ballColor, bgColor, paddleColor, player1, player2) {
         cleanupPongGame();
         Pong = Object.assign({}, Game);
         
-        // Add players to the Pong object
         Pong.player1Name = player1;
         Pong.player2Name = player2;
         
-        // Modify the initialize function to store player names
         const originalInit = Pong.initialize;
         Pong.initialize = function(players, ballColor, bgColor, paddleColor) {
             originalInit.call(this, players, ballColor, bgColor, paddleColor);
@@ -751,23 +751,30 @@ function startGame(players, ballColor, bgColor, paddleColor, player1, player2) {
             this.player2Name = player2;
         };
         
-        // Modify the endGameMenu function to handle winner resolution
         const originalEndGameMenu = Pong.endGameMenu;
         Pong.endGameMenu = function(text) {
             originalEndGameMenu.call(this, text);
             
-            // Determine winner based on scores
-			let winner;
+            let winner;
+            let score;
             
             if (this.player.score > (this.ai ? this.ai.score : this.player2.score)) {
                 winner = this.player1Name;
-                tournamentMatch.fScore = `${this.player.score}-${this.ai ? this.ai.score : this.player2.score}`;
+                score = `${this.player.score}-${this.ai ? this.ai.score : this.player2.score}`;
             } else {
                 winner = this.player2Name;
-                tournamentMatch.fScore = `${this.ai ? this.ai.score : this.player2.score}-${this.player.score}`;
+                score = `${this.ai ? this.ai.score : this.player2.score}-${this.player.score}`;
             }
             
-            // Small delay to ensure game state is properly updated
+            // Determine which match we're in and set the appropriate score
+            if (!tournamentMatch.quarter1.score) {
+                tournamentMatch.quarter1.score = score;
+            } else if (!tournamentMatch.quarter2.score) {
+                tournamentMatch.quarter2.score = score;
+            } else {
+                tournamentMatch.fScore = score;
+            }
+            
             setTimeout(() => {
                 resolve(winner);
             }, 1000);
@@ -857,6 +864,8 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 		tournamentMatch.tWinner = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
 		
 		console.log("WINEEEEEEEERR desse carai", tournamentMatch.tWinner);
+		console.log("q1 score -> ", tournamentMatch.quarter1.score);
+		console.log("q2 score ->", tournamentMatch.quarter2.score);
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
 		const csrftoken = getCookie('csrftoken');
