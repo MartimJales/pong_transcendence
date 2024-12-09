@@ -171,7 +171,7 @@ def get_profile_data(request):
             'losses': profile.losses,
             'wins': profile.wins,
             'total_points': profile.total_points,
-            'image_url': profile.userpic.url if profile.userpic else '/static/images/profile_pics/default.jpg',
+            'image_url': f'/static/images/{profile.userpic}' if profile.userpic else '/static/images/default.jpg',
             'friends': [
                 {'username': friend.user.username, 'is_online': friend.is_online}
                 for friend in profile.friends.all()
