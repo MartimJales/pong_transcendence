@@ -24,6 +24,8 @@ services:
       - "8200:8200"
     env_file:
       - .env
+    volumes:
+      - setup:/setup/
     networks:
       - webnet
 
@@ -32,16 +34,18 @@ services:
     depends_on:
       - vault
     container_name: django_container
+    volumes:
+      - .:/app
+      - setup:/setup/
     command: >
       sh -c "
         python -m pip install Pillow &&
-        pip install django-cors-headers &&    
+        pip install django-cors-headers && 
+        pip install channels &&  
         python manage.py makemigrations &&
         python manage.py migrate &&
         python manage.py createsuperuser --no-input &&
         python manage.py runserver 0.0.0.0:8000" 
-    volumes:
-      - .:/app
     env_file:
       - .env
     expose:
@@ -64,6 +68,7 @@ services:
 
 volumes:
   postgres_data:
+  setup:
 
 networks:
   webnet:

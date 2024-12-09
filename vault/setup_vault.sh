@@ -1,6 +1,7 @@
 #!/bin/ash
 
 # Creating necessary directory set in our Vault config for RAFT storage
+# and assigning correct ownership to the "vault" user
 mkdir /vault/data/
 chmod -R 750 /vault/data/
 chown -R vault:vault /vault/data/
@@ -92,6 +93,29 @@ if [ $IDX -eq 10 ]; then
 	exit 1
 fi
 
+# Enabling AppRole to allow Django to connect to Vault
+vault auth enable approle
+vault policy write django-policy /etc/vault.d/django-policy.hcl
+
+vault write auth/approle/role/django-role \
+	token_policies="django-policy" \
+	token_ttl=1h \
+	token_max_ttl=4h
+
+# Securely storing the Django's role and secret ID's and creating a
+# "signal" file to let Django's setup script know they are ready to be
+# fetched
+vault read auth/approle/role/django-role/role-id
+vault write -f auth/approle/role/django-role/secret-id
+touch /setup/vault_ids_ready
+echo "Django role and secret ID's generated successfully"
+
+# Waiting for Django to fetch ID's before sealing Vault again
+while [ -f /setup/vault_ids_ready ]; do
+	echo "Waiting for Django to fetch ID's..."
+	sleep 1
+done
+
 # Sealing Vault back up once the configuration has finished
 echo "Sealing Vault..."
 vault operator seal
@@ -104,7 +128,7 @@ rm /vault/init-output.json
 # Removing environment variables containing sensitive information
 unset DB_ADDR DB_HOST DB_NAME DB_PASSWORD DB_PORT DB_USER VAULT_TOKEN 
 
-echo "Setup script has finished successfully"
+echo "Setup script has finished successfully. Keeping Vault server running in the background..."
 
 # Keeping the container running since the Vault server execution has
 # been sent to the background

@@ -87,18 +87,22 @@ CHANNEL_LAYERS = {
     }
 }
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 # Tweaked in order to fetch dynamic credentials from Vault
 
 import hvac
+import os
 import time
 
 VAULT_URL = os.environ.get('VAULT_ADDR')
-VAULT_TOKEN = os.environ.get('VAULT_DEV_ROOT_TOKEN_ID')
+ROLE_ID = os.environ.get('VAULT_ROLE_ID')
+SECRET_ID = os.environ.get('VAULT_SECRET_ID')
 
-client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
+client = hvac.Client(url=VAULT_URL)
+
+auth_response = client.auth.approle.login(role_id=ROLE_ID, secret_id=SECRET_ID)
+client.token = auth_response['auth']['client_token']
 
 while True:
     try:
