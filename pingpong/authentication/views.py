@@ -28,9 +28,15 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import uuid
 
+# blockchain shit
 import os
+from . import web3_settings 
+from web3 import Web3
+from eth_account import Account
+from eth_utils import to_checksum_address
+from hexbytes import HexBytes
+from datetime import datetime, timezone
 
-# Create your views here.
 
 @csrf_exempt
 def signup(request):
@@ -98,19 +104,6 @@ def api_login(request):
             })
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
-@login_required
-def endTour(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        winner = data['tWinner']
-        score = data['fScore']
-        print(winner)
-        return JsonResponse({
-            'success': 'deu bom',
-            'score': score,
-            'winner': winner
-            })
-    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
 @login_required
 def add_friend(request):
@@ -414,3 +407,111 @@ def upload_profile_image(request):
             
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def endTour(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            quarter1 = data['quarter1']
+            quarter2 = data['quarter2']
+            finals = data['finals']
+            date = data['date']
+
+            # Prepare data arrays for the smart contract
+            quarter1_data = [quarter1['p1'], quarter1['p2'], quarter1['w'], quarter1['score']]
+            quarter2_data = [quarter2['p1'], quarter2['p2'], quarter2['w'], quarter2['score']]
+            finals_data = [finals['p1'], finals['p2'], finals['w'], finals['score']]
+
+            # Get nonce
+            nonce = web3_settings.w3.eth.get_transaction_count(web3_settings.WALLET_ADDRESS)
+            
+            # Build transaction using imported contract
+            transaction = web3_settings.contract.functions.addTournament(
+                date,
+                quarter1_data,
+                quarter2_data,
+                finals_data
+            ).build_transaction({
+                'chainId': 11155111,  # Sepolia chain ID
+                'gas': 300000,
+                'gasPrice': web3_settings.w3.eth.gas_price,
+                'nonce': nonce,
+            })
+            
+            # Sign transaction
+            signed_txn = web3_settings.w3.eth.account.sign_transaction(
+                transaction, 
+                web3_settings.WALLET_PRIVATE_KEY
+            )
+            
+            # Send raw transaction using the raw_transaction property
+            tx_hash = web3_settings.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            
+            # Wait for receipt
+            tx_receipt = web3_settings.w3.eth.wait_for_transaction_receipt(tx_hash)
+            
+            return JsonResponse({
+                'success': True,
+                'transaction_hash': tx_receipt['transactionHash'].hex(),
+                'score': finals['score'],
+                'winner': finals['w']
+            })
+            
+        except Exception as e:
+            print(f"Error in endTour: {str(e)}")
+            walletpv = web3_settings.WALLET_PRIVATE_KEY
+            walletadd = web3_settings.WALLET_ADDRESS
+            return JsonResponse({
+                'error': str(e),
+                'walletpv1': walletpv,
+                'walletadd1': walletadd
+            }, status=500)
+            
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+#@login_required
+#def getTournamentHistory(request):
+#    try:
+#        # Get total number of tournaments
+#        tournament_count = contract.functions.getTournamentCount().call()
+#        
+#        tournaments = []
+#        for i in range(tournament_count):
+#            # Get tournament data from contract
+#            date, quarter1_data, quarter2_data, finals_data = contract.functions.getTournament(i).call()
+#            
+#            # Format tournament data
+#            tournament = {
+#                'date': date,
+#                'quarter1': {
+#                    'player1': quarter1_data[0],
+#                    'player2': quarter1_data[1],
+#                    'winner': quarter1_data[2],
+#                    'score': quarter1_data[3]
+#                },
+#                'quarter2': {
+#                    'player1': quarter2_data[0],
+#                    'player2': quarter2_data[1],
+#                    'winner': quarter2_data[2],
+#                    'score': quarter2_data[3]
+#                },
+#                'finals': {
+#                    'player1': finals_data[0],
+#                    'player2': finals_data[1],
+#                    'winner': finals_data[2],
+#                    'score': finals_data[3]
+#                }
+#            }
+#            tournaments.append(tournament)
+#            
+#        return JsonResponse({
+#            'success': True,
+#            'tournaments': tournaments
+#        })
+#        
+#    except Exception as e:
+#        return JsonResponse({
+#            'error': str(e)
+#        }, status=500)

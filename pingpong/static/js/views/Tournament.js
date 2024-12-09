@@ -1,7 +1,6 @@
 var tournamentMatch = {
     date: new Date().toISOString(),
-    tWinner: "",
-    fScore: "",
+
     quarter1: {
         p1: "",
         p2: "",
@@ -14,10 +13,11 @@ var tournamentMatch = {
         w: "" ,
 		score: "" 
     },
-    final: {
+    finals: {
         p1: "",
         p2: "",
-        w: ""  
+        w: "" ,
+		score:""
     }
 };
 
@@ -385,14 +385,14 @@ draw: function () {
 
 		// Handle the end of round transition
 		// Check to see if the player won the round.
-		if (this.player.score === 2 || (this.players === 4 && (this.playerTop.score === 5 || this.playerBottom.score === 5))) {
+		if (this.player.score === 1 || (this.players === 1 && (this.playerTop.score === 1 || this.playerBottom.score === 1))) {
 			this.over = true;
 			match_result = true;
 			setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
 		}
 
 		// Check to see if the ai/AI or player2 has won the round.
-		if ((this.ai && this.ai.score === 2) || (this.player2 && this.player2.score === 1)) {
+		if ((this.ai && this.ai.score === 1) || (this.player2 && this.player2.score === 1)) {
 			this.over = true;
 			match_result = false;
 			setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
@@ -663,6 +663,9 @@ draw: function () {
 	listen: function (players) {
 		document.addEventListener('keydown', function (key) {
 			// Handle the 'Press any key to begin' function and start the game.
+			if ([32, 37, 38, 39, 40, 65, 68, 83, 87].includes(key.keyCode)) {
+				key.preventDefault();
+			}
 			if (Pong.running === false) {
 				console.log('running');
 				Pong.running = true;
@@ -772,7 +775,7 @@ function startGame(players, ballColor, bgColor, paddleColor, player1, player2) {
             } else if (!tournamentMatch.quarter2.score) {
                 tournamentMatch.quarter2.score = score;
             } else {
-                tournamentMatch.fScore = score;
+                tournamentMatch.finals.score = score;
             }
             
             setTimeout(() => {
@@ -855,15 +858,15 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 
 		await new Promise(resolve => setTimeout(resolve, 3000));
 		displayNextMatch(tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
-		tournamentMatch.final.p1 = tournamentMatch.quarter1.w;
-		tournamentMatch.final.p2 = tournamentMatch.quarter2.w;
+		tournamentMatch.finals.p1 = tournamentMatch.quarter1.w;
+		tournamentMatch.finals.p2 = tournamentMatch.quarter2.w;
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
 		setGameCanva();
 
-		tournamentMatch.tWinner = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
+		tournamentMatch.finals.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
 		
-		console.log("WINEEEEEEEERR desse carai", tournamentMatch.tWinner);
+		console.log("WINEEEEEEEERR desse carai", tournamentMatch.finals.w);
 		console.log("q1 score -> ", tournamentMatch.quarter1.score);
 		console.log("q2 score ->", tournamentMatch.quarter2.score);
 		await new Promise(resolve => setTimeout(resolve, 3000));
@@ -886,7 +889,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 				console.log(data);
 			}else{
 				const errorData = await response.json();
-			console.log(errorData);
+				console.log(errorData);
 			}
 
 		}catch(error){
