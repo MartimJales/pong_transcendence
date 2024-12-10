@@ -18,9 +18,8 @@ ARG PACKAGES="	curl \
 # packges
 RUN apk update && apk add $PACKAGES
 
-# Copying Vault configuration files
+# Copying Vault configuration file
 COPY ./vault.hcl /etc/vault.d/
-COPY ./django-policy.hcl /etc/vault.d/
 
 # Creating directories for the SSL certificates that will allow us
 # to connect to our other containers over an encrypted HTTPS
