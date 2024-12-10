@@ -97,15 +97,24 @@ import time
 
 VAULT_URL = os.environ.get('VAULT_ADDR')
 VAULT_TOKEN = os.environ.get('VAULT_TOKEN')
-#ROLE_ID = os.environ.get('VAULT_ROLE_ID')
-#SECRET_ID = os.environ.get('VAULT_SECRET_ID')
+VAULT_KEYS = os.environ.get('VAULT_KEYS').split(' ')
 
 client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
 
-#auth_response = client.auth.approle.login(role_id=ROLE_ID, secret_id=SECRET_ID)
-#client.token = auth_response['auth']['client_token']
+print("Attempting to unseal Vault...")
+for key in VAULT_KEYS:
+    response = client.sys.submit_unseal_key(key)
+    if not response['sealed']:
+        print("Vault unsealed succesfully")
+        break
+else:
+    raise Exception("Django failed to unseal Vault")
 
-db_creds = client.secrets.database.generate_credentials(name='django-role')
+try:
+    db_creds = client.secrets.database.generate_credentials(name='django-role')
+    print("Successfully fetched credentials:", db_creds)
+except Exception as e:
+    print("Error fetching credentials:", e)
 
 DATABASES = {
     'default': {
@@ -121,6 +130,8 @@ DATABASES = {
         },
     }
 }
+
+client.sys.seal()
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

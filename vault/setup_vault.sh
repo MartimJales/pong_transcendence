@@ -75,9 +75,9 @@ while [ $IDX -lt 10 ]; do
 		vault write database/roles/django-role \
 			db_name=my-postgres \
 			creation_statements="CREATE USER \"{{name}}\" WITH PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
-							   GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO \"{{name}}\"; \
-							   GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \"{{name}}\"; \
-							   GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"{{name}}\";" \
+								GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO \"{{name}}\"; \
+								GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \"{{name}}\"; \
+								GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"{{name}}\";" \
 			default_ttl="1h" \
 			max_ttl="24h"
 
@@ -93,26 +93,15 @@ if [ $IDX -eq 10 ]; then
 	exit 1
 fi
 
-# Enabling AppRole to allow Django to connect to Vault
-#vault auth enable approle
-#vault policy write django-policy /etc/vault.d/django-policy.hcl
-
-#vault write auth/approle/role/django-role \
-#	token_policies="django-policy" \
-#	token_ttl=1h \
-#	token_max_ttl=4h
-
-# Securely storing the Django's role and secret ID's and creating a
-# "signal" file to let Django's setup script know they are ready to be
-# fetched
-#vault read auth/approle/role/django-role/role-id
-#vault write -f auth/approle/role/django-role/secret-id
+# Storing Vault root token and unseal keys inside a shared volume with
+# Django
 echo $VAULT_TOKEN > /setup/vault_token
-#echo "Django role and secret ID's generated successfully"
+echo $UNSEAL_KEYS > /setup/vault_keys
 
-# Waiting for Django to fetch ID's before sealing Vault again
-while [ -f /setup/vault_ids_ready ]; do
-	echo "Waiting for Django to fetch Vault token..."
+# Waiting for Django to fetch Vault's token and keys before sealing
+# Vault again
+while [ -f /setup/vault_token ]; do
+	echo "Waiting for Django to fetch Vault token and unseal keys..."
 	sleep 1
 done
 

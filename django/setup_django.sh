@@ -2,7 +2,7 @@
 
 # Waiting for Vault to be ready
 while [ ! -f /setup/vault_token ]; do
-    echo "Waiting for Vault to generate role and secret IDs..."
+    echo "Waiting for Vault to finish startup..."
     sleep 2
 done
 
@@ -19,9 +19,10 @@ done
 #export VAULT_ROLE_ID
 #export VAULT_SECRET_ID
 
-export VAULT_TOKEN=$(cat /setup/vault_token | tr -d	'\n')
-echo "VAULT TOKEN: $VAULT_TOKEN"
+export VAULT_KEYS=$(cat /setup/vault_keys)
+export VAULT_TOKEN=$(cat /setup/vault_token)
 
+rm /setup/vault_keys
 rm /setup/vault_token
 
 # Start the application
