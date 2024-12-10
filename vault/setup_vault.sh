@@ -66,7 +66,7 @@ while [ $IDX -lt 10 ]; do
 		vault write database/config/my-postgres \
 			plugin_name=postgresql-database-plugin \
 			allowed_roles="django-role" \
-			connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=verify-full&sslcert=/etc/ssl/certs/vault.crt&sslkey=/etc/ssl/private/vault.key&sslrootcert=/etc/vault.d/ca-certificates/pac4_ca.crt" \
+			connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=verify-full&sslcert=/etc/ssl/certs/vault.crt&sslkey=/etc/ssl/private/vault.key&sslrootcert=/usr/share/ca-certificates/pac4_ca.crt" \
 			username="${DB_USER}" \
 			password="${DB_PASSWORD}"
 
@@ -94,25 +94,25 @@ if [ $IDX -eq 10 ]; then
 fi
 
 # Enabling AppRole to allow Django to connect to Vault
-vault auth enable approle
-vault policy write django-policy /etc/vault.d/django-policy.hcl
+#vault auth enable approle
+#vault policy write django-policy /etc/vault.d/django-policy.hcl
 
-vault write auth/approle/role/django-role \
-	token_policies="django-policy" \
-	token_ttl=1h \
-	token_max_ttl=4h
+#vault write auth/approle/role/django-role \
+#	token_policies="django-policy" \
+#	token_ttl=1h \
+#	token_max_ttl=4h
 
 # Securely storing the Django's role and secret ID's and creating a
 # "signal" file to let Django's setup script know they are ready to be
 # fetched
-vault read auth/approle/role/django-role/role-id
-vault write -f auth/approle/role/django-role/secret-id
-touch /setup/vault_ids_ready
-echo "Django role and secret ID's generated successfully"
+#vault read auth/approle/role/django-role/role-id
+#vault write -f auth/approle/role/django-role/secret-id
+echo $VAULT_TOKEN > /setup/vault_token
+#echo "Django role and secret ID's generated successfully"
 
 # Waiting for Django to fetch ID's before sealing Vault again
 while [ -f /setup/vault_ids_ready ]; do
-	echo "Waiting for Django to fetch ID's..."
+	echo "Waiting for Django to fetch Vault token..."
 	sleep 1
 done
 
@@ -126,7 +126,7 @@ vault operator seal
 rm /vault/init-output.json
 
 # Removing environment variables containing sensitive information
-unset DB_ADDR DB_HOST DB_NAME DB_PASSWORD DB_PORT DB_USER VAULT_TOKEN 
+unset DB_ADDR DB_HOST DB_NAME DB_PASSWORD DB_PORT DB_USER 
 
 echo "Setup script has finished successfully. Keeping Vault server running in the background..."
 

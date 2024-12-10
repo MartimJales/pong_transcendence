@@ -96,23 +96,16 @@ import os
 import time
 
 VAULT_URL = os.environ.get('VAULT_ADDR')
-ROLE_ID = os.environ.get('VAULT_ROLE_ID')
-SECRET_ID = os.environ.get('VAULT_SECRET_ID')
+VAULT_TOKEN = os.environ.get('VAULT_TOKEN')
+#ROLE_ID = os.environ.get('VAULT_ROLE_ID')
+#SECRET_ID = os.environ.get('VAULT_SECRET_ID')
 
-client = hvac.Client(url=VAULT_URL)
+client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
 
-auth_response = client.auth.approle.login(role_id=ROLE_ID, secret_id=SECRET_ID)
-client.token = auth_response['auth']['client_token']
+#auth_response = client.auth.approle.login(role_id=ROLE_ID, secret_id=SECRET_ID)
+#client.token = auth_response['auth']['client_token']
 
-while True:
-    try:
-        if client.is_authenticated():
-            db_creds = client.secrets.database.generate_credentials(name='django-role')
-            if 'data' in db_creds:
-                break
-    except Exception as e:
-        print("Waiting for Vault credentials to be generated...", e)
-    time.sleep(2)
+db_creds = client.secrets.database.generate_credentials(name='django-role')
 
 DATABASES = {
     'default': {

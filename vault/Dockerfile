@@ -25,8 +25,7 @@ COPY ./django-policy.hcl /etc/vault.d/
 # Creating directories for the SSL certificates that will allow us
 # to connect to our other containers over an encrypted HTTPS
 # connection
-RUN mkdir -p /etc/vault.d/ca-certificates/
-COPY ./Certificates/pac4_ca.crt /etc/vault.d/ca-certificates/
+COPY ./Certificates/pac4_ca.crt /usr/share/ca-certificates/
 COPY ./Certificates/vault.crt /etc/ssl/certs/
 COPY ./Certificates/vault.key /etc/ssl/private/
 

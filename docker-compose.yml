@@ -37,15 +37,6 @@ services:
     volumes:
       - .:/app
       - setup:/setup/
-    command: >
-      sh -c "
-        python -m pip install Pillow &&
-        pip install django-cors-headers && 
-        pip install channels &&  
-        python manage.py makemigrations &&
-        python manage.py migrate &&
-        python manage.py createsuperuser --no-input &&
-        python manage.py runserver 0.0.0.0:8000" 
     env_file:
       - .env
     expose:
