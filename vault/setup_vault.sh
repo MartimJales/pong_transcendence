@@ -66,7 +66,7 @@ while [ $IDX -lt 10 ]; do
 		vault write database/config/my-postgres \
 			plugin_name=postgresql-database-plugin \
 			allowed_roles="django-role" \
-			connection_url="postgresql://{{username}}:{{password}}@${DB_HOST}:5432/${DB_NAME}?sslmode=verify-full&sslcert=/etc/ssl/certs/vault.crt&sslkey=/etc/ssl/private/vault.key&sslrootcert=/usr/share/ca-certificates/pac4_ca.crt" \
+			connection_url="postgresql://{{username}}:{{password}}@${DB_ADDR}:${DB_PORT}/${DB_NAME}?sslmode=verify-full&sslcert=/etc/ssl/certs/vault.crt&sslkey=/etc/ssl/private/vault.key&sslrootcert=/usr/share/ca-certificates/pac4_ca.crt" \
 			username="${DB_USER}" \
 			password="${DB_PASSWORD}"
 

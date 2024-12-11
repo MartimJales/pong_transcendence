@@ -113,7 +113,7 @@ else:
 
 try:
     db_creds = client.secrets.database.generate_credentials(name='django-role')
-    print("Successfully fetched credentials:", db_creds)
+    print("Successfully fetched credentials")
 except Exception as e:
     print("Error fetching credentials:", e)
 
@@ -123,7 +123,7 @@ DATABASES = {
         'NAME': 'pong',
         'USER': db_creds['data']['username'],
         'PASSWORD': db_creds['data']['password'],
-        'HOST': os.environ.get('DB_HOST'),
+        'HOST': os.environ.get('DB_ADDR'),
         'PORT': os.environ.get('DB_PORT'),
         'OPTIONS': {
             'sslmode': 'require',
