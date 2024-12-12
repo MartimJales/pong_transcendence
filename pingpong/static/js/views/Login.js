@@ -13,7 +13,7 @@ loginForm.addEventListener('submit', async (e) => {
 
         const csrftoken = getCookie('csrftoken');
         try {
-            const response = await fetch('https://127.0.0.1/api/login/', {
+            const response = await fetch('https://localhost/api/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

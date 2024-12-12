@@ -7,7 +7,7 @@ async function profile_info(){
      
         try {
             const csrftoken = window.getCookie('csrftoken');
-            const response = await fetch('https://127.0.0.1/api/profile/', {
+            const response = await fetch('https://localhost/api/profile/', {
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
