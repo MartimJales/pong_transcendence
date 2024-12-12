@@ -10,7 +10,7 @@ FROM hashicorp/vault:1.17.6
 EXPOSE 8200
 
 # The list of packages we use inside our custom "setup_vault.sh"
-# script.
+# script
 ARG PACKAGES="	curl \
 				jq"
 
