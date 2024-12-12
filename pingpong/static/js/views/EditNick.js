@@ -8,7 +8,7 @@ nickForm.addEventListener('submit', async (e) => {
     
     try {
         const csrftoken = window.getCookie('csrftoken');
-        const response = await fetch('http://127.0.0.1:8000/api/editNick/', {
+        const response = await fetch('https://127.0.0.1/api/editNick/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
