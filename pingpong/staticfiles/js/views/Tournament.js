@@ -887,6 +887,109 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 			if(response.ok){
 				const data = await response.json();
 				console.log(data);
+				transview = "0x" + data.transaction_hash;
+				const container = document.querySelector('.container');
+				container.innerHTML = `
+				<div class="text-center mt-5">
+					<div class="tournament-bracket">
+						<h2 class="bracket-title" style="font-size: 2em; margin-bottom: 1.5rem;">
+							Tournament Recorded Successfully!
+						</h2>
+						
+						<div style="background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,255,136,0.1) 50%, rgba(0,0,0,0.8) 100%); 
+									padding: 2rem; 
+									border: 2px solid #00ff88; 
+									border-radius: 8px;
+									max-width: 800px;
+									margin: 0 auto;">
+							
+							<div style="margin-bottom: 2rem;">
+								<h3 style="font-family: 'Orbitron', sans-serif; 
+										 color: #00ff88;
+										 text-shadow: 0 0 10px #00ff88;
+										 margin-bottom: 0.5rem;">
+									Transaction Hash:
+								</h3>
+								<p style="font-family: 'Consolas', monospace;
+										 background-color: rgba(0,0,0,0.5);
+										 padding: 1rem;
+										 border: 1px solid #00ff88;
+										 border-radius: 4px;
+										 word-break: break-all;
+										 color: #fff;
+										 text-shadow: 0 0 5px #00ff88;">
+									${data.transaction_hash}
+								</p>
+							</div>
+			
+							<div style="display: flex;
+									   justify-content: space-around;
+									   margin: 2rem 0;
+									   font-family: 'Orbitron', sans-serif;">
+								<div>
+									<h3 style="color: #00ff88;
+											 text-shadow: 0 0 10px #00ff88;">
+										Winner
+									</h3>
+									<p style="color: #fff;
+											text-shadow: 0 0 10px #00ff88;
+											font-size: 1.5em;">
+										${data.winner}
+									</p>
+								</div>
+								<div>
+									<h3 style="color: #00ff88;
+											 text-shadow: 0 0 10px #00ff88;">
+										Final Score
+									</h3>
+									<p style="color: #fff;
+											text-shadow: 0 0 10px #00ff88;
+											font-size: 1.5em;">
+										${data.score}
+									</p>
+								</div>
+							</div>
+			
+							<a href="https://sepolia.etherscan.io/tx/${transview}" 
+							   target="_blank" 
+							   style="display: inline-block;
+									  font-family: 'Orbitron', sans-serif;
+									  color: #00ff88;
+									  background: transparent;
+									  padding: 0.75rem 2rem;
+									  border: 2px solid #00ff88;
+									  border-radius: 4px;
+									  text-decoration: none;
+									  margin-top: 1rem;
+									  text-shadow: 0 0 10px #00ff88;
+									  transition: all 0.3s ease;
+									  animation: glow 1.5s ease-in-out infinite alternate;"
+							   onmouseover="this.style.backgroundColor='rgba(0,255,136,0.2)'"
+							   onmouseout="this.style.backgroundColor='transparent'">
+								View on Etherscan
+							</a>
+							<a onclick="window.go('profile')" 
+							   target="_blank" 
+							   style="display: inline-block;
+									  font-family: 'Orbitron', sans-serif;
+									  color: #00ff88;
+									  background: transparent;
+									  padding: 0.75rem 2rem;
+									  border: 2px solid #00ff88;
+									  border-radius: 4px;
+									  text-decoration: none;
+									  margin-top: 1rem;
+									  text-shadow: 0 0 10px #00ff88;
+									  transition: all 0.3s ease;
+									  animation: glow 1.5s ease-in-out infinite alternate;"
+							   onmouseover="this.style.backgroundColor='rgba(0,255,136,0.2)'"
+							   onmouseout="this.style.backgroundColor='transparent'" data-link>
+								Back to Profile
+							</a>
+						</div>
+					</div>
+				</div>
+			`;
 			}else{
 				const errorData = await response.json();
 				console.log(errorData);
@@ -904,7 +1007,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 });
 
 function setGameCanva(){
-	const containerMod1 = document.querySelector('.container');
+		const containerMod1 = document.querySelector('.container');
 		containerMod1.innerHTML = "";
 		const container = document.querySelector('.container');
 		container.innerHTML = '<canvas id="gameCanvas" class = "centered-div"></canvas>';
