@@ -542,4 +542,45 @@ def getTournament(request):
             }
         }, status=500)
 
- 
+@login_required
+def getTournament2(request, index):
+    try:
+        print(f"Getting tournament at index: {index}")
+        
+        # Get tournament data using the provided index
+        date, quarter1_data, quarter2_data, finals_data = web3_settings.contract.functions.getTournament(index).call({
+            'from': web3_settings.WALLET_ADDRESS
+        })
+        
+        tournament_data = {
+            'date': date,
+            'quarter1': {
+                'player1': quarter1_data[0],
+                'player2': quarter1_data[1],
+                'winner': quarter1_data[2],
+                'score': quarter1_data[3]
+            },
+            'quarter2': {
+                'player1': quarter2_data[0],
+                'player2': quarter2_data[1],
+                'winner': quarter2_data[2],
+                'score': quarter2_data[3]
+            },
+            'finals': {
+                'player1': finals_data[0],
+                'player2': finals_data[1],
+                'winner': finals_data[2],
+                'score': finals_data[3]
+            }
+        }
+        
+        return JsonResponse({
+            'success': True,
+            'tournament': tournament_data
+        })
+        
+    except Exception as e:
+        print(f"Error in getTournament: {str(e)}")
+        return JsonResponse({
+            'error': str(e)
+        }, status=500)
