@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+# See httpss://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-^!ba1tr5vg1u%7&)cvajaor1ztotf3j2xh^mbc03(1y1hwon^e'
@@ -92,20 +92,47 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+import hvac
+import os
+import time
+
+VAULT_URL = os.environ.get('VAULT_ADDR')
+VAULT_TOKEN = os.environ.get('VAULT_TOKEN')
+VAULT_KEYS = os.environ.get('VAULT_KEYS').split(' ')
+
+client = hvac.Client(url=VAULT_URL, token=VAULT_TOKEN)
+
+print("Attempting to unseal Vault...")
+for key in VAULT_KEYS:
+    response = client.sys.submit_unseal_key(key)
+    if not response['sealed']:
+        print("Vault unsealed succesfully")
+        break
+else:
+    raise Exception("Django failed to unseal Vault")
+
+try:
+    db_creds = client.secrets.database.generate_credentials(name='django-role')
+    print("Successfully fetched credentials")
+except Exception as e:
+    print("Error fetching credentials:", e)
+
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'pong'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'admin'),
-        'HOST': os.environ.get('DB_HOST', 'db'),
-        'PORT': os.environ.get('DB_PORT', '5433'),
+        'NAME': 'pong',
+        'USER': db_creds['data']['username'],
+        'PASSWORD': db_creds['data']['password'],
+        'HOST': os.environ.get('DB_ADDR'),
+        'PORT': os.environ.get('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': 'require',
+            'sslrootcert': '/usr/share/ca-certificates/pac4_ca.crt'
+        },
     }
 }
 
+client.sys.seal()
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -144,13 +171,13 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    "https://localhost",
+    "https://127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    "https://localhost",
+    "https://127.0.0.1",
 ]
 
 

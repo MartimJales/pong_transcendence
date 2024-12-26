@@ -1,0 +1,18 @@
+[req]
+default_bits		= 2048
+default_keyfile		= postgres.key
+default_md			= sha256
+distinguished_name	= req_distinguished_name
+req_extensions		= v3_req
+
+[req_distinguished_name]
+commonName			= postgres
+
+[v3_req]
+subjectAltName		= @alt_names
+
+[alt_names]
+DNS.1				= postgres_container
+DNS.2				= localhost
+DNS.3				= db
+IP.1				= 127.0.0.1

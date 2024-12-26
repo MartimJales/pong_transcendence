@@ -24,7 +24,7 @@ clean_volumes:
 	docker volume rm $$(docker volume ls -q)
 
 # Alvo para limpar tudo: contêineres, imagens e volumes
-fclean: clean_container clean_image clean_volumes
+fclean: clean_container clean_volumes
 
 # Alvo para reconstruir tudo
 re: fclean all

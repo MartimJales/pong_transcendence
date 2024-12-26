@@ -129,7 +129,7 @@ var Game = {
 		console.log('useriD: ' + userId);
 	
 		// Enviar os dados para o backend
-		fetch('http://127.0.0.1:8000/api/game_local/', {
+		fetch('https://127.0.0.1/api/game_local/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
