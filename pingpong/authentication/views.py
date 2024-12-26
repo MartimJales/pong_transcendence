@@ -164,7 +164,7 @@ def get_profile_data(request):
             'losses': profile.losses,
             'wins': profile.wins,
             'total_points': profile.total_points,
-            'image_url': profile.userpic.url if profile.userpic else '/static/images/profile_pics/default.jpg',
+            'image_url': f'/static/images/{profile.userpic}' if profile.userpic else '/static/images/default.jpg',
             'friends': [
                 {'username': friend.user.username, 'is_online': friend.is_online}
                 for friend in profile.friends.all()
@@ -335,6 +335,7 @@ def handle_user_logout(request):
         
     return HttpResponse(status=200)
 
+
 @login_required
 def upload_profile_image(request):
     try:
@@ -414,6 +415,7 @@ def endTour(request):
         try:
             data = json.loads(request.body)
             
+            
             quarter1 = data['quarter1']
             quarter2 = data['quarter2']
             finals = data['finals']
@@ -427,91 +429,158 @@ def endTour(request):
             # Get nonce
             nonce = web3_settings.w3.eth.get_transaction_count(web3_settings.WALLET_ADDRESS)
             
-            # Build transaction using imported contract
+            # Build transaction using contract function
             transaction = web3_settings.contract.functions.addTournament(
                 date,
                 quarter1_data,
                 quarter2_data,
                 finals_data
             ).build_transaction({
-                'chainId': 11155111,  # Sepolia chain ID
-                'gas': 300000,
-                'gasPrice': web3_settings.w3.eth.gas_price,
+                'from': web3_settings.WALLET_ADDRESS,
                 'nonce': nonce,
+                'gas': 3000000,  # Increased gas limit
+                'gasPrice': web3_settings.w3.eth.gas_price,
+                'chainId': 11155111  # Sepolia chain ID
             })
-            
-            # Sign transaction
-            signed_txn = web3_settings.w3.eth.account.sign_transaction(
-                transaction, 
-                web3_settings.WALLET_PRIVATE_KEY
+
+            # Sign the transaction
+            signed = web3_settings.w3.eth.account.sign_transaction(
+                transaction,
+                private_key=web3_settings.WALLET_PRIVATE_KEY
             )
             
-            # Send raw transaction using the raw_transaction property
-            tx_hash = web3_settings.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            # Send the transaction
+            tx_hash = web3_settings.w3.eth.send_raw_transaction(signed.raw_transaction)
             
-            # Wait for receipt
+            # Wait for the transaction to be mined
             tx_receipt = web3_settings.w3.eth.wait_for_transaction_receipt(tx_hash)
+
+            ne1w_count = web3_settings.contract.functions.getTournamentCount().call({
+                'from': web3_settings.WALLET_ADDRESS
+            })
             
             return JsonResponse({
                 'success': True,
-                'transaction_hash': tx_receipt['transactionHash'].hex(),
+                'transaction_hash': tx_hash.hex(),
                 'score': finals['score'],
-                'winner': finals['w']
+                'winner': finals['w'],
+                'indx': ne1w_count
             })
             
         except Exception as e:
+            import traceback
             print(f"Error in endTour: {str(e)}")
-            walletpv = web3_settings.WALLET_PRIVATE_KEY
-            walletadd = web3_settings.WALLET_ADDRESS
+            print(traceback.format_exc())
             return JsonResponse({
                 'error': str(e),
-                'walletpv1': walletpv,
-                'walletadd1': walletadd
+                'traceback': traceback.format_exc()
             }, status=500)
             
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-#@login_required
-#def getTournamentHistory(request):
-#    try:
-#        # Get total number of tournaments
-#        tournament_count = contract.functions.getTournamentCount().call()
-#        
-#        tournaments = []
-#        for i in range(tournament_count):
-#            # Get tournament data from contract
-#            date, quarter1_data, quarter2_data, finals_data = contract.functions.getTournament(i).call()
-#            
-#            # Format tournament data
-#            tournament = {
-#                'date': date,
-#                'quarter1': {
-#                    'player1': quarter1_data[0],
-#                    'player2': quarter1_data[1],
-#                    'winner': quarter1_data[2],
-#                    'score': quarter1_data[3]
-#                },
-#                'quarter2': {
-#                    'player1': quarter2_data[0],
-#                    'player2': quarter2_data[1],
-#                    'winner': quarter2_data[2],
-#                    'score': quarter2_data[3]
-#                },
-#                'finals': {
-#                    'player1': finals_data[0],
-#                    'player2': finals_data[1],
-#                    'winner': finals_data[2],
-#                    'score': finals_data[3]
-#                }
-#            }
-#            tournaments.append(tournament)
-#            
-#        return JsonResponse({
-#            'success': True,
-#            'tournaments': tournaments
-#        })
-#        
-#    except Exception as e:
-#        return JsonResponse({
-#            'error': str(e)
-#        }, status=500)
+
+
+@login_required
+def getTournament(request):
+    try:
+        # Debug prints
+        print("Contract Address:", web3_settings.CONTRACT_ADDRESS)
+        print("Is Connected:", web3_settings.w3.is_connected())
+        print("Chain ID:", web3_settings.w3.eth.chain_id)
+
+        # Verify contract
+        print("Contract Functions:", web3_settings.contract.functions)
+        
+        # Try calling the function
+        tournament_count = web3_settings.contract.functions.getTournamentCount().call({
+            'from': web3_settings.WALLET_ADDRESS
+        })
+
+        index = tournament_count - 1
+
+        date, quarter1_data, quarter2_data, finals_data = web3_settings.contract.functions.getTournament(index).call()
+
+        tournament_data = {
+            'date': date,
+            'quarter1': {
+                'player1': quarter1_data[0],
+                'player2': quarter1_data[1],
+                'winner': quarter1_data[2],
+                'score': quarter1_data[3]
+            },
+            'quarter2': {
+                'player1': quarter2_data[0],
+                'player2': quarter2_data[1],
+                'winner': quarter2_data[2],
+                'score': quarter2_data[3]
+            },
+            'finals': {
+                'player1': finals_data[0],
+                'player2': finals_data[1],
+                'winner': finals_data[2],
+                'score': finals_data[3]
+            }
+        }
+
+        return JsonResponse({
+            'success': True,
+            'quantity': index,
+            'tour':tournament_data
+        })
+        
+    except Exception as e:
+        print(f"Error in getTournament: {str(e)}")
+        # Add more detailed error information
+        import traceback
+        print(traceback.format_exc())
+        return JsonResponse({
+            'error': str(e),
+            'details': {
+                'contract_address': web3_settings.CONTRACT_ADDRESS,
+                'is_connected': web3_settings.w3.is_connected(),
+                'chain_id': web3_settings.w3.eth.chain_id
+            }
+        }, status=500)
+
+@login_required
+def getTournament2(request, index):
+    try:
+        print(f"Getting tournament at index: {index}")
+        
+        # Get tournament data using the provided index
+        date, quarter1_data, quarter2_data, finals_data = web3_settings.contract.functions.getTournament(index).call({
+            'from': web3_settings.WALLET_ADDRESS
+        })
+        
+        tournament_data = {
+            'date': date,
+            'quarter1': {
+                'player1': quarter1_data[0],
+                'player2': quarter1_data[1],
+                'winner': quarter1_data[2],
+                'score': quarter1_data[3]
+            },
+            'quarter2': {
+                'player1': quarter2_data[0],
+                'player2': quarter2_data[1],
+                'winner': quarter2_data[2],
+                'score': quarter2_data[3]
+            },
+            'finals': {
+                'player1': finals_data[0],
+                'player2': finals_data[1],
+                'winner': finals_data[2],
+                'score': finals_data[3]
+            }
+        }
+        
+        return JsonResponse({
+            'success': True,
+            'tournament': tournament_data
+        })
+        
+    except Exception as e:
+        print(f"Error in getTournament: {str(e)}")
+        return JsonResponse({
+            'error': str(e)
+        }, status=500)

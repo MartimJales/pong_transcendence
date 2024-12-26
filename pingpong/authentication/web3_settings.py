@@ -8,7 +8,7 @@ load_dotenv()
 
 # Load environment variables or use settings
 INFURA_PROJECT_ID = os.getenv('INFURA_PROJECT_ID')
-CONTRACT_ADDRESS = to_checksum_address(os.getenv('CONTRACT_ADDRESS'))
+CONTRACT_ADDRESS = to_checksum_address('0x64dae20a8b2e5179a182d69b25ceaeb40fc85264')
 WALLET_PRIVATE_KEY = os.getenv('WALLET_PRIVATE_KEY')
 WALLET_ADDRESS = to_checksum_address(os.getenv('WALLET_ADDRESS'))
 
