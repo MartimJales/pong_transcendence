@@ -1,0 +1,18 @@
+
+- consertar imagem do user  
+- user module -> Users can add others as friends and view their online status. , da para fazer aparecer o profile, ou so deixar bolinha verde c/ nome
+
+- blockchain
+- tornei
+
+
+
+PAC:
+- cybersecurity
+- Fazer a gninx para https
+
+
+BUG FIX:
+
+- exit and enter torneio buga
+-suruba mode

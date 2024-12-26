@@ -1,0 +1,58 @@
+{% csrf_token %}
+{% load static %}
+<page-element name="profile"  src="/static/js/views/Profile.js">
+
+  <div class="container" id="main">
+    <div class="row">
+      <!-- User Profile Section (Left Side) -->
+      <div class="col-md-8">
+        <div class="text-center mt-5">
+            <h1>Welcome, </h1>
+            <br>
+            <div class="profile-img-wrapper position-relative">
+              <img id="ovinho" 
+                   alt="Default Profile Image" 
+                   class="img-fluid rounded-circle profile-img" 
+                   style="width: 200px; height: 200px; object-fit: cover;">
+              <input type="file" 
+                     id="profileImageUpload" 
+                     accept="image/*" 
+                     style="display: none;">
+          </div>
+            <br>
+            <h2>Nick: </h2>
+            <h2>Losses: </h2>
+            <h2>Winnings: </h2>
+            <h2>Total Points: </h2>
+            <button onclick="window.go('edit_nick')" class="btn btn-secondary">
+              Edit Nickname
+            </button>
+            <a class="btn btn-secondary" onclick="window.go('match_history')" data-link>Match History</a>
+            <a class="btn btn-secondary" onclick="window.go('tour_history')" data-link>Tournament info</a>
+            <div class="messages mt-3">
+            </div>
+        </div>
+      </div>
+
+      <!-- Friends Section de ladinho papai -->
+      <div class="col-md-4">
+        <div class="mt-5" id="friendsbox">
+          <h2 class="text-center mb-4 w-100">Friends</h2>
+          <div id="friendsList" class="list-group mb-3">
+            <ul>
+            </ul>
+          </div>
+          <button id="addFriendBtn" class="btn btn-secondary w-100">Search Friends</button>
+          <div id="message" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+
+  <div class="centered-div">
+    <canvas></canvas>
+  </div>
+ 
+</page-element>

@@ -1,0 +1,32 @@
+{% csrf_token %}
+{% load static %}
+<page-element name="edit_nick" src="/static/js/views/EditNick.js">
+    <div class="container">
+        <div class="text-center mt-5">
+            <h1>Edit Your Nickname</h1>
+            <!-- Remove method="post" and add an id -->
+            <form id="nickForm">
+                <div class="form-group">
+                    <label for="nick">New Nickname:</label>
+                    <input type="text" 
+                           id="nick" 
+                           name="nick" 
+                           value="{{ nick }}" 
+                           class="form-control">
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+            <div id="message" class="mt-3"></div> <!-- Add message div for feedback -->
+        </div>
+    </div>
+   
+    <style>
+      .form-control {
+          width: 50%;
+          margin: 0 auto;
+          text-align: center;
+          font-size: 0.9rem;
+      }
+  </style>
+</page-element>

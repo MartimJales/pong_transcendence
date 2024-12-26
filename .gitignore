@@ -1,2 +1,7 @@
 node_modules
+<<<<<<< HEAD
 .DS_Store
+=======
+pingpong/authentication/__pycache__/
+pingpong/pingpong/__pycache__/
+>>>>>>> cybersex2

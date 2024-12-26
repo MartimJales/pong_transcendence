@@ -1,0 +1,17 @@
+[req]
+default_bits		= 2048
+default_keyfile		= django.key
+default_md			= sha256
+distinguished_name	= req_distinguished_name
+req_extensions		= v3_req
+
+[req_distinguished_name]
+commonName			= django
+
+[v3_req]
+subjectAltName		= @alt_names
+
+[alt_names]
+DNS.1				= django_container
+DNS.2				= localhost
+IP.1				= 127.0.0.1

@@ -1,0 +1,20 @@
+{% load static %}
+<page-element name="404" src="/static/js/views/404.js" default>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="ping-pong-container text-center mt-5">
+                    <h1 class="ping-pong-title">
+                        <span class="ping-pong-ball"></span>
+                        404 - Game Over!
+                        <span class="ping-pong-ball"></span>
+                    </h1>
+                    <p class="mb-4">The page you're looking for has gone out of bounds!</p>
+                    <button onclick="window.go('profile')" class="btn ping-pong-btn mt-3">
+                        Return to Match
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</page-element>
