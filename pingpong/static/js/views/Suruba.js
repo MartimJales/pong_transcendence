@@ -104,7 +104,7 @@ var Game = {
 			100
 		);
 
-		// Change the canvas color;
+		// Change the canvas color;	
 		this.context.fillStyle = this.ballColor;
 
 		// Draw the 'press any key to begin' text
@@ -116,42 +116,6 @@ var Game = {
 
 	endGameMenu: function (text) {
 		// Preparar os dados do jogo para enviar
-		const gameData = {
-			player_id: userId,  // TO-DO: Substitui pelo ID do jogador atual
-			player2_id: null,  // this.player2 ? 2 :  TO-DO: Substitui pelo ID do segundo jogador, se existir, para 1v1
-			earned_points: match_result ? 15 : 0,  // Podes ajustar esta lógica conforme necessário
-			mode: gameMode,  // TO-DO: Temos que sacar da pagina anterior ou url
-			opponent: this.ai ? 'Chatgtp' : 'Local Challenger',  // Define o oponente
-			result: match_result,  // True se o jogador ganhou, False se perdeu
-			match_date: new Date().toISOString()  // Data e hora atual em formato ISO
-		};
-
-		console.log('useriD: ' + userId);
-	
-		// Enviar os dados para o backend
-		fetch('https://127.0.0.1/api/game_local/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(gameData)
-		})
-		.then(response => response.json())  // Change this to .json()
-		.then(data => {
-			console.log('Response data:', data);  // Log the entire response
-			if (data.status === 'success') {
-				console.log('Match data saved successfully');
-				console.log('o resultado dessa poha e ' + match_result);
-				console.log('os pontinhos ganhados sao ' + gameData.earned_points);
-				//window.location.href = `/vaisefuder/`;
-				window.location.href = `/profile/${userId}/`;
-			} else {
-				console.error('Error saving match data:', data.message);
-			}
-		})
-		.catch((error) => {
-			console.error('Error:', error);
-		});
 		
 		
 	
@@ -173,9 +137,9 @@ var Game = {
 			Pong.canvas.height / 2 + 15
 		);
 	
-		//setTimeout(function () {
-		//	window.location.href = 'game';
-		//}, 1000);
+		setTimeout(function () {
+			window.location.href = 'profile';
+		}, 1000);
 	},
 
 	// Update all objects (move the player, ai, ball, increment the score, etc.)
@@ -591,14 +555,14 @@ function startGame(players, ballColor, bgColor, paddleColor) {
 }
 
 document.getElementById('startGameButton').addEventListener('click', function () {
-	let selectedPlayers = 1; // Default to 1 player
+	let selectedPlayers = 4; // Default to 1 player
 	if (document.querySelector('input[name="options"]:checked'))
 		selectedPlayers = document.querySelector('input[name="options"]:checked').getAttribute('data-players');
 
+	selectedPlayers = 4;
 	const ballColor = document.getElementById('ballColor').value;
 	const bgColor = document.getElementById('bgColor').value;
 	const paddleColor = document.getElementById('paddleColor').value;
-	userId = document.getElementById('userId').value;
 	gameMode = document.getElementById('gameMode').value;
 
 

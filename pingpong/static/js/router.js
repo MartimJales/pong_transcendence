@@ -83,8 +83,8 @@
 
     window.addEventListener("popstate", (e) => { //everythime we change this shit with .go()
         const name = window.location.href.split("#/")[1];
-        if (window.location.href === "https://localhost/") // in case of manueally https://localhost/ again
-            name = "404";
+        // if (window.location.href === "https://localhost:1443/") // in case of manueally https://localhost/ again
+        //     name = "404";
         setPage(name);  
     });
 
@@ -107,7 +107,7 @@
         let pageName;
         let hash = window.location.href;
         
-        if (hash === "https://localhost/" || hash === "https://127.0.0.1/" || hash === "https://127.0.0.1/#/profile"){
+        if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443/" || hash === "https://127.0.0.1:1443/#/profile"){
            
             if (localStorage.getItem('user_id')){ //asim forcamos o user a presionar sempre logout
                 pageName = "profile";
@@ -186,7 +186,7 @@
     window.handleLogout = async () => {
         try {
             const csrftoken = window.getCookie('csrftoken');
-            const response = await fetch('https://127.0.0.1/api/logout/', {
+            const response = await fetch('https://localhost:1443/api/logout/', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

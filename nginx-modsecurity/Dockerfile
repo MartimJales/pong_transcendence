@@ -13,6 +13,6 @@ COPY ModSecurity/ /modsecurity.tmp.d/
 RUN /modsecurity.tmp.d/setup_modsecurity.sh
 RUN rm -r /modsecurity.tmp.d/
 
-EXPOSE 80
+EXPOSE 1080
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

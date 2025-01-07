@@ -171,13 +171,13 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost",
-    "https://127.0.0.1",
+    "https://localhost:1443",
+    "https://127.0.0.1:1443",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://localhost",
-    "https://127.0.0.1",
+    "https://localhost:1443",
+    "https://127.0.0.1:1443",
 ]
 
 

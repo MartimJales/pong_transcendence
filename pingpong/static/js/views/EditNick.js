@@ -6,9 +6,10 @@ nickForm.addEventListener('submit', async (e) => {
     
     const newNick = document.getElementById('nick').value;
     
+    
     try {
         const csrftoken = window.getCookie('csrftoken');
-        const response = await fetch('https://127.0.0.1/api/editNick/', {
+        const response = await fetch('https://localhost:1443/api/editNick/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -22,10 +23,11 @@ nickForm.addEventListener('submit', async (e) => {
             const data = await response.json();
             serverres.textContent = 'Nickname updated successfully!';
             serverres.style.color = 'green';
-            
-            
+
+            console.log(newNick);
+            console.log(data.nick);
             setTimeout(() => {
-                window.go('profile');
+               window.go('profile');
             }, 2000);
         } else {
             const errorData = await response.json();
