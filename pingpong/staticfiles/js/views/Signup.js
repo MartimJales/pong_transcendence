@@ -24,7 +24,7 @@ formzin.addEventListener('submit', async (e) => {
 
     try {
         const csrftoken = window.getCookie('csrftoken');
-        const response = await fetch('https://127.0.0.1/api/signup/', {
+        const response = await fetch('https://127.0.0.1:1443/api/signup/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

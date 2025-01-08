@@ -6,7 +6,7 @@ async function callapizinha(){
 
      
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/getTournament/', {
+            const response = await fetch('http://127.0.0.1:1443:8000/api/getTournament/', {
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json'

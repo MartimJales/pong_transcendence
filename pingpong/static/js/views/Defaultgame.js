@@ -128,7 +128,7 @@ var Game = {
 
 		
 		const csrftoken = window.getCookie('csrftoken');
-		fetch('https://127.0.0.1/api/game_local/', {
+		fetch('https://127.0.0.1:1443/api/game_local/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

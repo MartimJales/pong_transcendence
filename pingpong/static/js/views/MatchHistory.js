@@ -1,7 +1,7 @@
 console.log("maaaatch hisssotyyy");
 async function fetchMatchHistory() {
     try {
-      const response = await fetch('https://127.0.0.1/api/matchhistory/', {
+      const response = await fetch('https://127.0.0.1:1443/api/matchhistory/', {
         credentials: 'include',
         headers: {
             'Accept': 'application/json'

@@ -6,7 +6,7 @@ async function profile_info(){
 
      
         try {
-            const response = await fetch('https://127.0.0.1/api/profile/', {
+            const response = await fetch('https://127.0.0.1:1443/api/profile/', {
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json'
@@ -97,7 +97,7 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
         console.log("fetch do add friend agora meu nobre");
         try {
             const csrftoken = window.getCookie('csrftoken');
-            const response = await fetch('https://127.0.0.1/api/add/', {
+            const response = await fetch('https://127.0.0.1:1443/api/add/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -191,7 +191,7 @@ fileInput.addEventListener('change', async (e) => {
     
     try {
         const csrftoken = getCookie('csrftoken');
-        const response = await fetch('https://127.0.0.1/api/upload_profile_image/', {
+        const response = await fetch('https://127.0.0.1:1443/api/upload_profile_image/', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken

@@ -107,7 +107,7 @@
         let pageName;
         let hash = window.location.href;
         
-        if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443/" || hash === "https://127.0.0.1:1443/#/profile"){
+        if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443:1443/" || hash === "https://127.0.0.1:1443:1443/#/profile"){
            
             if (localStorage.getItem('user_id')){ //asim forcamos o user a presionar sempre logout
                 pageName = "profile";
