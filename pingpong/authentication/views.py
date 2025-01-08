@@ -479,6 +479,22 @@ def endTour(request):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
+@login_required
+def setOff(request):
+    if request.user.is_authenticated:
+        
+        profile = request.user.playerprofile
+        profile.is_online = False
+        profile.save()
+                
+        return JsonResponse({
+                    'status': 'success',
+                    'message': 'ta em off essa poha'
+                })
+        
+    return HttpResponse(status=200)
+
+
 
 @login_required
 def getTournament(request):

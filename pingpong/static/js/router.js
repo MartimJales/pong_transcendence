@@ -1,9 +1,11 @@
 
+
     const data = {
         pages: new Map(),
         page: undefined,
         currentPageName: null 
     }
+
 
     // const elements = Array.from(document.querySelectorAll("page-element"));
     // for (const element of elements)
@@ -81,6 +83,16 @@
 
     };
 
+    //window.onbeforeunload = () => {
+    //   // Clean up any resources, close WebSocket connections, etc.
+    //   console.log("vamos unloadar") 
+    //   
+    //   if (sessionStorage.getItem('isPageRefreshed') === 'true') {
+    //        console.log('Page refreshed');
+    //    }  
+    //    return ("d")  
+    //};
+
     window.addEventListener("popstate", (e) => { //everythime we change this shit with .go()
         const name = window.location.href.split("#/")[1];
         // if (window.location.href === "https://localhost:1443/") // in case of manueally https://localhost/ again
@@ -109,13 +121,13 @@
         
         if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443:1443/" || hash === "https://127.0.0.1:1443:1443/#/profile"){
            
-            if (localStorage.getItem('user_id')){ //asim forcamos o user a presionar sempre logout
+            if (getSessionId()){ //asim forcamos o user a presionar sempre logout
                 pageName = "profile";
             }
             else{
                 console.log(getSessionId());
                // handleLogout();
-               // updateNavigation();
+                updateNavigation();
                 pageName = "login";
             }
             return pageName;   //talvez checkar se o user ja foi logado para redirecionar para lo profile security here
@@ -182,6 +194,29 @@
     window.getCookie = getCookie;
 
     // -----------------------------------NAV BAR-------------------------------
+
+
+    window.turnOff = async () => {
+        try {
+            const csrftoken = window.getCookie('csrftoken');
+            const response = await fetch('https://localhost:1443/api/setOff/', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                }
+            });
+            if (response.ok) {
+                console.log("done");
+            } else {
+                const data = await response.json();
+                console.error('failed to set bool', data.message);
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    };
 
     window.handleLogout = async () => {
         try {
@@ -250,7 +285,7 @@
     };
 
     function updateNavigation() {
-        const userId = localStorage.getItem('user_id');
+        const userId = 1; // fix here
         const currentNav = document.querySelector('nav');
         if (currentNav) {
             currentNav.remove();

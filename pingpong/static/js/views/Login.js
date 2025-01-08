@@ -24,8 +24,9 @@ loginForm.addEventListener('submit', async (e) => {
             });  
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem('user_id', data.user_id);
-            localStorage.setItem('username', data.username);
+            //localStorage.setItem('user_id', data.user_id);
+            //localStorage.setItem('username', data.username);
+
             
             messageElement.textContent = 'Login successful!';
             messageElement.style.color = 'green';

@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/matchhistory/', views.get_match_history, name='get_match_history'),
     path('api/endTour/', views.endTour, name='endTour'),
     path('api/getTournament/', views.getTournament, name='getTournament'),
+    path('api/setOff/', views.setOff, name='setOff'),
     path('api/upload_profile_image/', views.upload_profile_image, name='upload_profile_image'),
     path('api/getTournament/<int:index>/', views.getTournament2, name='get_tournament_by_index'),
     re_path(r'^.*$', views.index, name='index'),   
