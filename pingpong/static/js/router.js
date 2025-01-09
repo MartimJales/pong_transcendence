@@ -15,7 +15,6 @@
 
     // console.log(data.pages);
 
-
     class PageElement extends HTMLElement {
 
         constructor(){
@@ -43,17 +42,13 @@
         data.currentPageName = name;
 
         data.page?.remove();
-
-       
-     
-     
         
         const page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default") == "");
              
        
         console.log(data.pages.values());
         console.log("-page to be rendered ---->", page);
-        console.log("id to arrobado -->", localStorage.getItem('user_id'));
+    
 
         if (page)
         {
@@ -83,15 +78,23 @@
 
     };
 
-    //window.onbeforeunload = () => {
-    //   // Clean up any resources, close WebSocket connections, etc.
-    //   console.log("vamos unloadar") 
-    //   
-    //   if (sessionStorage.getItem('isPageRefreshed') === 'true') {
-    //        console.log('Page refreshed');
-    //    }  
-    //    return ("d")  
-    //};
+    let isRefreshing = false;
+
+    window.addEventListener('beforeunload', () => {
+        isRefreshing = true;
+        setTimeout(() => {
+            isRefreshing = false;
+        }, 0);
+    });
+
+
+    window.addEventListener('unload', () => {
+        if (!isRefreshing) {
+            turnOff();
+        }
+        isRefreshing = false;
+    });
+
 
     window.addEventListener("popstate", (e) => { //everythime we change this shit with .go()
         const name = window.location.href.split("#/")[1];
@@ -103,26 +106,17 @@
 
     let flag = 0;
     let varzinha;
-    function getPageNameFromURL() { // only runs once when django renders a poha do html
-
-        //let flag = parseInt(localStorage.getItem('pageFlag') || '0'); // this shit is to prevent default behaviour do 404 page
-        //if (!flag) { 
-        //    localStorage.setItem('pageFlag', '1'); // i++;
-        //    if(localStorage.getItem('user_id')){
-        //        console.log("trigged automatico aqui!! --> login profile");
-        //        return "profile";
-        //    }
-        //    console.log("trigged automatico aqui!! --> login profile")
-        //    return "login";
-        //}
+    function getPageNameFromURL() { // only runs once when django renders a poha do html or f5
 
         let pageName;
         let hash = window.location.href;
         
-        if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443:1443/" || hash === "https://127.0.0.1:1443:1443/#/profile"){
+        if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443:1443/" || hash === "https://localhost:1443:1443/#/profile"){
            
+            
             if (getSessionId()){ //asim forcamos o user a presionar sempre logout
                 pageName = "profile";
+                updateNavigation();
             }
             else{
                 console.log(getSessionId());
@@ -142,7 +136,7 @@
 
     
     document.addEventListener('DOMContentLoaded', () => {
-        //window.pros = pegar info do user para qeue 
+        
         
         const elements = Array.from(document.querySelectorAll("page-element"));
         for (const element of elements) {
@@ -192,6 +186,7 @@
     }
 
     window.getCookie = getCookie;
+    window.getSessionId = getSessionId;
 
     // -----------------------------------NAV BAR-------------------------------
 
@@ -284,16 +279,40 @@
         `
     };
 
-    function updateNavigation() {
-        const userId = 1; // fix here
-        const currentNav = document.querySelector('nav');
-        if (currentNav) {
-            currentNav.remove();
+    async function updateNavigation() {
+        try {
+             const response = await fetch('https://localhost:1443/api/auth-status/', {
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            
+            const currentNav = document.querySelector('nav');
+            if (currentNav) {
+                currentNav.remove();
+            }
+    
+            
+            const template = document.createElement('template');
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Auth status:", data);
+                
+                template.innerHTML = data.isAuthenticated ? navTemplates.loggedIn : navTemplates.loggedOut;
+            } else {
+                console.error('Auth check failed:', response.status);
+                template.innerHTML = navTemplates.loggedOut;
+            }
+            
+            document.body.insertBefore(template.content.firstElementChild, document.body.firstChild);
+            
+        } catch (error) {
+            console.error('Navigation update failed:', error);
+            const template = document.createElement('template');
+            template.innerHTML = navTemplates.loggedOut;
+            document.body.insertBefore(template.content.firstElementChild, document.body.firstChild);
         }
-
-        const template = document.createElement('template');
-        template.innerHTML = userId ? navTemplates.loggedIn : navTemplates.loggedOut;
-        document.body.insertBefore(template.content.firstElementChild, document.body.firstChild);
     }
-
     

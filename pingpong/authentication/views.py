@@ -104,6 +104,13 @@ def api_login(request):
             })
     return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
 
+@csrf_exempt
+def auth_status(request):
+    return JsonResponse({
+        'isAuthenticated': request.user.is_authenticated,
+        'username': request.user.username if request.user.is_authenticated else None
+    })
+
 
 @login_required
 def add_friend(request):
@@ -127,18 +134,18 @@ def add_friend(request):
             except PlayerProfile.DoesNotExist:
                 return JsonResponse({'error': 'User profile not found'}, status=404)
                 
-            # Check if trying to add themselves
+            
             if friend_user == request.user:
                 return JsonResponse({'error': 'Cannot add yourself as friend'}, status=400)
                 
-            # Check if already friends
+            
             if Friendship.objects.filter(
                 from_playerprofile_id=current_profile,
                 to_playerprofile_id=friend_profile
             ).exists():
                 return JsonResponse({'error': 'Already friends with this user'}, status=400)
                 
-            # Create friendship
+            
             Friendship.objects.create(
                 from_playerprofile_id=current_profile,
                 to_playerprofile_id=friend_profile
@@ -157,6 +164,8 @@ def get_profile_data(request):
     try:
         user = request.user
         profile = user.playerprofile
+        profile.is_online = True # logica da gambiarra
+        profile.save()
         
         data = {
             'username': user.username,

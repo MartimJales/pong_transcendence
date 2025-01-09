@@ -19,6 +19,8 @@ async function profile_info(){
             if (response.ok) {
                 const data = await response.json();
                 console.log(data);
+                const sessionId = window.getSessionId();
+                console.log("Current session ID:", sessionId);
                 document.querySelector('h1').textContent = `Welcome, ${data.username}`;
                 
                 //document.querySelector('img').src = data.image_url;

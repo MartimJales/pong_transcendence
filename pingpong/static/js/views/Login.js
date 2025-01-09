@@ -32,7 +32,11 @@ loginForm.addEventListener('submit', async (e) => {
             messageElement.style.color = 'green';
             console.log("deu bom carai info aqui de baixo");
             console.log(data);
-            window.go("profile");
+
+            setTimeout(() => {
+                window.go("profile");
+            }, 100);
+            
         } else {
             const errorData = await response.json();
             messageElement.textContent = errorData.error || 'Login failed. Please try again.';
