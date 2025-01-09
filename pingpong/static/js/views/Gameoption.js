@@ -1,1 +1,1 @@
-console.log("game option view");
+console.log("game option view - TRIGGERED - Hi there!");

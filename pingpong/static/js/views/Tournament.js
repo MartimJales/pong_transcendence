@@ -873,7 +873,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 
 		const csrftoken = getCookie('csrftoken');
 		try{
-			const response = await fetch('https://127.0.0.1:1443/api/endTour/', {
+			const response = await fetch('https://localhost:1443/api/endTour/', {
 				method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -998,9 +998,6 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 		}catch(error){
 			console.log(error);
 		}
-
-
-	
 
 	}
 	

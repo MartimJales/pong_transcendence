@@ -6,6 +6,8 @@
         currentPageName: null 
     }
 
+    let auth;
+
 
     // const elements = Array.from(document.querySelectorAll("page-element"));
     // for (const element of elements)
@@ -32,6 +34,15 @@
 
     function setPage(name)
     {
+        authStatus()
+        if (!auth && name != "default"){ //asim forcamos o user a presionar sempre logout
+            console.log(authStatus());
+           // handleLogout();
+            // updateNavigation();
+            name = "login";
+        }
+        
+        
         console.log("url agora ----->", window.location.href, varzinha);
         console.log("setPage o arg q foi passado ----->", name);
 
@@ -39,6 +50,8 @@
             console.log("Already on page:", name);
             return;
         }
+
+
         data.currentPageName = name;
 
         data.page?.remove();
@@ -48,6 +61,7 @@
        
         console.log(data.pages.values());
         console.log("-page to be rendered ---->", page);
+
     
 
         if (page)
@@ -105,26 +119,26 @@
 
 
     let flag = 0;
+    let flagzinha = 0;
     let varzinha;
     function getPageNameFromURL() { // only runs once when django renders a poha do html or f5
 
         let pageName;
         let hash = window.location.href;
+
         
         if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443:1443/" || hash === "https://localhost:1443:1443/#/profile"){
-           
-            
-            if (getSessionId()){ //asim forcamos o user a presionar sempre logout
+           console.log("entrouu");
+            if (auth){ //asim forcamos o user a presionar sempre logout
+                console.log("loggou");
                 pageName = "profile";
                 updateNavigation();
             }
             else{
-                console.log(getSessionId());
                // handleLogout();
                 updateNavigation();
                 pageName = "login";
             }
-            return pageName;   //talvez checkar se o user ja foi logado para redirecionar para lo profile security here
         }
         hash = window.location.hash;
         pageName = hash.startsWith('#/') ? hash.slice(2) : 'default';
@@ -313,6 +327,33 @@
             const template = document.createElement('template');
             template.innerHTML = navTemplates.loggedOut;
             document.body.insertBefore(template.content.firstElementChild, document.body.firstChild);
+        }
+    }
+    
+
+    async function authStatus() {
+        try {
+             const response = await fetch('https://localhost:1443/api/auth-status/', {
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Auth status:", data);
+                auth = 1;
+                return 1;
+            } else {
+                const data1 = await response.json();
+                console.log("response wrong bo ok", data1);
+                auth = 0;
+                return 0;
+            }
+            
+        } catch (error) {
+            console.error('merda no fetch', error);
         }
     }
     
