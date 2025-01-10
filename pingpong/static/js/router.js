@@ -32,16 +32,9 @@
     }
 
 
-    function setPage(name)
+    async function setPage(name)
     {
-        authStatus()
-        if (!auth && name != "default"){ //asim forcamos o user a presionar sempre logout
-            console.log(authStatus());
-           // handleLogout();
-            // updateNavigation();
-            name = "login";
-        }
-        
+
         
         console.log("url agora ----->", window.location.href, varzinha);
         console.log("setPage o arg q foi passado ----->", name);
@@ -56,13 +49,21 @@
 
         data.page?.remove();
         
-        const page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default") == "");
-             
+        //let page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default") == "");
+        let page;   
        
         console.log(data.pages.values());
-        console.log("-page to be rendered ---->", page);
+        console.log("-page to be rendered ---------> ", page);
 
-    
+        let authResult1 = await authStatus();
+
+        if(!authResult1)
+            page = data.pages.get('login');
+        else{
+            page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default") == "");
+
+        }
+        
 
         if (page)
         {
@@ -112,8 +113,7 @@
 
     window.addEventListener("popstate", (e) => { //everythime we change this shit with .go()
         const name = window.location.href.split("#/")[1];
-        // if (window.location.href === "https://localhost:1443/") // in case of manueally https://localhost/ again
-        //     name = "404";
+        console.log("bateu no popstate");
         setPage(name);  
     });
 
@@ -121,27 +121,24 @@
     let flag = 0;
     let flagzinha = 0;
     let varzinha;
-    function getPageNameFromURL() { // only runs once when django renders a poha do html or f5
+    async function getPageNameFromURL() { // only runs once when django renders a poha do html or f5
 
         let pageName;
         let hash = window.location.href;
-
         
-        if (hash === "https://localhost:1443/" || hash === "https://127.0.0.1:1443:1443/" || hash === "https://localhost:1443:1443/#/profile"){
-           console.log("entrouu");
-            if (auth){ //asim forcamos o user a presionar sempre logout
-                console.log("loggou");
-                pageName = "profile";
-                updateNavigation();
-            }
-            else{
-               // handleLogout();
-                updateNavigation();
-                pageName = "login";
-            }
-        }
-        hash = window.location.hash;
-        pageName = hash.startsWith('#/') ? hash.slice(2) : 'default';
+
+        let authResult = await authStatus();
+        console.log("resultado do status é********", authResult);
+  
+       if (hash === "https://localhost:1443/"){
+            pageName = authResult ? 'profile' : 'login';
+            console.log("entrou no ifzinho")
+       }else{
+            pageName = hash.startsWith('#/') ? hash.slice(2) : 'default';
+       }
+
+       
+
         console.log(`oque ta na url window.location.ref: ${window.location.href}`);
         console.log(`oque tiramos: ${pageName}`);
         varzinha = pageName;
@@ -149,7 +146,7 @@
     }
 
     
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
         
         
         const elements = Array.from(document.querySelectorAll("page-element"));
@@ -160,7 +157,7 @@
         console.log(data.pages);
 
         
-        const name = getPageNameFromURL();
+        const name = await getPageNameFromURL();
         setPage(name);
     });
 
@@ -307,7 +304,6 @@
                 currentNav.remove();
             }
     
-            
             const template = document.createElement('template');
             
             if (response.ok) {
@@ -343,13 +339,8 @@
             if (response.ok) {
                 const data = await response.json();
                 console.log("Auth status:", data);
-                auth = 1;
-                return 1;
-            } else {
-                const data1 = await response.json();
-                console.log("response wrong bo ok", data1);
-                auth = 0;
-                return 0;
+                auth = data.isAuthenticated ? 1 : 0;
+                return auth;  // Return the same value we stored in au
             }
             
         } catch (error) {
