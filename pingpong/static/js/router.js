@@ -39,10 +39,10 @@
         console.log("url agora ----->", window.location.href, varzinha);
         console.log("setPage o arg q foi passado ----->", name);
 
-        if (name === data.currentPageName) {
-            console.log("Already on page:", name);
-            return;
-        }
+        //if (name === data.currentPageName) {
+        //    console.log("Already on page:", name);
+        //    return;
+        //}
 
 
         data.currentPageName = name;
@@ -134,7 +134,9 @@
             pageName = authResult ? 'profile' : 'login';
             console.log("entrou no ifzinho")
        }else{
+            hash = window.location.hash; 
             pageName = hash.startsWith('#/') ? hash.slice(2) : 'default';
+            console.log("mudou aqui AGORA ------------> ", pageName);
        }
 
        
