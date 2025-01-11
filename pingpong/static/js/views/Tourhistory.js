@@ -6,7 +6,7 @@ async function callapizinha(){
 
      
         try {
-            const response = await fetch('http://localhost:1443/api/getTournament/', {
+            const response = await fetch('https://localhost:1443/api/getTournament/', {
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json'
@@ -30,7 +30,7 @@ callapizinha();
 
 
 //meybe switch for let?const?
-var indexInput1 = document.getElementById('tournamentIndex');
+let indexInput1 = document.getElementById('tournamentIndex');
 var searchBtn11 = document.getElementById('searchBtn');
 
 
@@ -42,8 +42,13 @@ indexInput1.addEventListener('input', (e) => {
 });
 
 searchBtn11.addEventListener('click', async () => {
+ 
     try {
-        const index = document.getElementById('tournamentIndex').value;
+        let index = document.getElementById('tournamentIndex').value;
+        console.log(index);
+        if (!index){
+            index = 0;
+        }
         const response = await fetch(`/api/getTournament/${index}/`);
         const data = await response.json();
         
@@ -102,5 +107,6 @@ searchBtn11.addEventListener('click', async () => {
         }
     } catch (error) {
         console.error('Error:', error);
+        console.log(error);
     }
 });
