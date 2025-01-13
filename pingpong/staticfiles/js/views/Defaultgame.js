@@ -144,7 +144,6 @@ var Game = {
 				console.log('Match data saved successfully');
 				console.log('result: ' + match_result);
 				console.log('points: ' + gameData.earned_points);
-				//window.location.href = `/vaisefuder/`;
 				window.go('profile');
 			} else {
 				console.error('Error saving match data:', data.message);

@@ -21,9 +21,6 @@ var tournamentMatch = {
     }
 };
 
-
-console.log("ta safee papai play no tour");
-
 var usernick = localStorage.getItem('usernick');
 console.log(usernick);
 document.getElementById("nick").textContent = usernick;

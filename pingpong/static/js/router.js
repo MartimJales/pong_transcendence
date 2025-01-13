@@ -136,7 +136,7 @@
   
        if (hash === "https://localhost:1443/"){
             pageName = authResult ? 'profile' : 'login';
-            console.log("entrou no ifzinho")
+            console.log("entrou no if")
        }else{
             hash = window.location.hash; 
             pageName = hash.startsWith('#/') ? hash.slice(2) : 'default';
@@ -145,8 +145,8 @@
 
        
 
-        console.log(`oque ta na url window.location.ref: ${window.location.href}`);
-        console.log(`oque tiramos: ${pageName}`);
+        console.log(`o que ta na url window.location.ref: ${window.location.href}`);
+        console.log(`o que tiramos: ${pageName}`);
         varzinha = pageName;
         return pageName;
     }

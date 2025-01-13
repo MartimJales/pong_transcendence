@@ -1,6 +1,3 @@
-
-console.log("chaaaaaama na blockchain papai"); 
- 
 async function callapizinha(){
      console.log("receeebaaaa");
 
@@ -28,8 +25,7 @@ async function callapizinha(){
 
 callapizinha();
 
-
-//meybe switch for let?const?
+//maybe switch for let?const?
 var indexInput1 = document.getElementById('tournamentIndex');
 var searchBtn11 = document.getElementById('searchBtn');
 
