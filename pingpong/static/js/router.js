@@ -125,7 +125,7 @@
     let flag = 0;
     let flagzinha = 0;
     let varzinha;
-    async function getPageNameFromURL() { // only runs once when django renders a poha do html or f5
+    async function getPageNameFromURL() { // only runs once when django renders the html or refreshes the page
 
         let pageName;
         let hash = window.location.href;

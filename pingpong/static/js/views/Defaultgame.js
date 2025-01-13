@@ -141,8 +141,8 @@ var Game = {
 			console.log('Response data:', data);  // Log the entire response
 			if (data.status === 'success') {
 				console.log('Match data saved successfully');
-				console.log('o resultado dessa poha e ' + match_result);
-				console.log('os pontinhos ganhados sao ' + gameData.earned_points);
+				console.log('result: ' + match_result);
+				console.log('points: ' + gameData.earned_points);
 				window.go('profile');
 			} else {
 				console.error('Error saving match data:', data.message);
@@ -513,9 +513,6 @@ var Game = {
 	
 		// Atualizar o tempo da última chamada
 		this.lastIntersectionCalculationTime = now;
-	
-		console.log("vai poha");
-	
 		let futureX = this.ball.x;
 		let futureY = this.ball.y;
 		let futurePositions = [];

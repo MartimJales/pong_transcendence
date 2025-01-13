@@ -91,7 +91,7 @@
 
     let flag = 0;
     let varzinha;
-    function getPageNameFromURL() { // only runs once when django renders a poha do html
+    function getPageNameFromURL() { // only runs once when django renders the html
 
         //let flag = parseInt(localStorage.getItem('pageFlag') || '0'); // this shit is to prevent default behaviour do 404 page
         //if (!flag) { 

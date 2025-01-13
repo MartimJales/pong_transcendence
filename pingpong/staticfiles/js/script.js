@@ -141,8 +141,8 @@ var Game = {
 			console.log('Response data:', data);  // Log the entire response
 			if (data.status === 'success') {
 				console.log('Match data saved successfully');
-				console.log('o resultado dessa poha e ' + match_result);
-				console.log('os pontinhos ganhados sao ' + gameData.earned_points);
+				console.log('result: ' + match_result);
+				console.log('points: ' + gameData.earned_points);
 				//window.location.href = `/vaisefuder/`;
 				window.location.href = `/profile/${userId}/`;
 			} else {

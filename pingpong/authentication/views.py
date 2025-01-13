@@ -465,7 +465,7 @@ def setOff(request):
                 
         return JsonResponse({
                     'status': 'success',
-                    'message': 'ta em off essa poha'
+                    'message': 'Set to off'
                 })
         
     return HttpResponse(status=200)
