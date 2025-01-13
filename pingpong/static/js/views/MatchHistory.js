@@ -31,10 +31,7 @@ export class MatchHistoryPage extends BaseComponent {
   function renderMatchHistory(data) {
       const content = document.getElementById('matchHistoryContent');
       
-      let html = `
-        <h1 style="color: white;">Match History of ${data.nick}</h1>
-        <img src="${data.image_url}" alt="Profile Image" class="profile-image">
-      `;
+      let html = `<h1>Match History</h1>`;
   
       if (data.matches && data.matches.length > 0) {
         html += '<div class="match-list">';

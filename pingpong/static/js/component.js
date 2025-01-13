@@ -71,7 +71,6 @@ class Router {
             }
             
         } catch (error) {
-            console.error('merda no fetch', error);
             return false;
         }
     }
