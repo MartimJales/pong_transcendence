@@ -1,0 +1,6 @@
+Temos que ver o formulario do editNick
+Temos que meter o tipo de letra todo igual pelo site inteiro
+Temos que redirecionar o user para o HomePage quando o torneio termina
+
+Mensgaem de erro no signup
+Senhas so podem aceitar chars validos
