@@ -57,8 +57,12 @@
 
         let authResult1 = await authStatus();
 
-        if(!authResult1)
-            page = data.pages.get('login');
+        if(!authResult1){
+            if(name === 'signup')
+                page = data.pages.get('signup');
+            else
+                page = data.pages.get('login');
+        }  
         else{
             page = data.pages.get(name) || Array.from(data.pages.values()).find(e =>  e.getAttribute("default") == "");
 
