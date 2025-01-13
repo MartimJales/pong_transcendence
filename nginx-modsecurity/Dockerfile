@@ -1,6 +1,6 @@
 FROM owasp/modsecurity-crs:nginx
 
-# For some reason, the "modsecurity-crs" image requires privillege elevation
+# For some reason, the "modsecurity-crs" image requires privillege escalation
 USER root
 
 # NGINX configuration

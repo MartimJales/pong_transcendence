@@ -28,7 +28,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import uuid
 
-# blockchain shit
+# blockchain stuff
 import os
 from . import web3_settings 
 from web3 import Web3
@@ -55,7 +55,7 @@ def signup(request):
                     password=password
                 )
                 return JsonResponse({
-                    'success': 'Account created successfully, please login to computaria'
+                    'success': 'Account created successfully, please login'
                 }, status=201)
 
             except IntegrityError:
@@ -70,11 +70,11 @@ def signup(request):
 
         except Exception as e:
             return JsonResponse({
-                'error': f'sepa que deu emrda: {str(e)}'
+                'error': f'{str(e)}'
             }, status=500)
 
     return JsonResponse({
-        'error': 'nao é POST nesse carai'
+        'error': 'Method not allowed'
     }, status=405)
 
 @ensure_csrf_cookie
@@ -102,7 +102,7 @@ def api_login(request):
             'user_id': user.id,
             'username': user.username,
             })
-    return JsonResponse({'deu ruim': 'nao é POST nesse carai'})
+    return JsonResponse({'something went wrong': 'Method not allowed'})
 
 @csrf_exempt
 def auth_status(request):
@@ -122,10 +122,7 @@ def add_friend(request):
             if not friend_name:
                 return JsonResponse({'error': 'Please enter friend name'}, status=400)
             
-            # Get current user's profile
             current_profile = request.user.playerprofile
-            
-            # Try to find the friend's user and profile
             try:
                 friend_user = User.objects.get(username=friend_name)
                 friend_profile = friend_user.playerprofile
@@ -156,11 +153,11 @@ def add_friend(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
        
-    return JsonResponse({'deu ruim': 'nao é POST nesse carai'}, status=405)
+    return JsonResponse({'something went wrong': 'Method not allowed'}, status=405)
 
 @login_required
 def get_profile_data(request):
-    print("chegou poha")
+    # print("chegou")
     try:
         user = request.user
         profile = user.playerprofile
@@ -246,7 +243,7 @@ def get_match_history(request):
         print(f"Error in get_match_history: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
 
-@login_required  # Descomenta essa merde se exigir autenticação   
+@login_required  
 def game_local(request):
     if request.method == 'POST':
         try:
@@ -256,8 +253,8 @@ def game_local(request):
             player = request.user
 
             match = Match.objects.create( 
-                player=player, #recebendo o pk mandando de lonjao
-                player2=None, # se pa que chama de outra url aqui
+                player=player,
+                player2=None,
                 earned_points=data['earned_points'],
                 mode=data['mode'],
                 opponent=data['opponent'],
@@ -305,7 +302,7 @@ def user_history(request, user_id):
     
     user = request.user
     #user = get_object_or_404(User, id=user_id) 
-    user_matches = user.matches_as_player.all() # da para puxar no nome do model suave papai, yesssss só usar o related_name
+    user_matches = user.matches_as_player.all() # da para puxar no nome do model, só usar o related_name
 
     context = {'user': user, 'matches': user_matches}
 
@@ -348,60 +345,42 @@ def handle_user_logout(request):
 @login_required
 def upload_profile_image(request):
     try:
-        # Check if there's a file in the request
         if 'image' not in request.FILES:
             return JsonResponse({'error': 'No image file provided'}, status=400)
         
         image_file = request.FILES['image']
-        
-        # Validate file type
         allowed_types = ['image/jpeg', 'image/png', 'image/gif']
         if image_file.content_type not in allowed_types:
             return JsonResponse({'error': 'Invalid file type. Please upload a JPEG, PNG or GIF'}, status=400)
         
-        # Validate file size (e.g., 5MB max)
         if image_file.size > 5 * 1024 * 1024:
             return JsonResponse({'error': 'File too large. Maximum size is 5MB'}, status=400)
         
-        # Generate a unique filename
         file_extension = os.path.splitext(image_file.name)[1]
         new_filename = f"profile_{request.user.id}_{uuid.uuid4().hex[:10]}{file_extension}"
-        
-        # Define the upload path within MEDIA_ROOT/profile_pics
         upload_path = os.path.join('profile_pics', new_filename)
         
         try:
-            # Open the image using Pillow
             img = Image.open(image_file)
-            
-            # Convert to RGB if necessary (in case of PNG with transparency)
             if img.mode in ('RGBA', 'P'):
                 img = img.convert('RGB')
             
-            # Resize image to a maximum size while maintaining aspect ratio
             max_size = (800, 800)
             img.thumbnail(max_size, Image.Resampling.LANCZOS)
             
-            # Create a temporary file to save the processed image
             temp_path = os.path.join('profile_pics', f'temp_{new_filename}')
             with default_storage.open(temp_path, 'wb') as f:
                 img.save(f, format='JPEG', quality=85)
             
-            # If user already has a profile image that's not the default, delete it
             if request.user.playerprofile.userpic and \
                str(request.user.playerprofile.userpic) != 'profile_pics/default.jpg' and \
                os.path.exists(os.path.join(settings.MEDIA_ROOT, str(request.user.playerprofile.userpic))):
                 default_storage.delete(str(request.user.playerprofile.userpic))
             
-            # Save the new image path to user's profile
             request.user.playerprofile.userpic = upload_path
             request.user.save()
-            
-            # Move temp file to final location
             default_storage.save(upload_path, default_storage.open(temp_path))
             default_storage.delete(temp_path)
-            
-            # Generate the URL for the uploaded image
             image_url = default_storage.url(upload_path)
             
             return JsonResponse({
@@ -410,7 +389,6 @@ def upload_profile_image(request):
             })
             
         except Exception as e:
-            # Clean up any temporary files if they exist
             if 'temp_path' in locals() and default_storage.exists(temp_path):
                 default_storage.delete(temp_path)
             return JsonResponse({'error': str(e)}, status=500)
@@ -423,22 +401,16 @@ def endTour(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            
-            
             quarter1 = data['quarter1']
             quarter2 = data['quarter2']
             finals = data['finals']
             date = data['date']
 
-            # Prepare data arrays for the smart contract
             quarter1_data = [quarter1['p1'], quarter1['p2'], quarter1['w'], quarter1['score']]
             quarter2_data = [quarter2['p1'], quarter2['p2'], quarter2['w'], quarter2['score']]
             finals_data = [finals['p1'], finals['p2'], finals['w'], finals['score']]
-
-            # Get nonce
             nonce = web3_settings.w3.eth.get_transaction_count(web3_settings.WALLET_ADDRESS)
             
-            # Build transaction using contract function
             transaction = web3_settings.contract.functions.addTournament(
                 date,
                 quarter1_data,
@@ -452,18 +424,13 @@ def endTour(request):
                 'chainId': 11155111  # Sepolia chain ID
             })
 
-            # Sign the transaction
             signed = web3_settings.w3.eth.account.sign_transaction(
                 transaction,
                 private_key=web3_settings.WALLET_PRIVATE_KEY
             )
             
-            # Send the transaction
             tx_hash = web3_settings.w3.eth.send_raw_transaction(signed.raw_transaction)
-            
-            # Wait for the transaction to be mined
             tx_receipt = web3_settings.w3.eth.wait_for_transaction_receipt(tx_hash)
-
             ne1w_count = web3_settings.contract.functions.getTournamentCount().call({
                 'from': web3_settings.WALLET_ADDRESS
             })
@@ -508,21 +475,16 @@ def setOff(request):
 @login_required
 def getTournament(request):
     try:
-        # Debug prints
         print("Contract Address:", web3_settings.CONTRACT_ADDRESS)
         print("Is Connected:", web3_settings.w3.is_connected())
         print("Chain ID:", web3_settings.w3.eth.chain_id)
-
-        # Verify contract
         print("Contract Functions:", web3_settings.contract.functions)
         
-        # Try calling the function
         tournament_count = web3_settings.contract.functions.getTournamentCount().call({
             'from': web3_settings.WALLET_ADDRESS
         })
 
         index = tournament_count - 1
-
         date, quarter1_data, quarter2_data, finals_data = web3_settings.contract.functions.getTournament(index).call()
 
         tournament_data = {

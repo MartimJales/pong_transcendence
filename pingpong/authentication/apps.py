@@ -5,4 +5,4 @@ class AuthenticationConfig(AppConfig):
     name = 'authentication'
 
     def ready(self):
-        import authentication.signals #ta dando pau no /admin - learodri
+        import authentication.signals

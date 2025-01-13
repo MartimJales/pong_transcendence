@@ -1,4 +1,3 @@
-
 let formzin = document.getElementById("signupForm");
 let msg = document.getElementById("message");
 
@@ -12,12 +11,10 @@ formzin.addEventListener('submit', async (e) => {
         passconf: document.getElementById("confirmPassword").value,
     }
 
-
-    console.log("ta aqui esse carai -->", newUserData);
-
+    // console.log("ta aqui -->", newUserData);
 
     if (newUserData.pass !== newUserData.passconf){
-        msg.innerText = "Passwords do not match meu nobre";
+        msg.innerText = "Passwords do not match";
         msg.style.color = "red";
         return;
     }
@@ -40,10 +37,10 @@ formzin.addEventListener('submit', async (e) => {
             document.getElementById("email").style.display = "none";
             document.getElementById("confirmPassword").style.display = "none";
             document.getElementById("butao").style.display = "none";
-            document.getElementById("divzinha").style.display = "none";
+            document.getElementById("div").style.display = "none";
             const newbtn = document.createElement("button");
             newbtn.type = "button";
-            newbtn.textContent = "JOIN THE PUTARIA";
+            newbtn.textContent = "Sign-up";
             newbtn.classList.add("btn", "ping-pong-btn", "mt-3");
             newbtn.addEventListener('click', () => {
                 window.go('login');
@@ -58,10 +55,9 @@ formzin.addEventListener('submit', async (e) => {
             msg.style.color = "red";
         }
     } catch (error) {   
-        console.log("fetch error", error);
-        msg.innerText = "sepa que deu merda no fetch";
+        console.log("fetch error: ", error);
+        msg.innerText = "fetch error";
         msg.style.color = 'red';
     }
 
 });   
-    

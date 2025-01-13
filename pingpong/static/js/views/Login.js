@@ -1,15 +1,13 @@
 var loginForm = document.getElementById('loginForm');
 var messageElement = document.getElementById('message');
 
-
-
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    console.log("segura essa pass carai : ");
-    console.log(username);
-    console.log(password);
+    // console.log("Username and password: ");
+    // console.log(username);
+    // console.log(password);
 
         const csrftoken = getCookie('csrftoken');
         try {
@@ -30,8 +28,8 @@ loginForm.addEventListener('submit', async (e) => {
             
             messageElement.textContent = 'Login successful!';
             messageElement.style.color = 'green';
-            console.log("deu bom carai info aqui de baixo");
-            console.log(data);
+            // console.log("deu bom info aqui debaixo");
+            // console.log(data);
 
             setTimeout(() => {
                 window.go("profile");
@@ -48,4 +46,3 @@ loginForm.addEventListener('submit', async (e) => {
         messageElement.style.color = 'red';
     }
 });   
-    

@@ -5,7 +5,7 @@
     <div class="container">
         <div class="text-center mt-5">
             <div class="centered-div">
-                <h1>Local Tournament - Semi finals </h1> <br> <h1>Beat the Host: <span id="nickzin">meucu</span></h1>
+                <h1>Local Tournament - Semi finals </h1> <br> <h1>Beat the Host: <span id="nick">test</span></h1>
                 <h6>(de 4, lá ele)</h6>
                 <h2>Challangers:</h2><br>
                 
@@ -23,7 +23,7 @@
                         <input type="text" id="challenger3" class="form-control mb-2" placeholder="Challenger 3">
                         <span id="challenger3Display" class="challenger-name"></span>
                     </div>
-                    <div id="divgetbolquet"></div>
+                    <div id="divget"></div>
                 </div>
             
 
@@ -40,7 +40,7 @@
                     <input type="color" class="form-control form-control-color" id="paddleColor" value="#00CC00" title="Choose a color">
                 </form><br>
                 <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-secondary" id="startGameButton">Start GangBang!</button>
+                    <button type="button" class="btn btn-secondary" id="startGameButton">Start Tournament</button>
                 </div>  	
                 <input type="hidden" >
                 <input type="hidden" id="gameMode" value="Tournament">
@@ -104,7 +104,7 @@
             transform: translate(-50%, -50%);
         }
     
-        #nickzin {
+        #nick {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.2em;
             color: #00ff88;
@@ -125,7 +125,7 @@
             transform: skew(-5deg);
         }
     
-        #nickzin::before {
+        #nick::before {
             content: '';
             position: absolute;
             top: 0;
@@ -136,7 +136,7 @@
             animation: borderPulse 2s infinite;
         }
     
-        #nickzin::after {
+        #nick::after {
             content: '';
             position: absolute;
             top: -2px;
@@ -171,7 +171,7 @@
             }
         }
     
-        #nickzin:hover {
+        #nick:hover {
             transform: skew(-5deg) scale(1.05);
             transition: transform 0.2s ease;
             cursor: pointer;

@@ -1,12 +1,7 @@
-
-console.log("ftech vai ser mandado agora"); 
- 
-
+console.log("fetch vai ser mandado agora"); 
 
 async function profile_info(){
-     console.log("foi buscarrr o profile");
-
-     
+     console.log("foi buscar o profile");
         try {
             const csrftoken = window.getCookie('csrftoken');
             const response = await fetch('https://localhost:1443/api/profile/', {
@@ -18,9 +13,9 @@ async function profile_info(){
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
+                // console.log(data);
                 const sessionId = window.getSessionId();
-                console.log("Current session ID:", sessionId);
+                // console.log("Current session ID:", sessionId);
                 document.querySelector('h1').textContent = `Welcome, ${data.username}`;
                 
                 //document.querySelector('img').src = data.image_url;
@@ -31,9 +26,9 @@ async function profile_info(){
                 h2Elements[2].textContent = `Winnings: ${data.wins}`;
                 h2Elements[3].textContent = `Total Points: ${data.total_points}`;
 
-                const imagenzinha = document.getElementById("ovinho");
+                const imagenzinha = document.getElementById("circle");
                 imagenzinha.src = data.image_url;
-                console.log("info: ", data);
+                // console.log("info: ", data);
                 
 
                 localStorage.setItem('usernick', data.nick);
@@ -100,7 +95,7 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
         e.preventDefault();
         const friendName = document.getElementById("friendName").value;
 
-        console.log("fetch do add friend agora meu nobre");
+        console.log("fetch do add friend");
         try {
             const csrftoken = window.getCookie('csrftoken');
             const response = await fetch('https://localhost:1443/api/add/', {
@@ -116,25 +111,17 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
             
             if(response.ok) {
                 const data = await response.json();
-                console.log("deu bom");
-                console.log(data);
+                // console.log("deu bom");
+                // console.log(data);
                 
-                // Show success message
                 messageElement.textContent = 'Friend added successfully!';
                 messageElement.style.color = 'green';
                 messageElement.style.display = 'block';
-                
-                // Clear the input field
                 document.getElementById("friendName").value = '';
-                
-                // Update friends list
                 await profile_info();
-                
-                // Hide form after success
                 formzin.remove();
                 addFriendBtn.style.display = "block";
                 
-                // Hide success message after delay
                 setTimeout(() => {
                     messageElement.style.display = 'none';
                 }, 3000);
@@ -147,8 +134,6 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
                 setTimeout(() => {
                     messageElement.style.display = 'none';
                 }, 3000);
-                
-                // Don't remove form on error - let user try again
             }
         } catch(error) {
             console.error("Error adding friend:", error);
@@ -159,39 +144,30 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
             setTimeout(() => {
                 messageElement.style.display = 'none';
             }, 3000);
-            
-            // Don't remove form on error - let user try again
         }
     });
 });
 
 
-// Get the elements
 var profileImg = document.querySelector('.profile-img');
 var fileInput = document.querySelector('#profileImageUpload');
 
 console.log(profileImg);
 
-// Make image clickable
 profileImg.style.cursor = 'pointer';
-
-// Add click handler to image
 profileImg.addEventListener('click', () => {
     fileInput.click();
 });
 
-// Handle file selection
 fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
         alert('Please select an image file');
         return;
     }
 
-    // Create FormData
     const formData = new FormData();
     formData.append('image', file);
     

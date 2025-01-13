@@ -33,6 +33,3 @@ if settings.DEBUG:
 #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# mama_eu/randomshit/here -> this shit is to map the rest of urls, se passa só mamara eu manda o resto 
-# path('mama_eu/', include('authentication.urls')), referencia da outra app

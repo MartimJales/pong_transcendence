@@ -567,7 +567,7 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 
 
 	console.log('Starting game with the following settings:');
-	console.log('Players:', selectedPlayers); //chatgtp, local v1, suruba
+	console.log('Players:', selectedPlayers); //chatgtp, local v1, multiplayer
 	console.log('Ball Color:', ballColor);
 	console.log('Background Color:', bgColor);
 	console.log('Paddle Color:', paddleColor);

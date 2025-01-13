@@ -25,7 +25,7 @@ async function profile_info(){
                 h2Elements[2].textContent = `Winnings: ${data.wins}`;
                 h2Elements[3].textContent = `Total Points: ${data.total_points}`;
 
-                const imagenzinha = document.getElementById("ovinho");
+                const imagenzinha = document.getElementById("circle");
                 imagenzinha.src = data.image_url;
                 console.log("info: ", data);
                 

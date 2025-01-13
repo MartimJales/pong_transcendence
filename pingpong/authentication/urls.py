@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from . import views
 
-#URL COFIG for the app
+#URL CONFIG for the app
 urlpatterns = [ 
     path('api/login/', views.api_login, name='api_login'), 
     path('api/signup/', views.signup, name='signup'),

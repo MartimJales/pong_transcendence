@@ -17,7 +17,7 @@ class PlayerProfile(models.Model):
 
 class Match(models.Model):
     player = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player') # releted name é para puxar nas views.py
-    player2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player2', null=True, blank=True) #deixa defaul a nao que seja onlie dai pega id
+    player2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_player2', null=True, blank=True) #deixa default a nao ser que seja online, dai pega id
     earned_points = models.PositiveIntegerField(default=0) #ai counts 15? 
     mode = models.CharField(max_length=100, default="local") # change if comes from online/tour url request 
     opponent = models.CharField(max_length=100) # ai p1, local challanger

@@ -93,6 +93,8 @@ CHANNEL_LAYERS = {
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# Please note that this has been severely tweaked in order to integrate
+# Django with Vault
 
 import hvac
 import os
@@ -207,7 +209,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # se nao django chora
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # senao django reclama
 
 # MEDIA_URL = '/media/'
 

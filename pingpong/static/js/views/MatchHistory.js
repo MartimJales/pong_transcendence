@@ -1,4 +1,4 @@
-console.log("maaaatch hisssotyyy");
+// console.log("match history");
 async function fetchMatchHistory() {
     try {
       const response = await fetch('https://localhost:1443/api/matchhistory/', {

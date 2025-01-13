@@ -24,9 +24,9 @@ var tournamentMatch = {
 
 console.log("ta safee papai play no tour");
 
-var usernickzin = localStorage.getItem('usernick');
-console.log(usernickzin);
-document.getElementById("nickzin").textContent = usernickzin;
+var usernick = localStorage.getItem('usernick');
+console.log(usernick);
+document.getElementById("nick").textContent = usernick;
 
 
 // Global Variables
@@ -801,7 +801,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 
 
 	console.log('Starting game with the following settings:');
-	console.log('Players:', selectedPlayers); //chatgtp, local v1, suruba
+	console.log('Players:', selectedPlayers); //chatgtp, local v1, multiplayer
 	console.log('Ball Color:', ballColor);
 	console.log('Background Color:', bgColor);
 	console.log('Paddle Color:', paddleColor);
@@ -810,7 +810,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 
 
 	if (!p1 || p1.trim() === "" || !p2 || p2.trim() === "" || !p3 || p3.trim() === "") {
-		let divzininha = document.getElementById("divgetbolquet");
+		let divzininha = document.getElementById("divget");
 		divzininha.innerHTML = `
 			<div class="alert alert-danger" role="alert">
 				Please enter names for all challengers!
@@ -831,7 +831,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 		tournamentMatch.quarter1.p1 = p1;
 		tournamentMatch.quarter1.p2 = p3;
 
-		tournamentMatch.quarter2.p1 = usernickzin;
+		tournamentMatch.quarter2.p1 = usernick;
 		tournamentMatch.quarter2.p2 = p2;
 	
 		preGameMode();
@@ -848,12 +848,12 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 		console.log("Match winner: Q1", tournamentMatch.quarter1.w);
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
-		displayNextMatch(usernickzin, p2);
+		displayNextMatch(usernick, p2);
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
 		setGameCanva();
 
-		tournamentMatch.quarter2.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, usernickzin, p2);
+		tournamentMatch.quarter2.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, usernick, p2);
 		console.log("Match winner: Q1", tournamentMatch.quarter2.w);
 
 		await new Promise(resolve => setTimeout(resolve, 3000));
@@ -1045,7 +1045,7 @@ function preGameMode(){
 				<div class="match match-2">
 					<div class="player player-top challenger-style">${p2}</div>
 					<div class="vs">VS</div>
-					<div class="player player-bottom challenger-style">${usernickzin}</div>
+					<div class="player player-bottom challenger-style">${usernick}</div>
 				</div>
 			</div>
 			<div class="final-match">
