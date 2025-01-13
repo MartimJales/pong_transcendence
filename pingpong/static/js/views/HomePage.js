@@ -36,8 +36,6 @@ export class HomePage extends BaseComponent  {
                         const imagenzinha = document.getElementById("circle");
                         imagenzinha.src = data.image_url;
                         // console.log("info: ", data);
-                        
-
                         localStorage.setItem('usernick', data.nick);
                         
                         // Update friends list

@@ -1,5 +1,5 @@
 // Global Variables
-var DIRECTION = {
+const DIRECTION = {
 	IDLE: 0,
 	UP: 1,
 	DOWN: 2,
@@ -7,6 +7,12 @@ var DIRECTION = {
 	RIGHT: 4
 };
 
+export class MultiplayerPage extends BaseComponent {
+	constructor(){
+		super("static/html/multiplayer.html")
+	}
+
+	onInit(){
 var userId;
 var gameMode;
 var match_result;
@@ -581,3 +587,8 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	// Iniciar o jogo com as configurações selecionadas
 	startGame(selectedPlayers, ballColor, bgColor, paddleColor);
 });
+
+	}
+}
+
+

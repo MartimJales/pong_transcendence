@@ -1,0 +1,142 @@
+<div>    
+    <div class="container">        
+        <div class="text-center mt-5">            
+            <h1 class="title-glow">Tournaments Stored in Smart Contract</h1>            
+            <div class="mb-3">                
+                <div class="tournament-input-container">                    
+                    <input type="number"                           
+                           id="tournamentIndex"                           
+                           class="tournament-input"                           
+                           value="0"                           
+                           min="0"                           
+                           placeholder="Enter tournament number">                
+                </div>                
+                <button id="searchBtn" class="search-btn">Search tournament on Ethereum Testnet</button>                
+                <div id="message" class="mt-3" style="max-width: 800px; margin: 0 auto;"></div>
+                <div id="msg"></div>          
+            </div>        
+        </div>    
+    </div>     
+
+    <style>        
+        .title-glow {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            margin-bottom: 2rem;
+        }
+
+        .tournament-input {            
+            font-family: 'Orbitron', sans-serif;            
+            background: rgba(0, 0, 0, 0.8);            
+            color: #00ff88;            
+            border: 2px solid #00ff88;            
+            padding: 15px 20px;            
+            width: 200px;                     
+            text-align: center;            
+            outline: none;            
+            text-shadow: 0 0 10px #00ff88;
+            font-size: 2em;
+            margin: 20px 0;
+            position: relative;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }         
+
+        .search-btn {            
+            font-family: 'Orbitron', sans-serif;            
+            background: transparent;            
+            color: #00ff88;            
+            border: 2px solid #00ff88;            
+            padding: 12px 30px;            
+            text-shadow: 0 0 10px #00ff88;            
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+            position: relative;
+            overflow: hidden;
+        }         
+
+        .search-btn:hover {            
+            background: rgba(0, 255, 136, 0.2);            
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);        
+        }
+
+        .tournament-display {
+            background: linear-gradient(90deg, 
+                rgba(0,0,0,0.8) 0%,
+                rgba(0,255,136,0.1) 50%,
+                rgba(0,0,0,0.8) 100%);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tournament-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            font-size: 2em;
+            margin-bottom: 1.5rem;
+        }
+
+        .match-section {
+            border-left: 2px solid #00ff88;
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .match-section:before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: -6px;
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .match-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ff88;
+            text-shadow: 0 0 5px #00ff88;
+            font-size: 1.5em;
+            margin-bottom: 1rem;
+        }
+
+        .match-detail {
+            color: white;
+            margin: 0.5rem 0;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .winner-highlight {
+            color: #00ff88;
+            text-shadow: 0 0 5px #00ff88;
+            font-weight: bold;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px #00ff88, 0 0 10px #00ff88, 0 0 15px #00ff88;
+            }
+            to {
+                box-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 30px #00ff88;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</div>
