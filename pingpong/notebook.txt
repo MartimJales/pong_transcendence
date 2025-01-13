@@ -13,7 +13,7 @@ def store_match_result_on_blockchain(match_result):
     ]
     contract_address = "0xYOUR_CONTRACT_ADDRESS"
 
-    # Create a contract instance, para deixar interagir neesse carai
+    # Create a contract instance, para deixar interagir
     contract = w3.eth.contract(address=contract_address, abi=abi) abi é pa user funcionalidade, contrac_adrres nois cata aqui, Visit the Infura website: Go to https://www.infura.io/
 
     # Convert match result data to a format suitable for the smart contract

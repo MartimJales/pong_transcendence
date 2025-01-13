@@ -12,12 +12,10 @@ formzin.addEventListener('submit', async (e) => {
         passconf: document.getElementById("confirmPassword").value,
     }
 
-
-    console.log("ta aqui esse carai -->", newUserData);
-
+    console.log("newUserData -->", newUserData);
 
     if (newUserData.pass !== newUserData.passconf){
-        msg.innerText = "Passwords do not match meu nobre";
+        msg.innerText = "Passwords do not match";
         msg.style.color = "red";
         return;
     }
@@ -39,22 +37,22 @@ formzin.addEventListener('submit', async (e) => {
             document.getElementById("password").style.display = "none";
             document.getElementById("email").style.display = "none";
             document.getElementById("confirmPassword").style.display = "none";
-            document.getElementById("butao").style.display = "none";
+            document.getElementById("button").style.display = "none";
             document.getElementById("div").style.display = "none";
             const newbtn = document.createElement("button");
             newbtn.type = "button";
-            newbtn.textContent = "JOIN THE PUTARIA";
+            newbtn.textContent = "Join Transcendence";
             newbtn.classList.add("btn", "ping-pong-btn", "mt-3");
             newbtn.addEventListener('click', () => {
                 window.go('login');
             });
             const donde = document.getElementById("local");
             donde.append(newbtn);
-            msg.innerText = "Account created succesfully, please login to computaria";
+            msg.innerText = "Account created succesfully, please login";
             msg.style.color = "green";
         }else{
             const errorRe = await response.json();
-            msg.textContent = errorRe.error || "Account creation failed, please try again brother";
+            msg.textContent = errorRe.error || "Account creation failed, please try again";
             msg.style.color = "red";
         }
     } catch (error) {   

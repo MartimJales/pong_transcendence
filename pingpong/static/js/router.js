@@ -115,7 +115,7 @@
     });
 
 
-    window.addEventListener("popstate", (e) => { //everythime we change this shit with .go()
+    window.addEventListener("popstate", (e) => {
         const name = window.location.href.split("#/")[1];
         console.log("bateu no popstate");
         setPage(name);  

@@ -94,7 +94,7 @@ document.getElementById("addFriendBtn").addEventListener('click', async (e) => {
         e.preventDefault();
         const friendName = document.getElementById("friendName").value;
 
-        console.log("fetch do add friend agora meu nobre");
+        console.log("fetch do add friend agora");
         try {
             const csrftoken = window.getCookie('csrftoken');
             const response = await fetch('https://127.0.0.1:1443/api/add/', {

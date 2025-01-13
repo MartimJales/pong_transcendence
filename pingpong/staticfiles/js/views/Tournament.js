@@ -866,7 +866,7 @@ document.getElementById('startGameButton').addEventListener('click', async funct
 
 		tournamentMatch.finals.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
 		
-		console.log("WINEEEEEEEERR desse carai", tournamentMatch.finals.w);
+		console.log("Winner: ", tournamentMatch.finals.w);
 		console.log("q1 score -> ", tournamentMatch.quarter1.score);
 		console.log("q2 score ->", tournamentMatch.quarter2.score);
 		await new Promise(resolve => setTimeout(resolve, 3000));
@@ -1019,7 +1019,7 @@ function displayNextMatch(player1, player2) {
     const containerMod = document.querySelector('.container');
     containerMod.innerHTML = `
     <div class="tournament-bracket">
-        <h1 class="bracket-title">Next Match: DALE DURO SENPAI</h1>
+        <h1 class="bracket-title">Next Match: </h1>
         <div class="bracket-container">
             <div class="semifinal-matches">
                 <div class="match match-1">

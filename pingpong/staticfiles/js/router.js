@@ -81,7 +81,7 @@
 
     };
 
-    window.addEventListener("popstate", (e) => { //everythime we change this shit with .go()
+    window.addEventListener("popstate", (e) => {
         const name = window.location.href.split("#/")[1];
         if (window.location.href === "https://localhost/") // in case of manueally https://localhost/ again
             name = "404";
@@ -92,17 +92,6 @@
     let flag = 0;
     let varzinha;
     function getPageNameFromURL() { // only runs once when django renders the html
-
-        //let flag = parseInt(localStorage.getItem('pageFlag') || '0'); // this shit is to prevent default behaviour do 404 page
-        //if (!flag) { 
-        //    localStorage.setItem('pageFlag', '1'); // i++;
-        //    if(localStorage.getItem('user_id')){
-        //        console.log("trigged automatico aqui!! --> login profile");
-        //        return "profile";
-        //    }
-        //    console.log("trigged automatico aqui!! --> login profile")
-        //    return "login";
-        //}
 
         let pageName;
         let hash = window.location.href;
