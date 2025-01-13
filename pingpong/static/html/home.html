@@ -1,0 +1,75 @@
+<div>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4" id="navs">
+                     <a class="navbar-brand" href="/" data-link>Transcendence</a>
+                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" 
+                         aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                         <span class="navbar-toggler-icon"></span>
+                     </button>
+                     <div class="collapse navbar-collapse" id="navbarCollapse">
+                         <ul class="navbar-nav mr-auto">
+                             <li class="nav-item">
+                                 <a class="nav-link" onclick="Router.go('profile')" data-link>Profile</a>
+                             </li>
+                             <li class="nav-item">
+                                 <a class="nav-link" onclick="Router.go('game_option')" data-link>Play Game</a>
+                             </li>
+                             <li class="nav-item">
+                                 <a class="nav-link" onclick="handleLogout()" data-link>Logout</a>
+                             </li>
+                         </ul>
+                     </div>
+                 </nav>
+  <div class="container" id="main">
+    <div class="row">
+      <!-- User Profile Section (Left Side) -->
+      <div class="col-md-8">
+        <div class="text-center mt-5">
+            <h1>Welcome, </h1>
+            <br>
+            <div class="profile-img-wrapper position-relative">
+              <img id="circle" 
+                   alt="Default Profile Image" 
+                   class="img-fluid rounded-circle profile-img" 
+                   style="width: 200px; height: 200px; object-fit: cover;">
+              <input type="file" 
+                     id="profileImageUpload" 
+                     accept="image/*" 
+                     style="display: none;">
+          </div>
+            <br>
+            <h2>Nick: </h2>
+            <h2>Losses: </h2>
+            <h2>Winnings: </h2>
+            <h2>Total Points: </h2>
+            <button onclick="Router.go('edit_nick')" class="btn btn-secondary">
+              Edit Nickname
+            </button>
+            <a class="btn btn-secondary" onclick="Router.go('match_history')" data-link>Match History</a>
+            <a class="btn btn-secondary" onclick="Router.go('tour_history')" data-link>Tournament info</a>
+            <div class="messages mt-3">
+            </div>
+        </div>
+      </div>
+
+      <!-- Friends Section de ladinho papai -->
+      <div class="col-md-4">
+        <div class="mt-5" id="friendsbox">
+          <h2 class="text-center mb-4 w-100">Friends</h2>
+          <div id="friendsList" class="list-group mb-3">
+            <ul>
+            </ul>
+          </div>
+          <button id="addFriendBtn" class="btn btn-secondary w-100">Search Friends</button>
+          <div id="message" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+
+  <div class="centered-div">
+    <canvas></canvas>
+  </div>
+ 
+</div>

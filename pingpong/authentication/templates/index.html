@@ -11,103 +11,10 @@
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-
-    <style>
-      .ping-pong-container {
-        background-color: #1a1a1a;
-        color: #ffffff;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-      }
-      .ping-pong-title {
-        font-family: 'Arial Black', sans-serif;
-        font-size: 2.5rem;
-        text-transform: uppercase;
-        margin-bottom: 2rem;
-        text-shadow: 2px 2px 4px rgba(0, 255, 0, 0.5);
-        position: relative;
-        display: inline-block;
-        padding: 0 50px;
-      }
-      .ping-pong-input {
-        background-color: #333;
-        border: 2px solid #00ff00;
-        color: #ffffff;
-        border-radius: 20px;
-        padding: 0.5rem 1rem;
-      }
-      .ping-pong-input:focus {
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-      }
-      .ping-pong-btn {
-        background-color: #00ff00;
-        border: none;
-        color: #000000;
-        font-weight: bold;
-        text-transform: uppercase;
-        border-radius: 20px;
-        padding: 0.5rem 2rem;
-        transition: all 0.3s ease;
-      }
-      .ping-pong-btn:hover {
-        background-color: #00cc00;
-        transform: scale(1.05);
-      }
-      .ping-pong-ball {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        background-color: #ffffff;
-        border-radius: 50%;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        animation: sideBounce 2s ease-in-out infinite;
-      }
-      .ping-pong-ball:first-child {
-        left: 0;
-        animation-delay: -1s;
-      }
-      .ping-pong-ball:last-child {
-        right: 0;
-      }
-      @keyframes sideBounce {
-        0%, 100% {
-          transform: translateY(-50%) translateX(0) scale(1, 1);
-          animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-        }
-        50% {
-          transform: translateY(-50%) translateX(15px) scale(1.1, 0.9);
-          animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-        }
-        0%, 100% {
-          background-color: rgba(255, 255, 255, 0.8);
-        }
-        50% {
-          background-color: rgba(255, 255, 255, 1);
-        }
-      }
-    </style>
-
   
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="/static/js/router.js"></script>
-  
-
-    <!-- page elements -->
-    {% include 'login.html' %}
-    {% include 'game_option.html' %}  
-    {% include 'teste.html' %} 
-    {% include '404.html' %}
-    {% include 'game.html' %}
-    {% include 'tournament.html' %}
-    {% include 'signup.html' %}
-    {% include 'profile.html' %}
-    {% include 'profile_history.html' %}
-    {% include 'edit_nick.html' %} 
-    {% include 'tour_history.html' %}
-    {% include 'multiplayer.html'%}
-
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/component.js"></script>
+<script type="module" src="/static/js/router.js"></script>
+
 </html>
