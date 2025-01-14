@@ -878,6 +878,10 @@ export class TournamentPage extends BaseComponent {
 		
 				const csrftoken = getCookie('csrftoken');
 				try{
+					console.log("DEBBUG");
+					console.log(JSON.stringify(tournamentMatch));
+					
+
 					console.log("fetch agora do torneio --->")
 					console.log(tournamentMatch);
 					const response = await fetch('https://localhost:1443/api/endTour/', {

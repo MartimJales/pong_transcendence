@@ -19,7 +19,7 @@ export class TournamentHistoryPage extends BaseComponent {
                 const data = await response.json();
                 this.tournaments = data.quantity;
                 console.log(data);
-                document.querySelector('h1').textContent = `Number of Tournaments Stored in Smart Contract ${data.quantity}`;
+                // document.querySelector('h1').textContent = `Number of Tournaments Stored in Smart Contract ${data.quantity}`;
             } else {
                 const errorData = await response.json();
                 console.log(errorData);
