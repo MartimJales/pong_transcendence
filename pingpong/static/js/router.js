@@ -358,6 +358,45 @@ function getSessionId() {
 
 import "./index.js"
 
+let isRefreshing = false;
+
+window.addEventListener('beforeunload', () => {
+    isRefreshing = true;
+    setTimeout(() => {
+        isRefreshing = false;
+    }, 0);
+});
+
+
+window.addEventListener('unload', () => {
+    if (!isRefreshing) {
+        turnOff();
+    }
+    isRefreshing = false;
+});
+
+window.turnOff = async () => {
+    try {
+        const csrftoken = window.getCookie('csrftoken');
+        const response = await fetch('https://localhost:1443/api/setOff/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        });
+        if (response.ok) {
+            console.log("done");
+        } else {
+            const data = await response.json();
+            console.error('failed to set bool', data.message);
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+};
+
 
 window.addEventListener("load", (e) => { //everythime we change this shit with .go()
     const url = window.location.href.split("#/")[1];

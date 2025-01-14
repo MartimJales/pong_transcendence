@@ -8,6 +8,7 @@ export class TournamentHistoryPage extends BaseComponent {
 
     async onInit(){       
         try {
+            console.log("chamour fetch do history");
             const response = await fetch('https://localhost:1443/api/getTournament/', {
                 credentials: 'include',
                 headers: {
@@ -18,7 +19,7 @@ export class TournamentHistoryPage extends BaseComponent {
                 const data = await response.json();
                 this.tournaments = data.quantity;
                 console.log(data);
-                // document.querySelector('h1').textContent = `Number of Tournaments Stored in Smart Contract ${data.quantity}`;
+                document.querySelector('h1').textContent = `Number of Tournaments Stored in Smart Contract ${data.quantity}`;
             } else {
                 const errorData = await response.json();
                 console.log(errorData);

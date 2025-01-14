@@ -878,6 +878,8 @@ export class TournamentPage extends BaseComponent {
 		
 				const csrftoken = getCookie('csrftoken');
 				try{
+					console.log("fetch agora do torneio --->")
+					console.log(tournamentMatch);
 					const response = await fetch('https://localhost:1443/api/endTour/', {
 						method: 'POST',
 						headers: {
@@ -892,7 +894,7 @@ export class TournamentPage extends BaseComponent {
 					if(response.ok){
 						const data = await response.json();
 						console.log(data);
-						transview = "0x" + data.transaction_hash;
+						let transview = "0x" + data.transaction_hash;
 						const container = document.querySelector('.container');
 						container.innerHTML = `
 						<div class="text-center mt-5">
@@ -973,7 +975,7 @@ export class TournamentPage extends BaseComponent {
 									   onmouseout="this.style.backgroundColor='transparent'">
 										View on Etherscan
 									</a>
-									<a onclick="window.go('profile')" 
+									<a onclick="Router.go('profile')" 
 									   target="_blank" 
 									   style="display: inline-block;
 											  font-family: 'Orbitron', sans-serif;
