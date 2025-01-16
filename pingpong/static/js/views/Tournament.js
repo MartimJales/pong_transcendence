@@ -3,6 +3,7 @@ export class TournamentPage extends BaseComponent {
 		super("static/html/tournament.html")
 	}
 
+
 	onInit(){
 		let tournamentMatch = {
 			date: new Date().toISOString(),
@@ -658,51 +659,69 @@ export class TournamentPage extends BaseComponent {
 		
 			loop: function () {
 		
-				Pong.update();
-				Pong.draw();
-				console.log("ignored - looping here");
-		
-				
-				if (!Pong.over) requestAnimationFrame(Pong.loop);
+				if (!Pong.over && Pong.running) {  // Add check for running state
+					Pong.update();
+					Pong.draw();
+					Pong.animationFrameId = requestAnimationFrame(Pong.loop);  // Store the animation frame ID
+				}
 			},
 		
 			listen: function (players) {
-				document.addEventListener('keydown', function (key) {
-					// Handle the 'Press any key to begin' function and start the game.
-					if ([32, 37, 38, 39, 40, 65, 68, 83, 87].includes(key.keyCode)) {
-						key.preventDefault();
-					}
-					if (Pong.running === false) {
-						console.log('running');
-						Pong.running = true;
-						window.requestAnimationFrame(Pong.loop);
-					}
+			   // First ensure window.Pong exists
+			   if (!window.Pong) {
+				window.Pong = this;  // Set the current context as window.Pong
+			}
 		
-					// Handle up arrow and w key events
-					if (key.keyCode === 87) Pong.player.move = DIRECTION.UP;
-					if (key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
+			// First clear any existing listeners
+			if (window.Pong.keyDownHandler) {
+				document.removeEventListener('keydown', window.Pong.keyDownHandler);
+				window.Pong.keyDownHandler = null;
+			}
+			if (window.Pong.keyUpHandler) {
+				document.removeEventListener('keyup', window.Pong.keyUpHandler);
+				window.Pong.keyUpHandler = null;
+			}
 		
-					// Handle right player with up and down arrows
-					if (key.keyCode === 38) Pong.player2.move = DIRECTION.UP;
-					if (key.keyCode === 40) Pong.player2.move = DIRECTION.DOWN;
+			// Create new handlers and store them on window.Pong
+			window.Pong.keyDownHandler = (key) => {
+				if ([32, 37, 38, 39, 40, 65, 68, 83, 87].includes(key.keyCode)) {
+					key.preventDefault();
+				}
+				if (window.Pong.running === false) {
+					console.log('running');
+					window.Pong.running = true;
+					window.Pong.animationFrameId = window.requestAnimationFrame(window.Pong.loop);
+				}
 		
-					// Handle left and right arrow and a, d key events for 4 player mode
-					if (key.keyCode === 65 && players == 4) Pong.playerTop.move = DIRECTION.LEFT; // A
-					if (key.keyCode === 68 && players == 4) Pong.playerTop.move = DIRECTION.RIGHT; // D
-					if (key.keyCode === 37 && players == 4) Pong.playerBottom.move = DIRECTION.LEFT; // Left arrow
-					if (key.keyCode === 39 && players == 4) Pong.playerBottom.move = DIRECTION.RIGHT; // Right arrow
-				});
+				// Handle up arrow and w key events
+				if (key.keyCode === 87) window.Pong.player.move = DIRECTION.UP;
+				if (key.keyCode === 83) window.Pong.player.move = DIRECTION.DOWN;
 		
-				// Stop the player from moving when there are no keys being pressed.
-				document.addEventListener('keyup', function (key) {
-					if (key.keyCode === 87 || key.keyCode === 83) Pong.player.move = DIRECTION.IDLE;
-					if (key.keyCode === 38 || key.keyCode === 40) Pong.player2.move = DIRECTION.IDLE;
+				// Handle right player with up and down arrows
+				if (key.keyCode === 38) window.Pong.player2.move = DIRECTION.UP;
+				if (key.keyCode === 40) window.Pong.player2.move = DIRECTION.DOWN;
 		
-					if (players == 4) {
-						if (key.keyCode === 65 || key.keyCode === 68) Pong.playerTop.move = DIRECTION.IDLE;
-						if (key.keyCode === 37 || key.keyCode === 39) Pong.playerBottom.move = DIRECTION.IDLE;
-					}
-				});
+				if (players == 4) {
+					if (key.keyCode === 65) window.Pong.playerTop.move = DIRECTION.LEFT;
+					if (key.keyCode === 68) window.Pong.playerTop.move = DIRECTION.RIGHT;
+					if (key.keyCode === 37) window.Pong.playerBottom.move = DIRECTION.LEFT;
+					if (key.keyCode === 39) window.Pong.playerBottom.move = DIRECTION.RIGHT;
+				}
+			};
+		
+			window.Pong.keyUpHandler = (key) => {
+				if (key.keyCode === 87 || key.keyCode === 83) window.Pong.player.move = DIRECTION.IDLE;
+				if (key.keyCode === 38 || key.keyCode === 40) window.Pong.player2.move = DIRECTION.IDLE;
+		
+				if (players == 4) {
+					if (key.keyCode === 65 || key.keyCode === 68) window.Pong.playerTop.move = DIRECTION.IDLE;
+					if (key.keyCode === 37 || key.keyCode === 39) window.Pong.playerBottom.move = DIRECTION.IDLE;
+				}
+			};
+		
+			// Add the event listeners
+			document.addEventListener('keydown', window.Pong.keyDownHandler);
+			document.addEventListener('keyup', window.Pong.keyUpHandler);
 			},
 		
 			// Reset the ball location, the player turns and set a delay before the next round begins.
@@ -721,32 +740,48 @@ export class TournamentPage extends BaseComponent {
 		};
 		
 		function cleanupPongGame() {
-			if (Pong) {
+			if (window.Pong) {
 				// Stop animation frame
-				if (Pong.animationFrameId) {
-					cancelAnimationFrame(Pong.animationFrameId);
-					Pong.animationFrameId = null;
+				if (window.Pong.animationFrameId) {
+					window.cancelAnimationFrame(window.Pong.animationFrameId);
+					window.Pong.animationFrameId = null;
 				}
 				
-				// Remove event listeners
-				document.removeEventListener('keydown', Pong.keyDownHandler);
-				document.removeEventListener('keyup', Pong.keyUpHandler);
+				// Remove event listeners using the stored references
+				if (window.Pong.keyDownHandler) {
+					document.removeEventListener('keydown', window.Pong.keyDownHandler);
+					window.Pong.keyDownHandler = null;
+				}
+				if (window.Pong.keyUpHandler) {
+					document.removeEventListener('keyup', window.Pong.keyUpHandler);
+					window.Pong.keyUpHandler = null;
+				}
 				
 				// Clear the canvas if it exists
-				if (Pong.canvas && Pong.context) {
-					Pong.context.clearRect(0, 0, Pong.canvas.width, Pong.canvas.height);
+				if (window.Pong.canvas && window.Pong.context) {
+					window.Pong.context.clearRect(0, 0, window.Pong.canvas.width, window.Pong.canvas.height);
 				}
 				
-				// Reset game state
-				Pong.running = false;
-				Pong.over = true;
-				Pong = null;
+				// Force game over state
+				window.Pong.over = true;
+				window.Pong.running = false;
+				
+				
+		
+				// Clear all timeouts
+				const highestTimeoutId = window.setTimeout(() => {}, 0);
+				for (let i = 0; i < highestTimeoutId; i++) {
+					window.clearTimeout(i);
+				}
+				window.Pong = null;
 			}
 		}
 		
 		var Pong = null;
 		function startGame(players, ballColor, bgColor, paddleColor, player1, player2) {
 			return new Promise((resolve) => {
+				console.log("execultannndo o start gamee ********************");
+
 				cleanupPongGame();
 				Pong = Object.assign({}, Game);
 				
@@ -789,6 +824,7 @@ export class TournamentPage extends BaseComponent {
 					}, 1000);
 				};
 				
+				console.log("CHAAAAMAAAANDO INITIALIZE DENOVO")
 				Pong.initialize(players, ballColor, bgColor, paddleColor);
 			});
 		}
@@ -848,6 +884,8 @@ export class TournamentPage extends BaseComponent {
 				await new Promise(resolve => setTimeout(resolve, 3000));
 		
 				setGameCanva();
+
+				console.log("--------------------chamando start game-------------");
 		
 				tournamentMatch.quarter1.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, p1, p3);
 				console.log("Match winner: Q1", tournamentMatch.quarter1.w);
@@ -858,6 +896,7 @@ export class TournamentPage extends BaseComponent {
 		
 				setGameCanva();
 		
+				console.log("--------------------chamando start game-------------");
 				tournamentMatch.quarter2.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, usernick, p2);
 				console.log("Match winner: Q1", tournamentMatch.quarter2.w);
 		
@@ -868,14 +907,15 @@ export class TournamentPage extends BaseComponent {
 				await new Promise(resolve => setTimeout(resolve, 3000));
 		
 				setGameCanva();
-		
+				console.log("--------------------chamando start game-------------");
 				tournamentMatch.finals.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
 				
 				console.log("WINEEEEEEEERR desse carai", tournamentMatch.finals.w);
 				console.log("q1 score -> ", tournamentMatch.quarter1.score);
 				console.log("q2 score ->", tournamentMatch.quarter2.score);
-				await new Promise(resolve => setTimeout(resolve, 3000));
-		
+				//await new Promise(resolve => setTimeout(resolve, 3000));
+				console.log("--------------------acabou!-------------");
+		//
 				const csrftoken = getCookie('csrftoken');
 				try{
 					console.log("DEBBUG");
@@ -1070,6 +1110,47 @@ export class TournamentPage extends BaseComponent {
 			`;
 			
 		}		
+	}
+
+	onExit(){
+		console.log("Cleaning up tournament page...");
+    
+		// Clean up Pong game if it exists
+		if (window.Pong) {
+			// Stop animation frame
+			if (window.Pong.animationFrameId) {
+				cancelAnimationFrame(window.Pong.animationFrameId);
+				window.Pong.animationFrameId = null;
+			}
+			
+			// Remove event listeners
+			document.removeEventListener('keydown', window.Pong.keyDownHandler);
+			document.removeEventListener('keyup', window.Pong.keyUpHandler);
+			
+			// Force game over state
+			window.Pong.over = true;
+			window.Pong.running = false;
+			
+			// Clear the canvas if it exists
+			if (window.Pong.canvas && window.Pong.context) {
+				window.Pong.context.clearRect(0, 0, window.Pong.canvas.width, window.Pong.canvas.height);
+			}
+			
+			// Reset game state
+			window.Pong = null;
+		}
+		
+		// Clear any remaining timeouts
+		const highestTimeoutId = setTimeout(() => {});
+		for (let i = 0; i < highestTimeoutId; i++) {
+			clearTimeout(i);
+		}
+		
+		// Clear event listeners from startGameButton if it exists
+		const startButton = document.getElementById('startGameButton');
+		if (startButton) {
+			startButton.replaceWith(startButton.cloneNode(true));
+		}
 	}
 
 }
