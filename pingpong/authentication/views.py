@@ -71,7 +71,7 @@ def signup(request):
         except Exception as e:
             return JsonResponse({
                 'error': f'{str(e)}'
-            }, status=500)
+            }, status=200)
 
     return JsonResponse({
         'error': 'Method not allowed'
@@ -151,7 +151,7 @@ def add_friend(request):
             return JsonResponse({'success': 'Friend added successfully'})
             
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({'error': str(e)}, status=200)
        
     return JsonResponse({'something went wrong': 'Method not allowed'}, status=405)
 
@@ -180,7 +180,7 @@ def get_profile_data(request):
         
     except Exception as e:
         print(f"Error in get_profile_data: {str(e)}")  # Server-side logging
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'error': str(e)}, status=200)
 
 
 @login_required
@@ -208,7 +208,7 @@ def editNick(request):
         except Exception as e:
             return JsonResponse({
                 'error': str(e)
-            }, status=500)
+            }, status=200)
     
     return JsonResponse({
         'error': 'Method not allowed'
@@ -241,7 +241,7 @@ def get_match_history(request):
         
     except Exception as e:
         print(f"Error in get_match_history: {str(e)}")
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'error': str(e)}, status=200)
 
 @login_required  
 def game_local(request):
@@ -290,7 +290,7 @@ def game_local(request):
             return JsonResponse({
                 'status': 'error',
                 'message': str(e)
-            }, status=500)
+            }, status=200)
 
     return JsonResponse({
         'status': 'error',
@@ -391,10 +391,10 @@ def upload_profile_image(request):
         except Exception as e:
             if 'temp_path' in locals() and default_storage.exists(temp_path):
                 default_storage.delete(temp_path)
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({'error': str(e)}, status=200)
             
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'error': str(e)}, status=200)
 
 @login_required
 def endTour(request):
@@ -450,7 +450,7 @@ def endTour(request):
             return JsonResponse({
                 'error': str(e),
                 'traceback': traceback.format_exc()
-            }, status=500)
+            }, status=200)
             
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
@@ -527,7 +527,7 @@ def getTournament(request):
                 'is_connected': web3_settings.w3.is_connected(),
                 'chain_id': web3_settings.w3.eth.chain_id
             }
-        }, status=500)
+        }, status=200)
 
 @login_required
 def getTournament2(request, index):
@@ -570,4 +570,4 @@ def getTournament2(request, index):
         print(f"Error in getTournament: {str(e)}")
         return JsonResponse({
             'error': str(e)
-        }, status=500)
+        }, status=200)

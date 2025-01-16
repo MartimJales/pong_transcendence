@@ -27,12 +27,8 @@ export class TournamentPage extends BaseComponent {
 				score:""
 			}
 		};
-		
-		
-		console.log("ta safee papai play no tour");
-		
+				
 		var usernick = localStorage.getItem('usernick');
-		console.log(usernick);
 		document.getElementById("nick").textContent = usernick;
 		
 		
@@ -688,7 +684,6 @@ export class TournamentPage extends BaseComponent {
 					key.preventDefault();
 				}
 				if (window.Pong.running === false) {
-					console.log('running');
 					window.Pong.running = true;
 					window.Pong.animationFrameId = window.requestAnimationFrame(window.Pong.loop);
 				}
@@ -780,8 +775,6 @@ export class TournamentPage extends BaseComponent {
 		var Pong = null;
 		function startGame(players, ballColor, bgColor, paddleColor, player1, player2) {
 			return new Promise((resolve) => {
-				console.log("execultannndo o start gamee ********************");
-
 				cleanupPongGame();
 				Pong = Object.assign({}, Game);
 				
@@ -824,7 +817,6 @@ export class TournamentPage extends BaseComponent {
 					}, 1000);
 				};
 				
-				console.log("CHAAAAMAAAANDO INITIALIZE DENOVO")
 				Pong.initialize(players, ballColor, bgColor, paddleColor);
 			});
 		}
@@ -840,16 +832,6 @@ export class TournamentPage extends BaseComponent {
 			p1 = document.getElementById("challenger1").value;
 			p2 = document.getElementById("challenger2").value;
 			p3 = document.getElementById("challenger3").value;
-		
-		
-			console.log('Starting game with the following settings:');
-			console.log('Players:', selectedPlayers); //chatgtp, local v1, multiplayer
-			console.log('Ball Color:', ballColor);
-			console.log('Background Color:', bgColor);
-			console.log('Paddle Color:', paddleColor);
-			console.log("players: " + p1 + " " + p2 + " " + p3);
-		
-		
 		
 			if (!p1 || p1.trim() === "" || !p2 || p2.trim() === "" || !p3 || p3.trim() === "") {
 				let divzininha = document.getElementById("divget");
@@ -885,20 +867,14 @@ export class TournamentPage extends BaseComponent {
 		
 				setGameCanva();
 
-				console.log("--------------------chamando start game-------------");
-		
 				tournamentMatch.quarter1.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, p1, p3);
-				console.log("Match winner: Q1", tournamentMatch.quarter1.w);
 				await new Promise(resolve => setTimeout(resolve, 3000));
 		
 				displayNextMatch(usernick, p2);
 				await new Promise(resolve => setTimeout(resolve, 3000));
 		
 				setGameCanva();
-		
-				console.log("--------------------chamando start game-------------");
 				tournamentMatch.quarter2.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, usernick, p2);
-				console.log("Match winner: Q1", tournamentMatch.quarter2.w);
 		
 				await new Promise(resolve => setTimeout(resolve, 3000));
 				displayNextMatch(tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
@@ -907,23 +883,10 @@ export class TournamentPage extends BaseComponent {
 				await new Promise(resolve => setTimeout(resolve, 3000));
 		
 				setGameCanva();
-				console.log("--------------------chamando start game-------------");
 				tournamentMatch.finals.w = await startGame(selectedPlayers, ballColor, bgColor, paddleColor, tournamentMatch.quarter1.w, tournamentMatch.quarter2.w);
 				
-				console.log("WINEEEEEEEERR desse carai", tournamentMatch.finals.w);
-				console.log("q1 score -> ", tournamentMatch.quarter1.score);
-				console.log("q2 score ->", tournamentMatch.quarter2.score);
-				//await new Promise(resolve => setTimeout(resolve, 3000));
-				console.log("--------------------acabou!-------------");
-		//
 				const csrftoken = getCookie('csrftoken');
 				try{
-					console.log("DEBBUG");
-					console.log(JSON.stringify(tournamentMatch));
-					
-
-					console.log("fetch agora do torneio --->")
-					console.log(tournamentMatch);
 					const response = await fetch('https://localhost:1443/api/endTour/', {
 						method: 'POST',
 						headers: {
@@ -937,7 +900,6 @@ export class TournamentPage extends BaseComponent {
 		
 					if(response.ok){
 						const data = await response.json();
-						console.log(data);
 						let transview = "0x" + data.transaction_hash;
 						const container = document.querySelector('.container');
 						container.innerHTML = `
@@ -1113,8 +1075,6 @@ export class TournamentPage extends BaseComponent {
 	}
 
 	onExit(){
-		console.log("Cleaning up tournament page...");
-    
 		// Clean up Pong game if it exists
 		if (window.Pong) {
 			// Stop animation frame

@@ -24,9 +24,15 @@ export class GamePage extends BaseComponent {
 
 	flag = 0;
 
+	mode = "";
+	selectedPlayers = 1;
 	
 
 	onInit(){
+		this.mode =  window.location.href.includes("?") ? new URLSearchParams(new URL(window.location.href).search) : {};
+		if (this.mode == "multiplayer")
+			this.selectedPlayers = 4
+
 	// The ball object (The cube that bounces back and forth)
 	this.Ball = {
 		new:  (incrementedSpeed) => {
@@ -157,18 +163,14 @@ export class GamePage extends BaseComponent {
 				})
 				.then(response => response.json())  // Change this to .json()
 				.then(data => {
-					console.log('Response data:', data);  // Log the entire response
 					if (data.status === 'success') {
-						console.log('Match data saved successfully');
-						console.log('o resultado dessa poha e ' + this.match_result);
-						console.log('os pontinhos ganhados sao ' + gameData.earned_points);
 						Router.go('profile');
 					} else {
-						console.error('Error saving match data:', data.message);
+						console.log('Error saving match data:', data.message);
 					}
 				})
 				.catch((error) => {
-					console.error('Error:', error);
+					console.log('Error:', error);
 			}); }
 		
 			
@@ -424,17 +426,6 @@ export class GamePage extends BaseComponent {
 				this.Pong.ball.height
 			);
 
-			// // Draw the Ball
-			// if (this.Pong._turnDelayIsOver.call(this)) {
-			// 	console.log("PINTA A BOLA")
-			// 	this.Pong.context.fillRect(
-			// 		this.Pong.ball.x,
-			// 		this.Pong.ball.y,
-			// 		this.Pong.ball.width,
-			// 		this.Pong.ball.height
-			// 	);
-			// }
-
 			// Draw the net (Line in the middle)
 			this.Pong.context.beginPath();
 			this.Pong.context.setLineDash([7, 15]);
@@ -601,26 +592,14 @@ export class GamePage extends BaseComponent {
 
 
 this.getElementById('startGameButton').addEventListener('click', () => {
-	let selectedPlayers = 1; // Default to 1 player
 	if (this.querySelector('input[name="options"]:checked'))
-		selectedPlayers = this.querySelector('input[name="options"]:checked').getAttribute('data-players');
+		this.selectedPlayers = this.querySelector('input[name="options"]:checked').getAttribute('data-players');
 
 	const ballColor = document.getElementById('ballColor').value;
 	const bgColor = document.getElementById('bgColor').value;
 	const paddleColor = document.getElementById('paddleColor').value;
 	//userId = this.getElementById('userId').value;
 	this.gameMode = document.getElementById('gameMode').value;
-
-
-	console.log('Starting game with the following settings:');
-	console.log('Players:', selectedPlayers); //chatgtp, local v1, multiplayer
-	console.log('Ball Color:', ballColor);
-	console.log('Background Color:', bgColor);
-	console.log('Paddle Color:', paddleColor);
-	console.log("mass esses ai sim viado");
-
-	
-	
 	
 	// Limpar o conteúdo da div container e mostrar apenas o canvas
 	const container = document.querySelector('.container');
@@ -631,47 +610,39 @@ this.getElementById('startGameButton').addEventListener('click', () => {
 
 
 	// Iniciar o jogo com as configurações selecionadas
-	this.startGame(selectedPlayers, ballColor, bgColor, paddleColor);	
+	this.startGame(this.selectedPlayers, ballColor, bgColor, paddleColor);	
 	});
 	}
 
 	startGame(players, ballColor, bgColor, paddleColor) {
-		//if (this.Pong && this.Pong.running) {
-		//	return;
-		//}
-		console.log("startGame")
-		// this.Pong = Object.assign({}, this.Game);
 		this.Pong.initialize(players, ballColor, bgColor, paddleColor);
 	}
 
 	keydown(key){
-		console.log("keydown");
-			// Handle the 'Press any key to begin' function and start the game.
-			if (this.Pong.running === false) {
-				console.log('runnnnnnnnnning');
-				this.Pong.running = true;
-				this.Pong.loop();
-			}
+		// Handle the 'Press any key to begin' function and start the game.
+		if (this.Pong.running === false) {
+			this.Pong.running = true;
+			this.Pong.loop();
+		}
 
-			// Handle up arrow and w key events
-			if (key.keyCode === 87) this.Pong.player.move = DIRECTION.UP;
-			if (key.keyCode === 83) this.Pong.player.move = DIRECTION.DOWN;
+		// Handle up arrow and w key events
+		if (key.keyCode === 87) this.Pong.player.move = DIRECTION.UP;
+		if (key.keyCode === 83) this.Pong.player.move = DIRECTION.DOWN;
 
-			// Handle right player with up and down arrows
-			if (key.keyCode === 38) this.Pong.player2.move = DIRECTION.UP;
-			if (key.keyCode === 40) this.Pong.player2.move = DIRECTION.DOWN;
+		// Handle right player with up and down arrows
+		if (this.Pong.players >= 2 && key.keyCode === 38) this.Pong.player2.move = DIRECTION.UP;
+		if (this.Pong.players >= 2 && key.keyCode === 40) this.Pong.player2.move = DIRECTION.DOWN;
 
-			// Handle left and right arrow and a, d key events for 4 player mode
-			if (key.keyCode === 65 && this.Pong.players == 4) this.Pong.playerTop.move = DIRECTION.LEFT; // A
-			if (key.keyCode === 68 && this.Pong.players == 4) this.Pong.playerTop.move = DIRECTION.RIGHT; // D
-			if (key.keyCode === 37 && this.Pong.players == 4) this.Pong.playerBottom.move = DIRECTION.LEFT; // Left arrow
-			if (key.keyCode === 39 && this.Pong.players == 4) this.Pong.playerBottom.move = DIRECTION.RIGHT; // Right arrow
+		// Handle left and right arrow and a, d key events for 4 player mode
+		if (key.keyCode === 65 && this.Pong.players == 4) this.Pong.playerTop.move = DIRECTION.LEFT; // A
+		if (key.keyCode === 68 && this.Pong.players == 4) this.Pong.playerTop.move = DIRECTION.RIGHT; // D
+		if (key.keyCode === 37 && this.Pong.players == 4) this.Pong.playerBottom.move = DIRECTION.LEFT; // Left arrow
+		if (key.keyCode === 39 && this.Pong.players == 4) this.Pong.playerBottom.move = DIRECTION.RIGHT; // Right arrow
 	}
 
 	keyup(key){
-		console.log("keyup");
 		if (key.keyCode === 87 || key.keyCode === 83) this.Pong.player.move = DIRECTION.IDLE;
-		if (key.keyCode === 38 || key.keyCode === 40) this.Pong.player2.move = DIRECTION.IDLE;
+		if (this.Pong.players >= 2 && (key.keyCode === 38 || key.keyCode === 40)) this.Pong.player2.move = DIRECTION.IDLE;
 
 		if (this.Pong.players == 4) {
 			if (key.keyCode === 65 || key.keyCode === 68) this.Pong.playerTop.move = DIRECTION.IDLE;

@@ -4,13 +4,13 @@
         <h1>Choose your option: </h1>
         <br>
         <br>
-        <button onclick="Router.go('game')" class="btn btn-secondary"> 1v1 Game</button>
+        <button onclick="Router.go('game', {'mode': 'single'})" class="btn btn-secondary"> 1v1 Game</button>
         <br>
         <br>
         <button onclick="Router.go('tournament')" class="btn btn-secondary"> Tournament</button>
         <br>
         <br>
-        <button onclick="Router.go('multiplayer')" class="btn btn-secondary"> multiplayer mode</button>
+        <button onclick="Router.go('game',{'mode': 'multiplayer'})" class="btn btn-secondary"> multiplayer mode</button>
         </div>
     </div>
   </div>

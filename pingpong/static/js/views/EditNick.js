@@ -30,8 +30,6 @@ export class EditNickPage extends BaseComponent {
                     serverres.textContent = 'Nickname updated successfully!';
                     serverres.style.color = 'green';
         
-                    console.log(newNick);
-                    console.log(data.nick);
                     Router.go('profile');
                 } else {
                     const errorData = await response.json();
@@ -39,7 +37,7 @@ export class EditNickPage extends BaseComponent {
                     serverres.style.color = 'red';
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.log('Error:', error);
                 serverres.textContent = 'An error occurred. Please try again.';
                 serverres.style.color = 'red';
             }

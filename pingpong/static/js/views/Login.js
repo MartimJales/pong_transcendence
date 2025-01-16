@@ -41,9 +41,6 @@ export class LoginPage extends BaseComponent {
         
                 messageElement.textContent = 'Login successful!';
                 messageElement.style.color = 'green';
-                // console.log("deu bom info aqui debaixo");
-                // console.log(data);
-
                 Router.go("home");
                 
             } else {
@@ -52,7 +49,7 @@ export class LoginPage extends BaseComponent {
                 messageElement.style.color = 'red';
             }
         } catch (error) {
-            console.error('Login error:', error);
+            console.log('Login error:', error);
             messageElement.textContent = 'An error occurred. Please try again later.';
             messageElement.style.color = 'red';
         }
@@ -61,7 +58,6 @@ export class LoginPage extends BaseComponent {
     onInit(){
         const loginForm = this.getElementById('loginForm');
         loginForm.addEventListener('submit', async (e) => {
-            console.log("loginForm");
         e.preventDefault(); 
         const username = this.getElementById('username').value;
         const password = this.getElementById('password').value;
@@ -70,8 +66,5 @@ export class LoginPage extends BaseComponent {
     }
 
     onExit(){
-        console.log("tes");
     }
 }
-
-console.log("sfdfs");

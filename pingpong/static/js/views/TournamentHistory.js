@@ -8,7 +8,6 @@ export class TournamentHistoryPage extends BaseComponent {
 
     async onInit(){       
         try {
-            console.log("chamour fetch do history");
             const response = await fetch('https://localhost:1443/api/getTournament/', {
                 credentials: 'include',
                 headers: {
@@ -18,11 +17,7 @@ export class TournamentHistoryPage extends BaseComponent {
             if (response.ok) {
                 const data = await response.json();
                 this.tournaments = data.quantity;
-                console.log(data);
                 // document.querySelector('h1').textContent = `Number of Tournaments Stored in Smart Contract ${data.quantity}`;
-            } else {
-                const errorData = await response.json();
-                console.log(errorData);
             }
         } catch (error) {
             console.log("Error:", error);
@@ -46,7 +41,6 @@ export class TournamentHistoryPage extends BaseComponent {
         
            try {
                let index = document.getElementById('tournamentIndex').value;
-               console.log(index);
                if (!index){
                    index = 0;
                }
@@ -54,7 +48,6 @@ export class TournamentHistoryPage extends BaseComponent {
                const data = await response.json();
                
                if (response.ok) {
-                   console.log("updating info my nober");
                    document.getElementById('message').innerHTML = `
                        <div class="tournament-display">
                            <h2 class="tournament-title">Tournament #${index}</h2>
@@ -107,8 +100,7 @@ export class TournamentHistoryPage extends BaseComponent {
                    `;
                }
            } catch (error) {
-               console.error('Error:', error);
-               console.log(error);
+               console.log('Error:', error);
            }
        });
     }

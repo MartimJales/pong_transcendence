@@ -16,11 +16,9 @@ class BaseComponent extends HTMLElement {
     }
 
     onInit(){
-
     }
 
     onExit(){
-        console.log("onExit");
     }
 
     getElementById(id){
@@ -53,7 +51,7 @@ let urlSelect = undefined;
 
 class Router {
 
-
+    static params = {};
 
     static async authStatus() {
         try {
@@ -65,8 +63,6 @@ class Router {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log('authStatus: ', data)
-                console.log("Auth status:",  data.isAuthenticated);
                 return data.isAuthenticated;
             }
             
@@ -83,15 +79,27 @@ class Router {
         components.set(url || "/", { component, auth });
     }
 
-    static go(url)
-    {   
-        window.location.href = "/#/" + url;
+    static go(url, params = {}) {
+        // Cria um objeto URL com a parte base da URL
+        let fullUrl = "/#/" + url;
+    
+        // Se o objeto params não estiver vazio, adicione os parâmetros à URL
+        if (Object.keys(params).length > 0) {
+            const queryString = new URLSearchParams(params).toString();
+            fullUrl += '?' + queryString; // Adiciona a query string à URL
+        }
+    
+        // Redireciona para a nova URL com os parâmetros
+        window.location.href = fullUrl;
     }
 
 
     static async setPage(url){
+        Router.params =  url.includes("?") ? new URLSearchParams(new URL(window.location.href).search) : {};
+        url = url.split("?")[0];
         if (url === urlSelect) return;
             urlSelect = url;
+
         document.body.innerHTML = "";
         if (componentSelect && componentSelect.onExit) 
             componentSelect.onExit();
@@ -111,7 +119,6 @@ class Router {
                 return ;
            }
         }
-        console.log(" component: ", component, " auth: ", auth)
         if (component) 
             componentSelect = document.body.appendChild(new component());
         else

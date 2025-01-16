@@ -17,7 +17,7 @@ export class MatchHistoryPage extends BaseComponent {
         const data = await response.json();
         renderMatchHistory(data);
       } catch (error) {
-        console.error('Error:', error);
+        console.log('Error:', error);
         document.getElementById('matchHistoryContent').innerHTML = `
           <div style="color: #e74c3c; margin: 20px;">
             Error loading match history. Please try again.

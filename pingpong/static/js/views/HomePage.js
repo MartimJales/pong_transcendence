@@ -1,5 +1,3 @@
-console.log("fetch vai ser mandado agora"); 
-
 export class HomePage extends BaseComponent  {
     constructor(){
         super("static/html/home.html")
@@ -8,63 +6,54 @@ export class HomePage extends BaseComponent  {
 
     async onInit(){
         async function profile_info(){
-            console.log("foi buscar o profile");
-                try {
-                    const csrftoken = window.getCookie('csrftoken');
-                    const response = await fetch('https://localhost:1443/api/profile/', {
-                        credentials: 'include',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-CSRFToken': csrftoken
-                        }
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        // console.log(data);
-                        const sessionId = window.getSessionId();
-                        // console.log("Current session ID:", sessionId);
-                        document.querySelector('h1').textContent = `Welcome ${data.username}`;
-                        
-                        //document.querySelector('img').src = data.image_url;
-                        
-                        const h2Elements = document.querySelectorAll('h2');
-                        h2Elements[0].textContent = `Nick: ${data.nick}`;
-                        h2Elements[1].textContent = `Losses: ${data.losses}`;
-                        h2Elements[2].textContent = `Winnings: ${data.wins}`;
-                        h2Elements[3].textContent = `Total Points: ${data.total_points}`;
-
-                        const imagenzinha = document.getElementById("circle");
-                        imagenzinha.src = data.image_url;
-                        // console.log("info: ", data);
-                        localStorage.setItem('usernick', data.nick);
-                        
-                        // Update friends list
-                        const friendsList = document.querySelector('#friendsList ul');
-                        if (data.friends.length > 0) {
-                            friendsList.innerHTML = data.friends.map(friend => `
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    ${friend.username}
-                                    <span class="badge ${friend.is_online ? 'bg-success' : 'bg-secondary'} rounded-pill">
-                                        ${friend.is_online ? 'Online' : 'Offline'}
-                                    </span>
-                                </li>
-                            `).join('');
-                        } else {
-                            friendsList.innerHTML = `
-                                <li class="list-group-item text-center">
-                                    No friends added yet
-                                </li>
-                            `;
-                        }
-                            
-                    } else {
-                        const errorData = await response.json();
-                        console.log(errorData);
+            try {
+                const csrftoken = window.getCookie('csrftoken');
+                const response = await fetch('https://localhost:1443/api/profile/', {
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRFToken': csrftoken
                     }
-                } catch (error) {
-                    console.log("Error:", error);
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const sessionId = window.getSessionId();
+                    document.querySelector('h1').textContent = `Welcome ${data.username}`;
+                    const h2Elements = document.querySelectorAll('h2');
+                    h2Elements[0].textContent = `Nick: ${data.nick}`;
+                    h2Elements[1].textContent = `Losses: ${data.losses}`;
+                    h2Elements[2].textContent = `Winnings: ${data.wins}`;
+                    h2Elements[3].textContent = `Total Points: ${data.total_points}`;
+
+                    const imagenzinha = document.getElementById("circle");
+                    imagenzinha.src = data.image_url;
+                    localStorage.setItem('usernick', data.nick);
+                    
+                    // Update friends list
+                    const friendsList = document.querySelector('#friendsList ul');
+                    if (data.friends.length > 0) {
+                        friendsList.innerHTML = data.friends.map(friend => `
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${friend.username}
+                                <span class="badge ${friend.is_online ? 'bg-success' : 'bg-secondary'} rounded-pill">
+                                    ${friend.is_online ? 'Online' : 'Offline'}
+                                </span>
+                            </li>
+                        `).join('');
+                    } else {
+                        friendsList.innerHTML = `
+                            <li class="list-group-item text-center">
+                                No friends added yet
+                            </li>
+                        `;
+                    }
+                        
+                } else {
+                    const errorData = await response.json();
                 }
-            
+            } catch (error) {
+                console.log("Error:", error);
+            }            
         }
 
     profile_info();
@@ -99,8 +88,6 @@ export class HomePage extends BaseComponent  {
         document.getElementById("loginForm").addEventListener('submit', async (e) => {
             e.preventDefault();
             const friendName = document.getElementById("friendName").value;
-
-            console.log("fetch do add friend");
             try {
                 const csrftoken = window.getCookie('csrftoken');
                 const response = await fetch('https://localhost:1443/api/add/', {
@@ -116,9 +103,6 @@ export class HomePage extends BaseComponent  {
                 
                 if(response.ok) {
                     const data = await response.json();
-                    // console.log("deu bom");
-                    // console.log(data);
-                    
                     messageElement.textContent = 'Friend added successfully!';
                     messageElement.style.color = 'green';
                     messageElement.style.display = 'block';
@@ -141,7 +125,7 @@ export class HomePage extends BaseComponent  {
                     }, 3000);
                 }
             } catch(error) {
-                console.error("Error adding friend:", error);
+                console.log("Error adding friend:", error);
                 messageElement.textContent = 'An error occurred. Please try again.';
                 messageElement.style.color = 'red';
                 messageElement.style.display = 'block';
@@ -156,9 +140,6 @@ export class HomePage extends BaseComponent  {
 
     var profileImg = document.querySelector('.profile-img');
     var fileInput = document.querySelector('#profileImageUpload');
-
-    console.log(profileImg);
-
     profileImg.style.cursor = 'pointer';
     profileImg.addEventListener('click', () => {
         fileInput.click();
@@ -193,11 +174,11 @@ export class HomePage extends BaseComponent  {
                 profileImg.src = "/static/images/" + data.image_url;
             } else {
                 const errorData = await response.json();
-                console.error('Upload failed:', errorData);
+                console.log('Upload failed:', errorData);
                 alert(errorData.error || 'Failed to upload image');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.log('Error:', error);
             alert(error);
         }
     });

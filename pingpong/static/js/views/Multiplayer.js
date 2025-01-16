@@ -504,7 +504,6 @@ var Game = {
 		document.addEventListener('keydown', function (key) {
 			// Handle the 'Press any key to begin' function and start the game.
 			if (Pong.running === false) {
-				console.log('running');
 				Pong.running = true;
 				window.requestAnimationFrame(Pong.loop);
 			}
@@ -570,13 +569,6 @@ document.getElementById('startGameButton').addEventListener('click', function ()
 	const bgColor = document.getElementById('bgColor').value;
 	const paddleColor = document.getElementById('paddleColor').value;
 	gameMode = document.getElementById('gameMode').value;
-
-
-	console.log('Starting game with the following settings:');
-	console.log('Players:', selectedPlayers); //chatgtp, local v1, multiplayer
-	console.log('Ball Color:', ballColor);
-	console.log('Background Color:', bgColor);
-	console.log('Paddle Color:', paddleColor);
 
 	// Limpar o conteúdo da div container e mostrar apenas o canvas
 	const container = document.querySelector('.container');

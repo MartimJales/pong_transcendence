@@ -21,8 +21,6 @@ export class SignupPage extends BaseComponent
                 passconf: this.getElementById("confirmPassword").value,
             }
 
-            // console.log("ta aqui -->", newUserData);
-
             if (newUserData.pass !== newUserData.passconf){
                 msg.innerText = "Passwords do not match";
                 msg.style.color = "red";
@@ -74,6 +72,5 @@ export class SignupPage extends BaseComponent
     }
 
     onExit(){
-        console.log("SignupPage: onExit");
     }
 }
